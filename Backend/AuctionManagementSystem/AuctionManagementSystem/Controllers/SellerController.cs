@@ -18,7 +18,7 @@ namespace AuctionManagementSystem.Controllers
 
         // POST: api/Seller
         [HttpPost]
-        public ActionResult<Seller> CreateSeller(SellerDetailsModel sellerDetailsModel)
+        public ActionResult CreateSeller(SellerDetailsModel sellerDetailsModel)
         {
             if (sellerDetailsModel == null)
             {
@@ -131,7 +131,7 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("Seller Not Found");
             }
 
-            if (seller.Auctions != null && seller.Auctions.Any())
+            if (seller.Auctions != null && seller.Auctions.Count != 0)
             {
                 return BadRequest("Cannot delete the seller, Because there are auctions related to this seller");
             }
