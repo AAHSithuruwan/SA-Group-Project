@@ -36,10 +36,10 @@ namespace AuctionManagementSystem.Models
             });
 
             modelBuilder.Entity<Bid>()
-                .HasOne(b => b.User)
-                .WithMany(u => u.Bids)
-                .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(b => b.Auction)
+                .WithMany(a => a.Bids)
+                .HasForeignKey(b => b.AuctionId)
+                .OnDelete(DeleteBehavior.Restrict); //You cannot delete action if there is bids associated with it
 
             modelBuilder.Entity<Auction>(entity =>
             {
