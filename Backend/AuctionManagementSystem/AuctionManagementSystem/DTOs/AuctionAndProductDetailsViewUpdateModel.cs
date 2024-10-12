@@ -14,6 +14,8 @@
 
         public required float StartingPrice { get; set; }
 
+        public required float BidIncrement { get; set; }
+
         public required DateTime StartingDate { get; set; }
 
         public required DateTime EndDate { get; set; }

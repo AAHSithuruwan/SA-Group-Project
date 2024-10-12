@@ -30,6 +30,9 @@ namespace AuctionManagementSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuctionId"));
 
+                    b.Property<float>("BidIncrement")
+                        .HasColumnType("real");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -59,6 +62,9 @@ namespace AuctionManagementSystem.Migrations
 
                     b.Property<int>("AuctionId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("BidDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
@@ -197,6 +203,9 @@ namespace AuctionManagementSystem.Migrations
                     b.Property<string>("Address")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("Admin")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()

@@ -51,6 +51,7 @@ namespace AuctionManagementSystem.Controllers
             Auction auction = new Auction()
             {
                 StartingPrice = auctionAndProductDetailsCreateModel.StartingPrice,
+                BidIncrement = auctionAndProductDetailsCreateModel.BidIncrement,
                 StartingDate = auctionAndProductDetailsCreateModel.StartingDate,
                 EndDate = auctionAndProductDetailsCreateModel.EndDate,
                 SellerId = seller.SellerId,
@@ -120,6 +121,7 @@ namespace AuctionManagementSystem.Controllers
                     CategoryId = product.CategoryId,
                     ProductDescription = product.Description,
                     StartingPrice = auction.StartingPrice,
+                    BidIncrement = auction.BidIncrement,
                     StartingDate = auction.StartingDate,
                     EndDate = auction.EndDate
                 };
@@ -160,6 +162,7 @@ namespace AuctionManagementSystem.Controllers
                     CategoryId = product.CategoryId,
                     ProductDescription = product.Description,
                     StartingPrice = auction.StartingPrice,
+                    BidIncrement = auction.BidIncrement,
                     StartingDate = auction.StartingDate,
                     EndDate = auction.EndDate
                 };
@@ -196,6 +199,7 @@ namespace AuctionManagementSystem.Controllers
                 CategoryId = auction.Product.CategoryId,
                 ProductDescription = auction.Product.Description,
                 StartingPrice = auction.StartingPrice,
+                BidIncrement = auction.BidIncrement,
                 StartingDate = auction.StartingDate,
                 EndDate = auction.EndDate
             };
@@ -227,6 +231,7 @@ namespace AuctionManagementSystem.Controllers
             }
 
             auction.StartingPrice = auctionAndProductDetailsViewUpdateModel.StartingPrice;
+            auction.BidIncrement = auctionAndProductDetailsViewUpdateModel.BidIncrement;
             auction.StartingDate = auctionAndProductDetailsViewUpdateModel.StartingDate;
             auction.EndDate = auctionAndProductDetailsViewUpdateModel.EndDate;
 
