@@ -74,6 +74,16 @@ namespace AuctionManagementSystem.Controllers
             _dbContext.Products.Add(product);
             _dbContext.SaveChanges();
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "ProductImages", product.ProductId.ToString() + ".png");
+
+            if (auctionAndProductDetailsCreateModel.ProductImage != null && auctionAndProductDetailsCreateModel.ProductImage.Length > 0)
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    auctionAndProductDetailsCreateModel.ProductImage.CopyTo(stream);
+                }
+            }
+
             return Ok("Auction Created Successfully");
         }
 
@@ -318,6 +328,18 @@ namespace AuctionManagementSystem.Controllers
 
             _dbContext.SaveChanges();
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "ProductImages", auction.Product.ProductId.ToString() + ".png");
+
+            if (auctionAndProductDetailsUpdateModel.ProductImage != null && auctionAndProductDetailsUpdateModel.ProductImage.Length > 0)
+            {
+                System.IO.File.Delete(filePath);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    auctionAndProductDetailsUpdateModel.ProductImage.CopyTo(stream);
+                }
+            }
+
             return Ok("Auction Updated Successfully");
         }
 
@@ -339,8 +361,19 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("Cannot Delete the auction. Because there are Bids associated with it");
             }
 
+            Product? product = _dbContext.Products.FirstOrDefault(p => p.AuctionId == AuctionId);
+
+            if (product == null)
+            {
+                return NotFound("Product Not Found");
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "ProductImages", product.ProductId + ".png");
+
             _dbContext.Auctions.Remove(auction);
             _dbContext.SaveChanges();
+
+            System.IO.File.Delete(filePath);
 
             return Ok("Auction Deleted Successfully");
         }

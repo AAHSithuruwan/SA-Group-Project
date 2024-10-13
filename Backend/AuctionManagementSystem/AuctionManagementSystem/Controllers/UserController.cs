@@ -40,6 +40,13 @@ namespace AuctionManagementSystem.Controllers
 
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
+
+            var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", "default.png");
+
+            System.IO.File.Copy(defaultImagePath, filePath);
+
             return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
         }
 
@@ -150,6 +157,18 @@ namespace AuctionManagementSystem.Controllers
 
             _dbContext.SaveChanges();
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
+
+            if (userPersonalDetailsUpdateModel.UserImage != null && userPersonalDetailsUpdateModel.UserImage.Length > 0)
+            {
+                System.IO.File.Delete(filePath);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    userPersonalDetailsUpdateModel.UserImage.CopyTo(stream);
+                }
+            }
+
             return Ok(user);
         }
 
@@ -252,8 +271,12 @@ namespace AuctionManagementSystem.Controllers
                 }
             }
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
+
             _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();
+
+            System.IO.File.Delete(filePath);
 
             //Clear the session
             HttpContext.Session.Clear();

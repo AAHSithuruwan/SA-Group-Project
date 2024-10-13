@@ -58,6 +58,22 @@ namespace AuctionManagementSystem.Controllers
             _dbContext.Sellers.Add(seller);
             _dbContext.SaveChanges();
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", "SellerImages", seller.SellerId.ToString() + ".png");
+
+            if (sellerDetailsModel.SellerImage != null && sellerDetailsModel.SellerImage.Length > 0)
+            {
+                using(var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    sellerDetailsModel.SellerImage.CopyTo(stream);
+                }
+            }
+            else
+            {
+                var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", "default.png");
+
+                System.IO.File.Copy(defaultImagePath, filePath);
+            }
+
             return Ok("Seller Created Successfully");
         }
 
@@ -107,6 +123,19 @@ namespace AuctionManagementSystem.Controllers
             seller.Address = sellerDetailsModel.Address;
 
             _dbContext.SaveChanges();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", seller.SellerId.ToString() + ".png");
+
+            if (sellerDetailsModel.SellerImage != null && sellerDetailsModel.SellerImage.Length > 0)
+            {
+                System.IO.File.Delete(filePath);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    sellerDetailsModel.SellerImage.CopyTo(stream);
+                }
+            }
+
             return Ok(seller);
         }
 
@@ -136,8 +165,13 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("Cannot delete the seller, Because there are auctions related to this seller");
             }
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", seller.SellerId.ToString() + ".png");
+
             _dbContext.Sellers.Remove(seller);
             _dbContext.SaveChanges();
+
+            System.IO.File.Delete(filePath);
+
             return Ok("Seller Deleted Successfully");
         }
     }
