@@ -18,23 +18,38 @@ namespace AuctionManagementSystem.Controllers
 
         // POST: api/Category
         [HttpPost]
-        public ActionResult CreateCategory(Category category)
+        public ActionResult CreateCategory(CategoryDetailsCreateModel categoryDetailsCreateModel)
         {
-            if (category == null)
+            if (categoryDetailsCreateModel == null)
             {
                 return BadRequest();
             }
 
-            Category? existingCategory = _dbContext.Categories.FirstOrDefault(c => c.Name == category.Name);
+            Category? existingCategory = _dbContext.Categories.FirstOrDefault(c => c.Name == categoryDetailsCreateModel.Name);
 
             if (existingCategory != null)
             {
                 return BadRequest("Category Already Exists");
             }
 
+            Category category = new Category 
+            { 
+                Name = categoryDetailsCreateModel.Name 
+            };
+
             _dbContext.Categories.Add(category);
 
             _dbContext.SaveChanges();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "CategoryImages", category.CategoryId.ToString() + ".png");
+
+            if (categoryDetailsCreateModel.CategoryImage != null && categoryDetailsCreateModel.CategoryImage.Length > 0)
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    categoryDetailsCreateModel.CategoryImage.CopyTo(stream);
+                }
+            }
 
             return Ok("Category Created Successfully");
         }
@@ -64,23 +79,35 @@ namespace AuctionManagementSystem.Controllers
 
         // PUT: api/Category
         [HttpPut]
-        public ActionResult UpdateCategory(CategoryUpdateModel categoryUpdateModel)
+        public ActionResult UpdateCategory(CategoryDetailsUpdateModel categoryDetailsUpdateModel)
         {
-            if (categoryUpdateModel == null)
+            if (categoryDetailsUpdateModel == null)
             {
                 return BadRequest();
             }
 
-            Category? category = _dbContext.Categories.FirstOrDefault(c => c.CategoryId == categoryUpdateModel.CategoryId);
+            Category? category = _dbContext.Categories.FirstOrDefault(c => c.CategoryId == categoryDetailsUpdateModel.CategoryId);
 
             if (category == null)
             {
                 return NotFound("Category Not Found");
             }
 
-            category.Name = categoryUpdateModel.Name;
+            category.Name = categoryDetailsUpdateModel.Name;
 
             _dbContext.SaveChanges();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "CategoryImages", category.CategoryId.ToString() + ".png");
+
+            if (categoryDetailsUpdateModel.CategoryImage != null && categoryDetailsUpdateModel.CategoryImage.Length > 0)
+            {
+                System.IO.File.Delete(filePath);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    categoryDetailsUpdateModel.CategoryImage.CopyTo(stream);
+                }
+            }
 
             return Ok("Category Updated Successfully");
         }
@@ -103,8 +130,12 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("Cannot Delete Category. There are Products associated with this category.");
             }
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "CategoryImages", category.CategoryId.ToString() + ".png");
+
             _dbContext.Categories.Remove(category);
             _dbContext.SaveChanges();
+
+            System.IO.File.Delete(filePath);
 
             return Ok("Category Deleted Successfully");
         }

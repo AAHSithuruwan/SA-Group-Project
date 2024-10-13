@@ -74,7 +74,7 @@ namespace AuctionManagementSystem.Controllers
             _dbContext.Products.Add(product);
             _dbContext.SaveChanges();
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "ProductImages", product.ProductId.ToString() + ".png");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "ProductImages", product.ProductId.ToString() + ".png");
 
             if (auctionAndProductDetailsCreateModel.ProductImage != null && auctionAndProductDetailsCreateModel.ProductImage.Length > 0)
             {
@@ -328,7 +328,7 @@ namespace AuctionManagementSystem.Controllers
 
             _dbContext.SaveChanges();
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "ProductImages", auction.Product.ProductId.ToString() + ".png");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "ProductImages", auction.Product.ProductId.ToString() + ".png");
 
             if (auctionAndProductDetailsUpdateModel.ProductImage != null && auctionAndProductDetailsUpdateModel.ProductImage.Length > 0)
             {
@@ -368,7 +368,7 @@ namespace AuctionManagementSystem.Controllers
                 return NotFound("Product Not Found");
             }
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "ProductImages", product.ProductId + ".png");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "ProductImages", product.ProductId + ".png");
 
             _dbContext.Auctions.Remove(auction);
             _dbContext.SaveChanges();

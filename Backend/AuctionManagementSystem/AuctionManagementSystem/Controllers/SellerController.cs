@@ -58,7 +58,7 @@ namespace AuctionManagementSystem.Controllers
             _dbContext.Sellers.Add(seller);
             _dbContext.SaveChanges();
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", "SellerImages", seller.SellerId.ToString() + ".png");
 
             if (sellerDetailsModel.SellerImage != null && sellerDetailsModel.SellerImage.Length > 0)
             {
@@ -69,7 +69,7 @@ namespace AuctionManagementSystem.Controllers
             }
             else
             {
-                var deafultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", "default.png");
+                var deafultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", "default.png");
 
                 System.IO.File.Copy(deafultImagePath, filePath);
             }
@@ -124,7 +124,7 @@ namespace AuctionManagementSystem.Controllers
 
             _dbContext.SaveChanges();
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", seller.SellerId.ToString() + ".png");
 
             if (sellerDetailsModel.SellerImage != null && sellerDetailsModel.SellerImage.Length > 0)
             {
@@ -165,7 +165,7 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("Cannot delete the seller, Because there are auctions related to this seller");
             }
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", seller.SellerId.ToString() + ".png");
 
             _dbContext.Sellers.Remove(seller);
             _dbContext.SaveChanges();
