@@ -69,9 +69,9 @@ namespace AuctionManagementSystem.Controllers
             }
             else
             {
-                var deafultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", "default.png");
+                var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "SellerImages", "default.png");
 
-                System.IO.File.Copy(deafultImagePath, filePath);
+                System.IO.File.Copy(defaultImagePath, filePath);
             }
 
             return Ok("Seller Created Successfully");
