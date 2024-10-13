@@ -12,5 +12,7 @@ namespace AuctionManagementSystem.DTOs
         public required string PhoneNumber { get; set; }
 
         public required string Address { get; set; }
+
+        public IFormFile? SellerImage { get; set; }
     }
 }

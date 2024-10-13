@@ -58,6 +58,22 @@ namespace AuctionManagementSystem.Controllers
             _dbContext.Sellers.Add(seller);
             _dbContext.SaveChanges();
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
+
+            if (sellerDetailsModel.SellerImage != null && sellerDetailsModel.SellerImage.Length > 0)
+            {
+                using(var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    sellerDetailsModel.SellerImage.CopyTo(stream);
+                }
+            }
+            else
+            {
+                var deafultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", "default.png");
+
+                System.IO.File.Copy(deafultImagePath, filePath);
+            }
+
             return Ok("Seller Created Successfully");
         }
 
@@ -107,6 +123,19 @@ namespace AuctionManagementSystem.Controllers
             seller.Address = sellerDetailsModel.Address;
 
             _dbContext.SaveChanges();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
+
+            if (sellerDetailsModel.SellerImage != null && sellerDetailsModel.SellerImage.Length > 0)
+            {
+                System.IO.File.Delete(filePath);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    sellerDetailsModel.SellerImage.CopyTo(stream);
+                }
+            }
+
             return Ok(seller);
         }
 
@@ -138,6 +167,11 @@ namespace AuctionManagementSystem.Controllers
 
             _dbContext.Sellers.Remove(seller);
             _dbContext.SaveChanges();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
+
+            System.IO.File.Delete(filePath);
+
             return Ok("Seller Deleted Successfully");
         }
     }
