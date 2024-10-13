@@ -165,10 +165,10 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("Cannot delete the seller, Because there are auctions related to this seller");
             }
 
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
+
             _dbContext.Sellers.Remove(seller);
             _dbContext.SaveChanges();
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "SellerImages", seller.SellerId.ToString() + ".png");
 
             System.IO.File.Delete(filePath);
 

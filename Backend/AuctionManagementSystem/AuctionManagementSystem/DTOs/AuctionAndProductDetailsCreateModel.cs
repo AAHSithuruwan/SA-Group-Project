@@ -15,5 +15,7 @@
         public required DateTime StartingDate { get; set; }
 
         public required DateTime EndDate { get; set; }
+
+        public required IFormFile ProductImage { get; set; }
     }
 }
