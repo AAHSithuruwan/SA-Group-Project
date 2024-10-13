@@ -9,6 +9,8 @@ namespace AuctionManagementSystem.Models
 
         [Required] public required float Price { get; set; }
 
+        [Required] public required DateTime BidDate { get; set; }
+
         [Required][MaxLength(100)] public required string ShippingName  { get; set;}
 
         [Required][MaxLength(100)] public required string ShippingPhoneNumber { get; set; }

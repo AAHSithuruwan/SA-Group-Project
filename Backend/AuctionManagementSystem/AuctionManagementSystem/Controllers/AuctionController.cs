@@ -51,6 +51,7 @@ namespace AuctionManagementSystem.Controllers
             Auction auction = new Auction()
             {
                 StartingPrice = auctionAndProductDetailsCreateModel.StartingPrice,
+                BidIncrement = auctionAndProductDetailsCreateModel.BidIncrement,
                 StartingDate = auctionAndProductDetailsCreateModel.StartingDate,
                 EndDate = auctionAndProductDetailsCreateModel.EndDate,
                 SellerId = seller.SellerId,
@@ -78,7 +79,7 @@ namespace AuctionManagementSystem.Controllers
 
         // GET: api/Auction/Seller
         [HttpGet("Seller")]
-        public ActionResult<List<AuctionAndProductDetailsViewUpdateModel>> GetSellerAuctions()
+        public ActionResult<List<AuctionAndProductDetailsViewModel>> GetSellerAuctions()
         {
             int? UserId = HttpContext.Session.GetInt32("UserId");
 
@@ -96,11 +97,11 @@ namespace AuctionManagementSystem.Controllers
                 return NotFound("Seller Not Found");
             }
 
-            List<AuctionAndProductDetailsViewUpdateModel> auctionAndProductDetailsViewUpdateModels = new List<AuctionAndProductDetailsViewUpdateModel>();
+            List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
 
             if (seller.Auctions == null || seller.Auctions.Count == 0)
             {
-                return auctionAndProductDetailsViewUpdateModels;
+                return auctionAndProductDetailsViewModels;
             }
 
             foreach (var auction in seller.Auctions)
@@ -112,7 +113,27 @@ namespace AuctionManagementSystem.Controllers
                     return NotFound("Product Not Found");
                 }
 
-                AuctionAndProductDetailsViewUpdateModel auctionAndProductDetailsViewUpdateModel = new AuctionAndProductDetailsViewUpdateModel()
+                Bid? lastBid = _dbContext.Bids
+                    .Where(b => b.AuctionId == auction.AuctionId)
+                    .OrderByDescending(b => b.BidDate)
+                    .FirstOrDefault();
+
+                float nextBidPrice = auction.StartingPrice;
+                float? highestBidPrice = null;
+                string? highestBidShippingName = null;
+                string? highestBidShippingAddress = null;
+                string? highestBidShippingPhoneNumber = null;
+
+                if (lastBid != null) 
+                {
+                    nextBidPrice = lastBid.Price + auction.BidIncrement;
+                    highestBidPrice = lastBid.Price;
+                    highestBidShippingName = lastBid.ShippingName;
+                    highestBidShippingAddress = lastBid.ShippingAddress;
+                    highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+                }
+
+                AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
                 {
                     ProductId = product.ProductId,
                     AuctionId = auction.AuctionId,
@@ -120,27 +141,33 @@ namespace AuctionManagementSystem.Controllers
                     CategoryId = product.CategoryId,
                     ProductDescription = product.Description,
                     StartingPrice = auction.StartingPrice,
+                    NextBidPrice = nextBidPrice,
+                    BidIncrement = auction.BidIncrement,
                     StartingDate = auction.StartingDate,
-                    EndDate = auction.EndDate
+                    EndDate = auction.EndDate,
+                    HighestBidPrice = highestBidPrice,
+                    HighestBidShippingName = highestBidShippingName,
+                    HighestBidShippingAddress = highestBidShippingAddress,
+                    HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber,
                 };
 
-                auctionAndProductDetailsViewUpdateModels.Add(auctionAndProductDetailsViewUpdateModel);
+                auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
             }
 
-            return auctionAndProductDetailsViewUpdateModels;
+            return auctionAndProductDetailsViewModels;
         }
 
         // GET: api/Auction/All
         [HttpGet("All")]
-        public ActionResult<List<AuctionAndProductDetailsViewUpdateModel>> GetAllAuctions()
+        public ActionResult<List<AuctionAndProductDetailsViewModel>> GetAllAuctions()
         {
-            List<AuctionAndProductDetailsViewUpdateModel> auctionAndProductDetailsViewUpdateModels = new List<AuctionAndProductDetailsViewUpdateModel>();
+            List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
 
             List<Auction> auctions = _dbContext.Auctions.ToList();
 
             if (auctions.Count == 0)
             {
-                return auctionAndProductDetailsViewUpdateModels;
+                return auctionAndProductDetailsViewModels;
             }
 
             foreach(Auction auction in auctions)
@@ -152,7 +179,27 @@ namespace AuctionManagementSystem.Controllers
                     return NotFound("Product Not Found");
                 }
 
-                AuctionAndProductDetailsViewUpdateModel auctionAndProductDetailsViewUpdateModel = new AuctionAndProductDetailsViewUpdateModel()
+                Bid? lastBid = _dbContext.Bids
+                    .Where(b => b.AuctionId == auction.AuctionId)
+                    .OrderByDescending(b => b.BidDate)
+                    .FirstOrDefault();
+
+                float nextBidPrice = auction.StartingPrice;
+                float? highestBidPrice = null;
+                string? highestBidShippingName = null;
+                string? highestBidShippingAddress = null;
+                string? highestBidShippingPhoneNumber = null;
+
+                if (lastBid != null)
+                {
+                    nextBidPrice = lastBid.Price + auction.BidIncrement;
+                    highestBidPrice = lastBid.Price;
+                    highestBidShippingName = lastBid.ShippingName;
+                    highestBidShippingAddress = lastBid.ShippingAddress;
+                    highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+                }
+
+                AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
                 {
                     ProductId = product.ProductId,
                     AuctionId = auction.AuctionId,
@@ -160,19 +207,25 @@ namespace AuctionManagementSystem.Controllers
                     CategoryId = product.CategoryId,
                     ProductDescription = product.Description,
                     StartingPrice = auction.StartingPrice,
+                    NextBidPrice = nextBidPrice,
+                    BidIncrement = auction.BidIncrement,
                     StartingDate = auction.StartingDate,
-                    EndDate = auction.EndDate
+                    EndDate = auction.EndDate,
+                    HighestBidPrice = highestBidPrice,
+                    HighestBidShippingName = highestBidShippingName,
+                    HighestBidShippingAddress = highestBidShippingAddress,
+                    HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber
                 };
 
-                auctionAndProductDetailsViewUpdateModels.Add(auctionAndProductDetailsViewUpdateModel);
+                auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
             }
 
-            return auctionAndProductDetailsViewUpdateModels;
+            return auctionAndProductDetailsViewModels;
         }
 
         // GET: api/Auction/1
         [HttpGet("{AuctionId}")]
-        public ActionResult<AuctionAndProductDetailsViewUpdateModel> GetSingleAuction(int AuctionId)
+        public ActionResult<AuctionAndProductDetailsViewModel> GetSingleAuction(int AuctionId)
         {
             Auction? auction = _dbContext.Auctions
                 .Include(a => a.Product)
@@ -188,7 +241,27 @@ namespace AuctionManagementSystem.Controllers
                 return NotFound("Product Not Found");
             }
 
-            AuctionAndProductDetailsViewUpdateModel auctionAndProductDetailsViewUpdateModel = new AuctionAndProductDetailsViewUpdateModel()
+            Bid? lastBid = _dbContext.Bids
+                    .Where(b => b.AuctionId == auction.AuctionId)
+                    .OrderByDescending(b => b.BidDate)
+                    .FirstOrDefault();
+
+            float nextBidPrice = auction.StartingPrice;
+            float? highestBidPrice = null;
+            string? highestBidShippingName = null;
+            string? highestBidShippingAddress = null;
+            string? highestBidShippingPhoneNumber = null;
+
+            if (lastBid != null)
+            {
+                nextBidPrice = lastBid.Price + auction.BidIncrement;
+                highestBidPrice = lastBid.Price;
+                highestBidShippingName = lastBid.ShippingName;
+                highestBidShippingAddress = lastBid.ShippingAddress;
+                highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+            }
+
+            AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
             {
                 ProductId = auction.Product.ProductId,
                 AuctionId = auction.AuctionId,
@@ -196,25 +269,31 @@ namespace AuctionManagementSystem.Controllers
                 CategoryId = auction.Product.CategoryId,
                 ProductDescription = auction.Product.Description,
                 StartingPrice = auction.StartingPrice,
+                NextBidPrice = nextBidPrice,
+                BidIncrement = auction.BidIncrement,
                 StartingDate = auction.StartingDate,
-                EndDate = auction.EndDate
+                EndDate = auction.EndDate,
+                HighestBidPrice = highestBidPrice,
+                HighestBidShippingName = highestBidShippingName,
+                HighestBidShippingAddress = highestBidShippingAddress,
+                HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber
             };
 
-            return auctionAndProductDetailsViewUpdateModel;
+            return auctionAndProductDetailsViewModel;
         }
 
         // PUT: api/Auction
         [HttpPut]
-        public ActionResult<AuctionAndProductDetailsViewUpdateModel> UpdateAuction(AuctionAndProductDetailsViewUpdateModel auctionAndProductDetailsViewUpdateModel)
+        public ActionResult<AuctionAndProductDetailsUpdateModel> UpdateAuction(AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
         {
-            if (auctionAndProductDetailsViewUpdateModel == null)
+            if (auctionAndProductDetailsUpdateModel == null)
             {
                 return BadRequest();
             }
 
             Auction? auction = _dbContext.Auctions
                 .Include(a => a.Product)
-                .FirstOrDefault(a => a.AuctionId == auctionAndProductDetailsViewUpdateModel.AuctionId);
+                .FirstOrDefault(a => a.AuctionId == auctionAndProductDetailsUpdateModel.AuctionId);
 
             if (auction == null)
             {
@@ -226,15 +305,16 @@ namespace AuctionManagementSystem.Controllers
                 return NotFound("Product Not Found");
             }
 
-            auction.StartingPrice = auctionAndProductDetailsViewUpdateModel.StartingPrice;
-            auction.StartingDate = auctionAndProductDetailsViewUpdateModel.StartingDate;
-            auction.EndDate = auctionAndProductDetailsViewUpdateModel.EndDate;
+            auction.StartingPrice = auctionAndProductDetailsUpdateModel.StartingPrice;
+            auction.BidIncrement = auctionAndProductDetailsUpdateModel.BidIncrement;
+            auction.StartingDate = auctionAndProductDetailsUpdateModel.StartingDate;
+            auction.EndDate = auctionAndProductDetailsUpdateModel.EndDate;
 
             _dbContext.SaveChanges();
 
-            auction.Product.Name = auctionAndProductDetailsViewUpdateModel.ProductName;
-            auction.Product.CategoryId = auctionAndProductDetailsViewUpdateModel.CategoryId;
-            auction.Product.Description = auctionAndProductDetailsViewUpdateModel.ProductDescription;
+            auction.Product.Name = auctionAndProductDetailsUpdateModel.ProductName;
+            auction.Product.CategoryId = auctionAndProductDetailsUpdateModel.CategoryId;
+            auction.Product.Description = auctionAndProductDetailsUpdateModel.ProductDescription;
 
             _dbContext.SaveChanges();
 

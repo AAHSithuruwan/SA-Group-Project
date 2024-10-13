@@ -9,6 +9,8 @@ namespace AuctionManagementSystem.Models
 
         [Required] public required float StartingPrice { get; set; }
 
+        [Required] public required float BidIncrement { get; set; }
+
         [Required] public required DateTime StartingDate { get; set; }
 
         [Required] public required DateTime EndDate { get; set; }
