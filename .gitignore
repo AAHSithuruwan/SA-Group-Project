@@ -482,3 +482,11 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+#........................... React / Node.js specific ignores
+
+node_modules/
+build/
+dist/
+.env
