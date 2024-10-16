@@ -19,18 +19,19 @@ namespace AuctionManagementSystem.Controllers
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp([FromBody] User user)
         {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
             try
             {
                 User createdUser = await _userService.SignUp(user);
                 return Ok(createdUser);
             }
-            catch (ArgumentNullException ex1)
+            catch (InvalidOperationException ex1)
             {
                 return BadRequest(ex1.Message);
-            }
-            catch (InvalidOperationException ex2)
-            {
-                return BadRequest(ex2.Message);
             }
             catch (Exception ex)
             {
@@ -42,6 +43,11 @@ namespace AuctionManagementSystem.Controllers
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] User signInDetails)
         {
+            if (signInDetails == null)
+            {
+                return BadRequest();
+            }
+
             try
             {
                 User user = await _userService.SignIn(signInDetails);
@@ -51,13 +57,9 @@ namespace AuctionManagementSystem.Controllers
 
                 return Ok(user);
             }
-            catch (ArgumentNullException ex1)
+            catch(UnauthorizedAccessException ex1)
             {
-                return BadRequest(ex1.Message);
-            }
-            catch(UnauthorizedAccessException ex2)
-            {
-                return Unauthorized(ex2.Message);
+                return Unauthorized(ex1.Message);
             }
             catch (Exception ex)
             {
@@ -142,6 +144,11 @@ namespace AuctionManagementSystem.Controllers
         [HttpPut("UpdateEmail")]
         public async Task<IActionResult> UpdateUserEmail([FromBody] User userDetails)
         {
+            if (userDetails == null)
+            {
+                return BadRequest();
+            }
+
             int? userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null)
@@ -176,6 +183,11 @@ namespace AuctionManagementSystem.Controllers
         [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdateUserPassword([FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
         {
+            if (userPasswordUpdateModel == null)
+            {
+                return BadRequest();
+            }
+
             int? userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null)

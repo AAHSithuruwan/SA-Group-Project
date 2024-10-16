@@ -16,11 +16,6 @@ namespace AuctionManagementSystem.Services
 
         public async Task<User> SignUp(User user)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user), "The user cannot be null.");
-            }
-
             //Check if the email address is available
             var registered_user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
             if (registered_user != null)
@@ -46,11 +41,6 @@ namespace AuctionManagementSystem.Services
 
         public async Task<User> SignIn(User signInDetails)
         {
-            if(signInDetails == null)
-            {
-                throw new ArgumentNullException(nameof(signInDetails), "Sign In Details cannot be null");
-            }
-
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == signInDetails.Email);
 
             if (user == null)
