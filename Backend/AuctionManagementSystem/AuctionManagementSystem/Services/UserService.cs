@@ -14,13 +14,13 @@ namespace AuctionManagementSystem.Services
             _dbContext = dbContext;
         }
 
-        public async Task<User> SignUp(User user)
+        public async Task<User?> SignUp(User user)
         {
             //Check if the email address is available
             var registered_user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
             if (registered_user != null)
             {
-                throw new InvalidOperationException("Email Address is already registered with another account");
+                return null;
             }
 
             // Hash the password
@@ -39,13 +39,13 @@ namespace AuctionManagementSystem.Services
             return user;
         }
 
-        public async Task<User> SignIn(User signInDetails)
+        public async Task<User?> SignIn(User signInDetails)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == signInDetails.Email);
 
             if (user == null)
             {
-                throw new UnauthorizedAccessException("Invalid Email Address");
+                return null;
             }
 
             var passwordHasher = new PasswordHasher<User>();
@@ -57,28 +57,28 @@ namespace AuctionManagementSystem.Services
             }
             else
             {
-                throw new UnauthorizedAccessException("Invalid Password");
+                return null;
             }
         }
 
-        public async Task<User> GetUser(int userId)
+        public async Task<User?> GetUser(int userId)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException("User not found");
+                return null;
             }
             return user;
         }
 
-        public async Task<User> UpdateUserPersonalDetails(UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel, int userId)
+        public async Task<User?> UpdateUserPersonalDetails(UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel, int userId)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException("User Not Found");
+                return null;
             }
 
             if (userPersonalDetailsUpdateModel.FirstName != null)
@@ -118,25 +118,25 @@ namespace AuctionManagementSystem.Services
             return user;
         }
 
-        public async Task<User> UpdateUserEmail(User userDetails, int userId)
+        public async Task<(User?, bool, string?)> UpdateUserEmail(User userDetails, int userId)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException("User Not Found");
+                return (null, false, null);
             }
 
             if(user.Email == userDetails.Email)
             {
-                throw new InvalidOperationException("Please provide a new email");
+                return (user, false, "Please provide a new email address");
             }
 
             var registeredUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userDetails.Email);
 
             if (registeredUser != null)
             {
-                throw new InvalidOperationException("Email Address is already registered with another account");
+                return (user, false, "Email Address is already registered with another account");
             }
 
             var passwordHasher = new PasswordHasher<User>();
@@ -144,23 +144,23 @@ namespace AuctionManagementSystem.Services
 
             if (verificationResult == PasswordVerificationResult.Failed)
             {
-                throw new UnauthorizedAccessException("Incorrect Password");
+                return (user, false, null);
             }
 
             user.Email = userDetails.Email;
 
             await _dbContext.SaveChangesAsync();
 
-            return user;
+            return (user, true, null);
         }
 
-        public async Task<User> UpdateUserPassword(UserPasswordUpdateModel userPasswordUpdateModel, int userId)
+        public async Task<(User?, bool)> UpdateUserPassword(UserPasswordUpdateModel userPasswordUpdateModel, int userId)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException("User Not Found");
+                return (null, false);
             }
 
             var passwordHasher = new PasswordHasher<User>();
@@ -168,17 +168,17 @@ namespace AuctionManagementSystem.Services
 
             if (verificationResult == PasswordVerificationResult.Failed)
             {
-                throw new UnauthorizedAccessException("Incorrect Current Password");
+                return (user, false);
             }
 
             user.Password = passwordHasher.HashPassword(user, userPasswordUpdateModel.NewPassword);
 
             await _dbContext.SaveChangesAsync();
 
-            return user;
+            return (user, true);
         }
 
-        public async Task DeleteUser(int userId)
+        public async Task<(bool,bool)> DeleteUser(int userId)
         {
             var user = await _dbContext.Users
                 .Include(u => u.Seller)
@@ -186,7 +186,7 @@ namespace AuctionManagementSystem.Services
 
             if (user == null)
             {
-                throw new KeyNotFoundException("User Not Found");
+                return (false, false);
             }
 
             if (user.Seller != null)
@@ -197,7 +197,7 @@ namespace AuctionManagementSystem.Services
 
                 if (auctions.Count > 0)
                 {
-                    throw new InvalidOperationException("User cannot be deleted. Because there are auctions associated with this seller account");
+                    return (true, false);
                 }
             }
 
@@ -207,6 +207,8 @@ namespace AuctionManagementSystem.Services
             await _dbContext.SaveChangesAsync();
 
             System.IO.File.Delete(filePath);
+
+            return (true, true);
         }
     }
 }

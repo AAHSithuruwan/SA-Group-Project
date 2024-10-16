@@ -24,19 +24,13 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            try
+            var createdUser = await _userService.SignUp(user);
+
+            if (createdUser == null)
             {
-                User createdUser = await _userService.SignUp(user);
-                return Ok(createdUser);
+                return BadRequest("Email Address is already registered with another account");
             }
-            catch (InvalidOperationException ex1)
-            {
-                return BadRequest(ex1.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(createdUser);
         }
 
         // POST: api/User/SignIn
@@ -48,23 +42,17 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            try
-            {
-                User user = await _userService.SignIn(signInDetails);
+            var user = await _userService.SignIn(signInDetails);
 
-                //Create session
-                HttpContext.Session.SetInt32("UserId", user.UserId);
+            if (user == null)
+            {
+                return Unauthorized("Invalid Email or Passowrd");
+            }
 
-                return Ok(user);
-            }
-            catch(UnauthorizedAccessException ex1)
-            {
-                return Unauthorized(ex1.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            //Create session
+            HttpContext.Session.SetInt32("UserId", user.UserId);
+
+            return Ok(user);    
         }
 
         // GET: api/User/LogOut
@@ -98,20 +86,14 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            try
-            {
-                var user = await  _userService.GetUser((int)userId);
+            var user = await  _userService.GetUser((int)userId);
 
-                return Ok(user);
-            }
-            catch(KeyNotFoundException ex1)
+            if (user == null)
             {
-                return NotFound(ex1.Message);
+                return NotFound("User Not Found");
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Ok(user);
         }
 
         // PUT: api/User/UpdatePersonalDetails
@@ -125,19 +107,13 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            try
+            var user = await _userService.UpdateUserPersonalDetails(userPersonalDetailsUpdateModel, (int)userId);
+
+            if (user == null)
             {
-                var user = await _userService.UpdateUserPersonalDetails(userPersonalDetailsUpdateModel, (int)userId);
-                return Ok(user);
+                return NotFound("User Not Found");
             }
-            catch (KeyNotFoundException ex1)
-            {
-                return NotFound(ex1.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(user);
         }
 
         // PUT: api/User/UpdateEmail
@@ -156,27 +132,24 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            try
+            var (user, isSuccess, errorMessage) = await _userService.UpdateUserEmail(userDetails, (int)userId);
+
+            if(user == null)
             {
-                var user = await _userService.UpdateUserEmail(userDetails, (int)userId);
-                return Ok(user);
+                return NotFound("User Not Found");
             }
-            catch (KeyNotFoundException ex1)
+
+            if(isSuccess == false &&  errorMessage != null)
             {
-                return NotFound(ex1.Message);
+                return BadRequest(errorMessage);
             }
-            catch(InvalidOperationException ex2)
+
+            if(isSuccess == false && errorMessage == null)
             {
-                return BadRequest(ex2.Message);
+                return Unauthorized("Incorrect Password");
             }
-            catch(UnauthorizedAccessException ex3)
-            {
-                return Unauthorized(ex3.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Ok(user);
         }
 
         // PUT: api/User/UpdatePassword
@@ -195,23 +168,19 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            try
+            var (user, isSuccess) = await _userService.UpdateUserPassword(userPasswordUpdateModel, (int)userId);
+
+            if(user == null)
             {
-                var user = await _userService.UpdateUserPassword(userPasswordUpdateModel, (int)userId);
-                return Ok(user);
+                return NotFound("User Not Found");
             }
-            catch (KeyNotFoundException ex1)
+
+            if(isSuccess == false)
             {
-                return NotFound(ex1.Message);
+                return Unauthorized("Incorrect Current Password");
             }
-            catch(UnauthorizedAccessException ex2)
-            {
-                return Unauthorized(ex2.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Ok(user);
         }
 
         // Delete: api/User
@@ -225,37 +194,32 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            try
-            {
-                await _userService.DeleteUser((int)userId);
+            var (userFound, userDeleted) = await _userService.DeleteUser((int)userId);
 
-                //Clear the session
-                HttpContext.Session.Clear();
-
-                //Clear the session cookie
-                var cookieOptions = new CookieOptions
-                {
-                    Expires = DateTimeOffset.UtcNow.AddDays(-1), // Expire the cookie immediately
-                    HttpOnly = true, // Prevent JavaScript access to the cookie
-                    Secure = true // Set to true if using HTTPS
-                };
-
-                Response.Cookies.Append(".AspNetCore.Session", "", cookieOptions);
-
-                return Ok("User successfully deleted");
-            }
-            catch (KeyNotFoundException ex1)
+            if(userFound == false)
             {
-                return NotFound(ex1.Message);
+                return NotFound("User Not Found");
             }
-            catch(InvalidOperationException ex2)
+
+            if (userDeleted == false)
             {
-                return BadRequest(ex2.Message);
+                return BadRequest("User cannot be deleted. Because there are auctions associated with this seller account");
             }
-            catch (Exception ex)
+
+            //Clear the session
+            HttpContext.Session.Clear();
+
+            //Clear the session cookie
+            var cookieOptions = new CookieOptions
             {
-                return BadRequest(ex.Message);
-            }
+                Expires = DateTimeOffset.UtcNow.AddDays(-1), // Expire the cookie immediately
+                HttpOnly = true, // Prevent JavaScript access to the cookie
+                Secure = true // Set to true if using HTTPS
+            };
+
+            Response.Cookies.Append(".AspNetCore.Session", "", cookieOptions);
+
+            return Ok("User successfully deleted");
         }
     }
 }

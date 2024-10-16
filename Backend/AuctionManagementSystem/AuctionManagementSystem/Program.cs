@@ -21,6 +21,7 @@ namespace AuctionManagementSystem
             builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(connectionString));
 
             builder.Services.AddScoped<UserService>(); // Register the UserService
+            builder.Services.AddScoped<SellerService>(); // Register the SellerService
 
             builder.Services.AddSwaggerGen();
 
