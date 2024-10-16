@@ -98,7 +98,7 @@ namespace AuctionManagementSystem.Controllers
 
         // PUT: api/User/UpdatePersonalDetails
         [HttpPut("UpdatePersonalDetails")]
-        public async Task<IActionResult> UpdateUserPersonalDetails([FromBody] UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel)
+        public async Task<IActionResult> UpdateUserPersonalDetails([FromForm] UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
 
@@ -194,14 +194,14 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            var (userFound, userDeleted) = await _userService.DeleteUser((int)userId);
+            var (isUserFound, isUserDeleted) = await _userService.DeleteUser((int)userId);
 
-            if(userFound == false)
+            if(isUserFound == false)
             {
                 return NotFound("User Not Found");
             }
 
-            if (userDeleted == false)
+            if (isUserDeleted == false)
             {
                 return BadRequest("User cannot be deleted. Because there are auctions associated with this seller account");
             }

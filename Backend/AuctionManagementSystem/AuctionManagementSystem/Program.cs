@@ -22,6 +22,7 @@ namespace AuctionManagementSystem
 
             builder.Services.AddScoped<UserService>(); // Register the UserService
             builder.Services.AddScoped<SellerService>(); // Register the SellerService
+            builder.Services.AddScoped<AuctionService>(); // Register the AuctionService
 
             builder.Services.AddSwaggerGen();
 

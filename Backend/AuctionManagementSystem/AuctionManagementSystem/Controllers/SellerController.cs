@@ -1,10 +1,6 @@
-﻿using AuctionManagementSystem.Data;
-using AuctionManagementSystem.DTOs;
-using AuctionManagementSystem.Models;
+﻿using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -20,7 +16,7 @@ namespace AuctionManagementSystem.Controllers
 
         // POST: api/Seller
         [HttpPost]
-        public async Task<IActionResult> CreateSeller([FromBody] SellerDetailsModel sellerDetailsModel)
+        public async Task<IActionResult> CreateSeller([FromForm] SellerDetailsModel sellerDetailsModel)
         {
             if (sellerDetailsModel == null)
             {
@@ -34,9 +30,9 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            var (userFound, isSuccess) = await _sellerService.CreateSeller(sellerDetailsModel, (int)userId);
+            var (isUserFound, isSuccess) = await _sellerService.CreateSeller(sellerDetailsModel, (int)userId);
 
-            if(userFound == false)
+            if(isUserFound == false)
             {
                 return NotFound("User Not Found");
             }
@@ -72,7 +68,7 @@ namespace AuctionManagementSystem.Controllers
 
         // PUT: api/Seller
         [HttpPut]
-        public async Task<IActionResult> UpdateSeller(SellerDetailsModel sellerDetailsModel)
+        public async Task<IActionResult> UpdateSeller([FromForm] SellerDetailsModel sellerDetailsModel)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
 
@@ -102,14 +98,14 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            var (sellerFound, isDeleted) = await _sellerService.DeleteSeller((int)userId);
+            var (isSellerFound, isSellerDeleted) = await _sellerService.DeleteSeller((int)userId);
 
-            if(sellerFound == false)
+            if(isSellerFound == false)
             {
                 return NotFound("Seller Not Found");
             }
 
-            if(isDeleted == false)
+            if(isSellerDeleted == false)
             {
                 return BadRequest("Cannot delete the seller, Because there are auctions related to this seller");
             }
