@@ -1,10 +1,7 @@
 ﻿using AuctionManagementSystem.Models;
 using AuctionManagementSystem.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+using AuctionManagementSystem.Services;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -12,74 +9,65 @@ namespace AuctionManagementSystem.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly SampleDBContext _dbContext;
-        public UserController(SampleDBContext dbContext)
+        private readonly UserService _userService;
+        public UserController(UserService userService)
         {
-            _dbContext = dbContext;
+            _userService = userService;
         }
 
         // POST: api/User/SignUp
         [HttpPost("SignUp")]
-        public ActionResult<User> SignUp(User user)
+        public async Task<IActionResult> SignUp([FromBody] User user)
         {
-            if (user == null)
+            try
             {
-                return BadRequest();
+                User createdUser = await _userService.SignUp(user);
+                return Ok(createdUser);
             }
-
-            //Check if the email address is available
-            var registered_user = _dbContext.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (registered_user != null)
+            catch (ArgumentNullException ex1)
             {
-                return BadRequest("Email Address is already registered");
+                return BadRequest(ex1.Message);
             }
-
-            // Hash the password
-            var passwordHasher = new PasswordHasher<User>();
-            user.Password = passwordHasher.HashPassword(user, user.Password);
-
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
-
-            var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", "default.png");
-
-            System.IO.File.Copy(defaultImagePath, filePath);
-
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+            catch (InvalidOperationException ex2)
+            {
+                return BadRequest(ex2.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/User/SignIn
         [HttpPost("SignIn")]
-        public ActionResult<User> SignIn(User SignInDetails)
+        public async Task<IActionResult> SignIn([FromBody] User signInDetails)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Email == SignInDetails.Email);
-
-            if (user == null)
+            try
             {
-                return Unauthorized("Invalid Email Address");
-            }
+                User user = await _userService.SignIn(signInDetails);
 
-            var passwordHasher = new PasswordHasher<User>();
-            var verificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, SignInDetails.Password);
-
-            if (verificationResult == PasswordVerificationResult.Success)
-            {
                 //Create session
-                HttpContext.Session.SetInt32("UserId",user.UserId);
+                HttpContext.Session.SetInt32("UserId", user.UserId);
 
                 return Ok(user);
             }
-            else
+            catch (ArgumentNullException ex1)
             {
-                return Unauthorized("Invalid Password");
+                return BadRequest(ex1.Message);
+            }
+            catch(UnauthorizedAccessException ex2)
+            {
+                return Unauthorized(ex2.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
         // GET: api/User/LogOut
         [HttpGet("LogOut")]
-        public ActionResult LogOut()
+        public IActionResult LogOut()
         {
             //Clear the session
             HttpContext.Session.Clear();
@@ -99,199 +87,163 @@ namespace AuctionManagementSystem.Controllers
 
         // GET: api/User
         [HttpGet]
-        public ActionResult<User> GetUser()
+        public async Task<IActionResult> GetUser()
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if(UserId == null)
+            if(userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users.Find(UserId);
-
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await  _userService.GetUser((int)userId);
+
+                return Ok(user);
             }
-            return user;
+            catch(KeyNotFoundException ex1)
+            {
+                return NotFound(ex1.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/User/UpdatePersonalDetails
         [HttpPut("UpdatePersonalDetails")]
-        public ActionResult<User> UpdateUserPersonalDetails(UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel)
+        public async Task<IActionResult> UpdateUserPersonalDetails([FromBody] UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel)
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (UserId == null)
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == UserId);
-
-            if (user == null)
+            try
             {
-                return NotFound("User Not Found");
+                var user = await _userService.UpdateUserPersonalDetails(userPersonalDetailsUpdateModel, (int)userId);
+                return Ok(user);
             }
-
-            if(userPersonalDetailsUpdateModel.FirstName != null)
+            catch (KeyNotFoundException ex1)
             {
-                user.FirstName = userPersonalDetailsUpdateModel.FirstName;
+                return NotFound(ex1.Message);
             }
-
-            if (userPersonalDetailsUpdateModel.LastName != null)
+            catch (Exception ex)
             {
-                user.LastName = userPersonalDetailsUpdateModel.LastName;
+                return BadRequest(ex.Message);
             }
-
-            if (userPersonalDetailsUpdateModel.Address != null)
-            {
-                user.Address = userPersonalDetailsUpdateModel.Address;
-            }
-
-            if (userPersonalDetailsUpdateModel.PhoneNumber != null)
-            {
-                user.PhoneNumber = userPersonalDetailsUpdateModel.PhoneNumber;
-            }
-
-            _dbContext.SaveChanges();
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
-
-            if (userPersonalDetailsUpdateModel.UserImage != null && userPersonalDetailsUpdateModel.UserImage.Length > 0)
-            {
-                System.IO.File.Delete(filePath);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    userPersonalDetailsUpdateModel.UserImage.CopyTo(stream);
-                }
-            }
-
-            return Ok(user);
         }
 
         // PUT: api/User/UpdateEmail
         [HttpPut("UpdateEmail")]
-        public ActionResult<User> UpdateUserEmail(User userDetails)
+        public async Task<IActionResult> UpdateUserEmail([FromBody] User userDetails)
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (UserId == null)
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == UserId);
-
-            if (user == null)
+            try
             {
-                return NotFound("User Not Found");
+                var user = await _userService.UpdateUserEmail(userDetails, (int)userId);
+                return Ok(user);
             }
-
-            var passwordHasher = new PasswordHasher<User>();
-            var verificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, userDetails.Password);
-
-            if(verificationResult == PasswordVerificationResult.Failed)
+            catch (KeyNotFoundException ex1)
             {
-                return Unauthorized("Incorrect Password");
+                return NotFound(ex1.Message);
             }
-
-            user.Email = userDetails.Email;
-
-            _dbContext.SaveChanges();
-
-            return Ok(user);
-
+            catch(InvalidOperationException ex2)
+            {
+                return BadRequest(ex2.Message);
+            }
+            catch(UnauthorizedAccessException ex3)
+            {
+                return Unauthorized(ex3.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/User/UpdatePassword
         [HttpPut("UpdatePassword")]
-        public ActionResult<User> UpdateUserPassword(UserPasswordUpdateModel userPasswordUpdateModel)
+        public async Task<IActionResult> UpdateUserPassword([FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (UserId == null)
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == UserId);
-
-            if (user == null)
+            try
             {
-                return NotFound("User Not Found");
+                var user = await _userService.UpdateUserPassword(userPasswordUpdateModel, (int)userId);
+                return Ok(user);
             }
-
-            var passwordHasher = new PasswordHasher<User>();
-            var verificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, userPasswordUpdateModel.OldPassword);
-
-            if (verificationResult == PasswordVerificationResult.Failed)
+            catch (KeyNotFoundException ex1)
             {
-                return Unauthorized("Incorrect Current Password");
+                return NotFound(ex1.Message);
             }
-
-            user.Password = passwordHasher.HashPassword(user, userPasswordUpdateModel.NewPassword);
-
-            _dbContext.SaveChanges();
-
-            return Ok(user);
+            catch(UnauthorizedAccessException ex2)
+            {
+                return Unauthorized(ex2.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // Delete: api/User
         [HttpDelete]
-        public ActionResult DeleteUser()
+        public async Task<IActionResult> DeleteUser()
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (UserId == null)
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users
-                .Include(u => u.Seller)
-                .FirstOrDefault(u => u.UserId == UserId);
-
-            if (user == null)
+            try
             {
-                return NotFound("User Not Found");
-            }
+                await _userService.DeleteUser((int)userId);
 
-            if(user.Seller != null)
-            {
-                var auctions = _dbContext.Auctions
-                    .Where(a => a.SellerId == user.Seller.SellerId)
-                    .ToList();
+                //Clear the session
+                HttpContext.Session.Clear();
 
-                if (auctions.Count > 0)
+                //Clear the session cookie
+                var cookieOptions = new CookieOptions
                 {
-                    return BadRequest("User cannot be deleted. Because there are auctions associated with this seller account");
-                }
+                    Expires = DateTimeOffset.UtcNow.AddDays(-1), // Expire the cookie immediately
+                    HttpOnly = true, // Prevent JavaScript access to the cookie
+                    Secure = true // Set to true if using HTTPS
+                };
+
+                Response.Cookies.Append(".AspNetCore.Session", "", cookieOptions);
+
+                return Ok("User successfully deleted");
             }
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
-
-            _dbContext.Users.Remove(user);
-            _dbContext.SaveChanges();
-
-            System.IO.File.Delete(filePath);
-
-            //Clear the session
-            HttpContext.Session.Clear();
-
-            //Clear the session cookie
-            var cookieOptions = new CookieOptions
+            catch (KeyNotFoundException ex1)
             {
-                Expires = DateTimeOffset.UtcNow.AddDays(-1), // Expire the cookie immediately
-                HttpOnly = true, // Prevent JavaScript access to the cookie
-                Secure = true // Set to true if using HTTPS
-            };
-
-            Response.Cookies.Append(".AspNetCore.Session", "", cookieOptions);
-
-            return Ok("User successfully deleted");
+                return NotFound(ex1.Message);
+            }
+            catch(InvalidOperationException ex2)
+            {
+                return BadRequest(ex2.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

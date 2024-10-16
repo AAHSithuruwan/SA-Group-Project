@@ -1,4 +1,5 @@
-﻿using AuctionManagementSystem.DTOs;
+﻿using AuctionManagementSystem.Data;
+using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +11,8 @@ namespace AuctionManagementSystem.Controllers
     [ApiController]
     public class SellerController : ControllerBase
     {
-        private readonly SampleDBContext _dbContext;
-        public SellerController(SampleDBContext dbContext)
+        private readonly ApplicationDBContext _dbContext;
+        public SellerController(ApplicationDBContext dbContext)
         {
             _dbContext = dbContext;
         }
