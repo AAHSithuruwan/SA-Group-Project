@@ -14,7 +14,7 @@ namespace AuctionManagementSystem.Models
         //Foreign key to the Auction
         [ForeignKey("Auction")] public int AuctionId { get; set; }
 
-        //Navigation Property for the related Product
+        //Navigation Property for the related Auction
         public virtual required Auction Auction { get; set; }
 
         //Foreign Key to the Category

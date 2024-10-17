@@ -21,7 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Assets\Images\CategoryImages\" />
+    <Folder Include="Assets\Images\UserImages\" />
+    <Folder Include="Assets\Images\ProductImages\" />
+    <Folder Include="Assets\Images\SellerImages\" />
   </ItemGroup>
 
 </Project>

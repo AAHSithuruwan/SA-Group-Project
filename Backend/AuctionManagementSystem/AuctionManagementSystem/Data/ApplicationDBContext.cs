@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AuctionManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace AuctionManagementSystem.Models
+namespace AuctionManagementSystem.Data
 {
-    public class SampleDBContext : DbContext
+    public class ApplicationDBContext : DbContext
     {
-        public SampleDBContext(DbContextOptions<SampleDBContext> options) : base(options) { }
+        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
 
         public virtual DbSet<User> Users { get; set; }
 
@@ -36,10 +37,10 @@ namespace AuctionManagementSystem.Models
             });
 
             modelBuilder.Entity<Bid>()
-                .HasOne(b => b.User)
-                .WithMany(u => u.Bids)
-                .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(b => b.Auction)
+                .WithMany(a => a.Bids)
+                .HasForeignKey(b => b.AuctionId)
+                .OnDelete(DeleteBehavior.Restrict); //You cannot delete action if there is bids associated with it
 
             modelBuilder.Entity<Auction>(entity =>
             {
