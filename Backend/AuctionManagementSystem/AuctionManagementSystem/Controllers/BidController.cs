@@ -1,6 +1,7 @@
 ﻿using AuctionManagementSystem.Data;
 using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Models;
+using AuctionManagementSystem.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,192 +12,95 @@ namespace AuctionManagementSystem.Controllers
     [ApiController]
     public class BidController : ControllerBase
     {
-        private readonly ApplicationDBContext _dbContext;
-        public BidController(ApplicationDBContext dbContext)
+        private readonly BidService _bidService;
+        public BidController(BidService bidService)
         {
-            _dbContext = dbContext;
+            _bidService = bidService;
         }
 
         // POST: api/Bid
         [HttpPost]
-        public ActionResult CreateBid(BidDetailsCreateModel bidDetailsCreateModel)
+        public async Task<IActionResult> CreateBid([FromBody] BidDetailsCreateModel bidDetailsCreateModel)
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (UserId == null)
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            User? user = _dbContext.Users.FirstOrDefault(u => u.UserId == UserId);
+            var (isUserFound, isAuctionFound, auctionClosedMessage, invalidBidPriceMessage) = await _bidService.CreateBid(bidDetailsCreateModel, (int)userId);
 
-            if (user == null)
+            if (isUserFound == false)
             {
                 return NotFound("User Not Found");
             }
 
-            Auction? auction = _dbContext.Auctions
-                .Include(a => a.Bids)
-                .FirstOrDefault(a => a.AuctionId == bidDetailsCreateModel.AuctionId);
-
-            if (auction == null)
+            if (isAuctionFound == false)
             {
                 return NotFound("Auction Not Found");
             }
 
-            if (auction.EndDate < DateTime.Now)
+            if (auctionClosedMessage != null)
             {
-                return BadRequest("The Auction is already closed");
+                return BadRequest(auctionClosedMessage);
             }
 
-            float nextBidPrice = auction.StartingPrice;
-
-            if (auction.Bids != null && auction.Bids.Count > 0)
+            if (invalidBidPriceMessage != null)
             {
-                //Getting the highest bid value
-                Bid? lastBid = auction.Bids
-                    .OrderByDescending(b => b.BidDate)
-                    .FirstOrDefault();
-
-                if (lastBid != null)
-                {
-                    nextBidPrice = lastBid.Price + auction.BidIncrement;
-                }
+                return BadRequest(invalidBidPriceMessage);
             }
-
-            //Check if the new bidding price is valid
-            if (bidDetailsCreateModel.Price < nextBidPrice)
-            {
-                return BadRequest("Next Minimum Bid Price = " + nextBidPrice.ToString());
-            }
-
-            Bid bid = new Bid()
-            {
-                Price = bidDetailsCreateModel.Price,
-                BidDate = DateTime.Now,
-                ShippingName = bidDetailsCreateModel.ShippingName,
-                ShippingAddress = bidDetailsCreateModel.ShippingAddress,
-                ShippingPhoneNumber = bidDetailsCreateModel.ShippingPhoneNumber,
-                UserId = (int)UserId,
-                User = user,
-                AuctionId = bidDetailsCreateModel.AuctionId,
-                Auction = auction
-            };
-
-            _dbContext.Bids.Add(bid);
-            _dbContext.SaveChanges();
 
             return Ok("Bid Placed Successfully");
         }
 
         // GET: api/Bid/All/1
-        [HttpGet("All/{AuctionId}")]
-        public ActionResult<List<BidDetailsViewModel>> GetAllBids(int AuctionId)
+        [HttpGet("All/{auctionId:int}")]
+        public async Task<IActionResult> GetAllBids([FromRoute] int auctionId)
         {
-            Auction? auction = _dbContext.Auctions
-                .Include(a => a.Bids)
-                .FirstOrDefault(a => a.AuctionId == AuctionId);
+            var allBids = await _bidService.GetAllBids(auctionId);
 
-            if (auction == null)
+            if(allBids == null)
             {
                 return NotFound("Auction Not Found");
             }
 
-            List<BidDetailsViewModel> bidDetailsViewModels = new List<BidDetailsViewModel>();
-
-            if (auction.Bids == null || auction.Bids.Count == 0)
-            {
-                return bidDetailsViewModels;
-            }
-
-            foreach (var bid in auction.Bids)
-            {
-                BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
-                {
-                    AuctionId = AuctionId,
-                    BidId = bid.BidId,
-                    BidDate = bid.BidDate,
-                    Price = bid.Price,
-                    ShippingName = bid.ShippingName,
-                    ShippingAddress = bid.ShippingAddress,
-                    ShippingPhoneNumber = bid.ShippingPhoneNumber,
-                };
-
-                bidDetailsViewModels.Add(bidDetailsViewModel);
-            }
-
-            return bidDetailsViewModels;
+            return Ok(allBids);
         }
 
         // GET: api/Bid/User/1
-        [HttpGet("User/{AuctionId}")]
-        public ActionResult<List<BidDetailsViewModel>> GetUserBids(int AuctionId)
+        [HttpGet("User/{auctionId:int}")]
+        public async Task<IActionResult> GetUserBids([FromRoute] int auctionId)
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (UserId == null)
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            Auction? auction = _dbContext.Auctions.FirstOrDefault(a => a.AuctionId == AuctionId);
+            var userBids = await _bidService.GetUserBids(auctionId, (int)userId);
 
-            if (auction == null)
+            if (userBids == null)
             {
                 return NotFound("Auction Not Found");
             }
 
-            List<Bid> bids = _dbContext.Bids.Where(b => b.AuctionId == AuctionId && b.UserId == UserId).ToList();
-
-            List<BidDetailsViewModel> bidDetailsViewModels = new List<BidDetailsViewModel>();
-
-            if (bids == null || bids.Count == 0)
-            {
-                return bidDetailsViewModels;
-            }
-
-            foreach (var bid in bids)
-            {
-                BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
-                {
-                    AuctionId = AuctionId,
-                    BidId = bid.BidId,
-                    BidDate = bid.BidDate,
-                    Price = bid.Price,
-                    ShippingName = bid.ShippingName,
-                    ShippingAddress = bid.ShippingAddress,
-                    ShippingPhoneNumber = bid.ShippingPhoneNumber,
-                };
-
-                bidDetailsViewModels.Add(bidDetailsViewModel);
-            }
-
-            return bidDetailsViewModels;
+            return Ok(userBids);
         }
 
         // GET: api/Bid/1
-        [HttpGet("{BidId}")]
-        public ActionResult<BidDetailsViewModel> GetBid(int BidId)
+        [HttpGet("{bidId:int}")]
+        public async Task<IActionResult> GetBid([FromRoute] int bidId)
         {
-            Bid? bid = _dbContext.Bids.FirstOrDefault(b => b.BidId == BidId);
+            var bid = await _bidService.GetBid(bidId);
 
             if (bid == null)
             {
                 return NotFound("Bid Not Found");
             }
 
-            BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
-            {
-                AuctionId = bid.AuctionId,
-                BidId = bid.BidId,
-                BidDate = bid.BidDate,
-                Price = bid.Price,
-                ShippingName = bid.ShippingName,
-                ShippingAddress = bid.ShippingAddress,
-                ShippingPhoneNumber = bid.ShippingPhoneNumber,
-            };
-
-            return bidDetailsViewModel;
+            return Ok(bid);
         }
     }
 }
