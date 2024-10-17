@@ -1,10 +1,7 @@
 ﻿using AuctionManagementSystem.Models;
 using AuctionManagementSystem.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+using AuctionManagementSystem.Services;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -12,74 +9,55 @@ namespace AuctionManagementSystem.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly SampleDBContext _dbContext;
-        public UserController(SampleDBContext dbContext)
+        private readonly UserService _userService;
+        public UserController(UserService userService)
         {
-            _dbContext = dbContext;
+            _userService = userService;
         }
 
         // POST: api/User/SignUp
         [HttpPost("SignUp")]
-        public ActionResult<User> SignUp(User user)
+        public async Task<IActionResult> SignUp([FromBody] User user)
         {
             if (user == null)
             {
                 return BadRequest();
             }
 
-            //Check if the email address is available
-            var registered_user = _dbContext.Users.FirstOrDefault(u => u.Email == user.Email);
-            if (registered_user != null)
+            var createdUser = await _userService.SignUp(user);
+
+            if (createdUser == null)
             {
-                return BadRequest("Email Address is already registered");
+                return BadRequest("Email Address is already registered with another account");
             }
-
-            // Hash the password
-            var passwordHasher = new PasswordHasher<User>();
-            user.Password = passwordHasher.HashPassword(user, user.Password);
-
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
-
-            var defaultImagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", "default.png");
-
-            System.IO.File.Copy(defaultImagePath, filePath);
-
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+            return Ok(createdUser);
         }
 
         // POST: api/User/SignIn
         [HttpPost("SignIn")]
-        public ActionResult<User> SignIn(User SignInDetails)
+        public async Task<IActionResult> SignIn([FromBody] User signInDetails)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Email == SignInDetails.Email);
+            if (signInDetails == null)
+            {
+                return BadRequest();
+            }
+
+            var user = await _userService.SignIn(signInDetails);
 
             if (user == null)
             {
-                return Unauthorized("Invalid Email Address");
+                return Unauthorized("Invalid Email or Passowrd");
             }
 
-            var passwordHasher = new PasswordHasher<User>();
-            var verificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, SignInDetails.Password);
+            //Create session
+            HttpContext.Session.SetInt32("UserId", user.UserId);
 
-            if (verificationResult == PasswordVerificationResult.Success)
-            {
-                //Create session
-                HttpContext.Session.SetInt32("UserId",user.UserId);
-
-                return Ok(user);
-            }
-            else
-            {
-                return Unauthorized("Invalid Password");
-            }
+            return Ok(user);    
         }
 
         // GET: api/User/LogOut
         [HttpGet("LogOut")]
-        public ActionResult LogOut()
+        public IActionResult LogOut()
         {
             //Clear the session
             HttpContext.Session.Clear();
@@ -99,184 +77,134 @@ namespace AuctionManagementSystem.Controllers
 
         // GET: api/User
         [HttpGet]
-        public ActionResult<User> GetUser()
+        public async Task<IActionResult> GetUser()
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if(UserId == null)
+            if(userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users.Find(UserId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return user;
-        }
-
-        // PUT: api/User/UpdatePersonalDetails
-        [HttpPut("UpdatePersonalDetails")]
-        public ActionResult<User> UpdateUserPersonalDetails(UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel)
-        {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
-
-            if (UserId == null)
-            {
-                return BadRequest("User is not signed in");
-            }
-
-            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == UserId);
+            var user = await  _userService.GetUser((int)userId);
 
             if (user == null)
             {
                 return NotFound("User Not Found");
             }
 
-            if(userPersonalDetailsUpdateModel.FirstName != null)
+            return Ok(user);
+        }
+
+        // PUT: api/User/UpdatePersonalDetails
+        [HttpPut("UpdatePersonalDetails")]
+        public async Task<IActionResult> UpdateUserPersonalDetails([FromForm] UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
             {
-                user.FirstName = userPersonalDetailsUpdateModel.FirstName;
+                return BadRequest("User is not signed in");
             }
 
-            if (userPersonalDetailsUpdateModel.LastName != null)
+            var user = await _userService.UpdateUserPersonalDetails(userPersonalDetailsUpdateModel, (int)userId);
+
+            if (user == null)
             {
-                user.LastName = userPersonalDetailsUpdateModel.LastName;
+                return NotFound("User Not Found");
             }
-
-            if (userPersonalDetailsUpdateModel.Address != null)
-            {
-                user.Address = userPersonalDetailsUpdateModel.Address;
-            }
-
-            if (userPersonalDetailsUpdateModel.PhoneNumber != null)
-            {
-                user.PhoneNumber = userPersonalDetailsUpdateModel.PhoneNumber;
-            }
-
-            _dbContext.SaveChanges();
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
-
-            if (userPersonalDetailsUpdateModel.UserImage != null && userPersonalDetailsUpdateModel.UserImage.Length > 0)
-            {
-                System.IO.File.Delete(filePath);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    userPersonalDetailsUpdateModel.UserImage.CopyTo(stream);
-                }
-            }
-
             return Ok(user);
         }
 
         // PUT: api/User/UpdateEmail
         [HttpPut("UpdateEmail")]
-        public ActionResult<User> UpdateUserEmail(User userDetails)
+        public async Task<IActionResult> UpdateUserEmail([FromBody] User userDetails)
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            if (userDetails == null)
+            {
+                return BadRequest();
+            }
 
-            if (UserId == null)
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == UserId);
+            var (user, isSuccess, errorMessage) = await _userService.UpdateUserEmail(userDetails, (int)userId);
 
-            if (user == null)
+            if(user == null)
             {
                 return NotFound("User Not Found");
             }
 
-            var passwordHasher = new PasswordHasher<User>();
-            var verificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, userDetails.Password);
+            if(isSuccess == false &&  errorMessage != null)
+            {
+                return BadRequest(errorMessage);
+            }
 
-            if(verificationResult == PasswordVerificationResult.Failed)
+            if(isSuccess == false && errorMessage == null)
             {
                 return Unauthorized("Incorrect Password");
             }
 
-            user.Email = userDetails.Email;
-
-            _dbContext.SaveChanges();
-
             return Ok(user);
-
         }
 
         // PUT: api/User/UpdatePassword
         [HttpPut("UpdatePassword")]
-        public ActionResult<User> UpdateUserPassword(UserPasswordUpdateModel userPasswordUpdateModel)
+        public async Task<IActionResult> UpdateUserPassword([FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            if (userPasswordUpdateModel == null)
+            {
+                return BadRequest();
+            }
 
-            if (UserId == null)
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.UserId == UserId);
+            var (user, isSuccess) = await _userService.UpdateUserPassword(userPasswordUpdateModel, (int)userId);
 
-            if (user == null)
+            if(user == null)
             {
                 return NotFound("User Not Found");
             }
 
-            var passwordHasher = new PasswordHasher<User>();
-            var verificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, userPasswordUpdateModel.OldPassword);
-
-            if (verificationResult == PasswordVerificationResult.Failed)
+            if(isSuccess == false)
             {
                 return Unauthorized("Incorrect Current Password");
             }
-
-            user.Password = passwordHasher.HashPassword(user, userPasswordUpdateModel.NewPassword);
-
-            _dbContext.SaveChanges();
 
             return Ok(user);
         }
 
         // Delete: api/User
         [HttpDelete]
-        public ActionResult DeleteUser()
+        public async Task<IActionResult> DeleteUser()
         {
-            int? UserId = HttpContext.Session.GetInt32("UserId");
+            int? userId = HttpContext.Session.GetInt32("UserId");
 
-            if (UserId == null)
+            if (userId == null)
             {
                 return BadRequest("User is not signed in");
             }
 
-            var user = _dbContext.Users
-                .Include(u => u.Seller)
-                .FirstOrDefault(u => u.UserId == UserId);
+            var (isUserFound, isUserDeleted) = await _userService.DeleteUser((int)userId);
 
-            if (user == null)
+            if(isUserFound == false)
             {
                 return NotFound("User Not Found");
             }
 
-            if(user.Seller != null)
+            if (isUserDeleted == false)
             {
-                var auctions = _dbContext.Auctions
-                    .Where(a => a.SellerId == user.Seller.SellerId)
-                    .ToList();
-
-                if (auctions.Count > 0)
-                {
-                    return BadRequest("User cannot be deleted. Because there are auctions associated with this seller account");
-                }
+                return BadRequest("User cannot be deleted. Because there are auctions associated with this seller account");
             }
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "UserImages", user.UserId.ToString() + ".png");
-
-            _dbContext.Users.Remove(user);
-            _dbContext.SaveChanges();
-
-            System.IO.File.Delete(filePath);
 
             //Clear the session
             HttpContext.Session.Clear();

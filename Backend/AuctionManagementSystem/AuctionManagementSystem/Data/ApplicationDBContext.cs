@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AuctionManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace AuctionManagementSystem.Models
+namespace AuctionManagementSystem.Data
 {
-    public class SampleDBContext : DbContext
+    public class ApplicationDBContext : DbContext
     {
-        public SampleDBContext(DbContextOptions<SampleDBContext> options) : base(options) { }
+        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) { }
 
         public virtual DbSet<User> Users { get; set; }
 

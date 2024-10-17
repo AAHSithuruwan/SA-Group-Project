@@ -1,4 +1,5 @@
-using AuctionManagementSystem.Models;
+using AuctionManagementSystem.Data;
+using AuctionManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionManagementSystem
@@ -17,7 +18,13 @@ namespace AuctionManagementSystem
 
             //This below section is for the connection string
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<SampleDBContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddScoped<UserService>(); // Register the UserService
+            builder.Services.AddScoped<SellerService>(); // Register the SellerService
+            builder.Services.AddScoped<AuctionService>(); // Register the AuctionService
+            builder.Services.AddScoped<BidService>(); // Register the BidService
+            builder.Services.AddScoped<CategoryService>(); // Register the CategoryService
 
             builder.Services.AddSwaggerGen();
 
