@@ -1,6 +1,7 @@
 ﻿using AuctionManagementSystem.Data;
 using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Models;
+using AuctionManagementSystem.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,45 +12,26 @@ namespace AuctionManagementSystem.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ApplicationDBContext _dbContext;
-        public CategoryController(ApplicationDBContext dbContext)
+        private readonly CategoryService _categoryService;
+        public CategoryController(CategoryService categoryService)
         {
-            _dbContext = dbContext;
+            _categoryService = categoryService;
         }
 
         // POST: api/Category
         [HttpPost]
-        public ActionResult CreateCategory(CategoryDetailsCreateModel categoryDetailsCreateModel)
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryDetailsCreateModel categoryDetailsCreateModel)
         {
             if (categoryDetailsCreateModel == null)
             {
                 return BadRequest();
             }
 
-            Category? existingCategory = _dbContext.Categories.FirstOrDefault(c => c.Name == categoryDetailsCreateModel.Name);
+            var isCategoryCreated = await _categoryService.CreateCategory(categoryDetailsCreateModel);
 
-            if (existingCategory != null)
+            if(isCategoryCreated == false)
             {
-                return BadRequest("Category Already Exists");
-            }
-
-            Category category = new Category 
-            { 
-                Name = categoryDetailsCreateModel.Name 
-            };
-
-            _dbContext.Categories.Add(category);
-
-            _dbContext.SaveChanges();
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "CategoryImages", category.CategoryId.ToString() + ".png");
-
-            if (categoryDetailsCreateModel.CategoryImage != null && categoryDetailsCreateModel.CategoryImage.Length > 0)
-            {
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    categoryDetailsCreateModel.CategoryImage.CopyTo(stream);
-                }
+                return BadRequest("Category already exists");
             }
 
             return Ok("Category Created Successfully");
@@ -57,18 +39,18 @@ namespace AuctionManagementSystem.Controllers
 
         // GET: api/Category/All
         [HttpGet("All")]
-        public ActionResult<List<Category>> GetAllCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
-            List<Category> categories = _dbContext.Categories.ToList();
+            var allCategories = await _categoryService.GetAllCategories();
 
-            return Ok(categories);
+            return Ok(allCategories);
         }
 
         // GET: api/Category/1
-        [HttpGet("{CategoryId}")]
-        public ActionResult<Category> GetCategory(int CategoryId)
+        [HttpGet("{categoryId:int}")]
+        public async Task<IActionResult> GetCategoryById([FromRoute] int categoryId)
         {
-            Category? category = _dbContext.Categories.FirstOrDefault(c => c.CategoryId == CategoryId);
+            var category = await _categoryService.GetCategoryById(categoryId);
 
             if (category == null)
             {
@@ -80,63 +62,38 @@ namespace AuctionManagementSystem.Controllers
 
         // PUT: api/Category
         [HttpPut]
-        public ActionResult UpdateCategory(CategoryDetailsUpdateModel categoryDetailsUpdateModel)
+        public async Task<IActionResult> UpdateCategory([FromForm] CategoryDetailsUpdateModel categoryDetailsUpdateModel)
         {
             if (categoryDetailsUpdateModel == null)
             {
                 return BadRequest();
             }
 
-            Category? category = _dbContext.Categories.FirstOrDefault(c => c.CategoryId == categoryDetailsUpdateModel.CategoryId);
+            var updatedCategory = await _categoryService.UpdateCategory(categoryDetailsUpdateModel);
 
-            if (category == null)
+            if(updatedCategory == null)
             {
                 return NotFound("Category Not Found");
             }
 
-            category.Name = categoryDetailsUpdateModel.Name;
-
-            _dbContext.SaveChanges();
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "CategoryImages", category.CategoryId.ToString() + ".png");
-
-            if (categoryDetailsUpdateModel.CategoryImage != null && categoryDetailsUpdateModel.CategoryImage.Length > 0)
-            {
-                System.IO.File.Delete(filePath);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    categoryDetailsUpdateModel.CategoryImage.CopyTo(stream);
-                }
-            }
-
-            return Ok("Category Updated Successfully");
+            return Ok(updatedCategory);
         }
 
         // DELETE: api/Category/1
-        [HttpDelete("{CategoryId}")]
-        public ActionResult DeleteCategory(int CategoryId)
+        [HttpDelete("{categoryId:int}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] int categoryId)
         {
-            Category? category = _dbContext.Categories
-                .Include(c => c.Products)
-                .FirstOrDefault(c => c.CategoryId == CategoryId);
+            var (isCategoryFound, isCategoryDeleted) = await _categoryService.DeleteCategory(categoryId);
 
-            if (category == null)
+            if(isCategoryFound == false)
             {
-                return NotFound("Categoory Not Found");
+                return NotFound("Category Not Found");
             }
 
-            if (category.Products != null && category.Products.Count > 0)
+            if (isCategoryDeleted == false)
             {
                 return BadRequest("Cannot Delete Category. There are Products associated with this category.");
             }
-
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "images", "CategoryImages", category.CategoryId.ToString() + ".png");
-
-            _dbContext.Categories.Remove(category);
-            _dbContext.SaveChanges();
-
-            System.IO.File.Delete(filePath);
 
             return Ok("Category Deleted Successfully");
         }

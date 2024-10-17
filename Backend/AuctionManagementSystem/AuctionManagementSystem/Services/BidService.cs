@@ -150,7 +150,7 @@ namespace AuctionManagementSystem.Services
             return bidDetailsViewModels;
         }
 
-        public async Task<BidDetailsViewModel?> GetBid(int bidId)
+        public async Task<BidDetailsViewModel?> GetBidById(int bidId)
         {
             Bid? bid = await _dbContext.Bids.FirstOrDefaultAsync(b => b.BidId == bidId);
 

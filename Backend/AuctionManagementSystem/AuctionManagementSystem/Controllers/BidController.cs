@@ -91,9 +91,9 @@ namespace AuctionManagementSystem.Controllers
 
         // GET: api/Bid/1
         [HttpGet("{bidId:int}")]
-        public async Task<IActionResult> GetBid([FromRoute] int bidId)
+        public async Task<IActionResult> GetBidById([FromRoute] int bidId)
         {
-            var bid = await _bidService.GetBid(bidId);
+            var bid = await _bidService.GetBidById(bidId);
 
             if (bid == null)
             {
