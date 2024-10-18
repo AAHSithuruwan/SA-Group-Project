@@ -1,0 +1,53 @@
+/* src/pages/categoryItems/categoryItems.css */
+
+.category-items-section {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 60px;
+  }
+  
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    grid-gap: 20px;
+  }
+  
+  .item-card {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 300px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    transition: transform 0.3s ease; 
+  }
+  
+  .item-card img {
+    width: 100%;
+    height: auto;
+    max-height: 150px; /* Set a max height for the image */
+    object-fit: contain; /* Maintain aspect ratio */
+    border-radius: 10px;
+  }
+  
+  .item-card h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 10px 0; /* Add margin to space out title */
+  }
+  
+  .item-card p {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  /* Hover effect */
+  .item-card:hover {
+    transform: scale(1.05); /* Scale the card slightly on hover */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Add a shadow effect on hover */
+  }
+  
