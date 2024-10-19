@@ -1,11 +1,12 @@
+
 .profile-container {
     display: flex;
     height: 100vh;
     background-color: #a0d468; 
-   padding-top: 60px;
+    padding-top: 60px;
   }
   
-  /* Sidebar styling */
+  
   .sidebar {
     width: 250px;
     background-color: #f0f0f0;
@@ -17,7 +18,7 @@
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  /* Profile picture styling */
+  
   .profile-pic {
     width: 120px;
     height: 120px;
@@ -33,7 +34,7 @@
     border: 2px solid #a0d468;
   }
   
-  /* Menu list styling */
+  
   .sidebar-menu {
     list-style: none;
     padding: 0;
@@ -55,10 +56,5 @@
     background-color: #a0d468;
     color: #fff;
     transition: 0.3s;
-  }
-  
-  /* Notification indicator styling */
-  .notification-indicator {
-    margin-top: auto;
   }
   

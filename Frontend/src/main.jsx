@@ -8,31 +8,24 @@ import Categories from './pages/categories/categories.jsx';
 import Hero from './components/Hero/Hero.jsx'; 
 import CategoryItems from './pages/categoryItems/categoryItems.jsx';
 import ItemDetails from './pages/itemDetails/itemDetails.jsx'; 
-import Dashboard from './pages/dashboard/dashboard.jsx'
-import SellerRegistration from './pages/SellerRegistrationForm/SellerRegistrationform.jsx';
+import Dashboard from './pages/dashboard/dashboard.jsx';
 
+import SellerLayout from './components/sellerlayout.jsx';
+import SellerRegistration from './pages/SellerRegistrationForm/SellerRegistrationform.jsx';
+import SellerDetails from './pages/sellerdetails/sellerdetails.jsx';
+import AddProduct from './pages/addproduct/addproduct.jsx';
+import AuctionDetails from './pages/auctiondetails/auctiondetails.jsx';
+import Notifications from './pages/notifications/notifications.jsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />, 
-
     children: [
       {
         path: "/",
         element: <Hero />, 
       },
-      {
-        path: "/dashboard",
-        element: < Dashboard/>, 
-      },
-
-      {
-        path: "/SellerRegistrationform",
-        element:<SellerRegistration/>,
-        
-      },
-
       {
         path: "/signin",
         element: <SignIn />, 
@@ -46,9 +39,44 @@ const router = createBrowserRouter([
         element: <CategoryItems />, 
       },
       {
-        path: "/item-details",  // Route for the item details page
+        path: "/item-details",
         element: <ItemDetails />, 
       },
+      {
+        path: "/SellerRegistrationform",
+        element: <SellerRegistration />,
+      },
+    ],
+  },
+  {
+    path: "/", 
+    element: <SellerLayout />, 
+    children: [
+      {
+        path: "dashboard",
+        element: <Dashboard />, 
+      },
+
+      {
+        path: "sellerdetails",
+        element: <SellerDetails />, 
+      },
+      
+      {
+        path: "addproduct",
+        element: <AddProduct/>, 
+      },
+      {
+        path: "auctiondetails",
+        element: <AuctionDetails/>, 
+      },
+      
+      {
+        path: "notifications",
+        element: <Notifications/>, 
+      },
+      
+      
     ],
   },
 ]);
