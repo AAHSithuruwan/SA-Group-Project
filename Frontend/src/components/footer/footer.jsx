@@ -10,7 +10,7 @@ const Footer = () => {
         {/* Contact Section */}
         <div className="footer-column">
           <h3>Contact</h3>
-          <p>BidWave, NSBM,Pitipana,Homagama</p>
+          <p>BidWave, NSBM,Pitipana,Maharagama</p>
          
           <p>hi@bidwave.com</p>
           <div className="social-icons">
