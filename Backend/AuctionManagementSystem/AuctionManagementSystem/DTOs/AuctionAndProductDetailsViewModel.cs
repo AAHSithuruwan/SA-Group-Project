@@ -14,6 +14,8 @@
 
         public required int CategoryId { get; set; }
 
+        public required string CategoryName { get; set; }
+
         public required float StartingPrice { get; set; }
 
         public required float NextBidPrice { get; set; }

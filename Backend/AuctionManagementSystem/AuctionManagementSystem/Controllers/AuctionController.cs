@@ -54,7 +54,7 @@ namespace AuctionManagementSystem.Controllers
 
         // GET: api/Auction/Seller
         [HttpGet("Seller")]
-        public async Task<IActionResult> GetSellerAuctions()
+        public async Task<IActionResult> GetAuctionsBySeller()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
 
@@ -63,7 +63,7 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest("User is not signed in");
             }
 
-            var sellerAuctions = await _auctionService.GetSellerAuctions((int)userId);
+            var sellerAuctions = await _auctionService.GetAuctionsBySeller((int)userId);
 
             if(sellerAuctions == null)
             {
@@ -71,6 +71,31 @@ namespace AuctionManagementSystem.Controllers
             }
 
             return Ok(sellerAuctions);
+        }
+
+        // GET: api/Auction/User
+        [HttpGet("User")]
+        public async Task<IActionResult> GetAuctionsByUser()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return BadRequest("User is not signed in");
+            }
+
+            var userAuctions = await _auctionService.GetAuctionsByUser((int)userId);
+
+            return Ok(userAuctions);
+        }
+
+        // GET: api/Auction/Category/1
+        [HttpGet("Category/{categoryId:int}")]
+        public async Task<IActionResult> GetAuctionsByCategory([FromRoute] int categoryId)
+        {
+            var categoryAuctions = await _auctionService.GetAuctionsByCategory(categoryId);
+
+            return Ok(categoryAuctions);
         }
 
         // GET: api/Auction/All
@@ -86,7 +111,7 @@ namespace AuctionManagementSystem.Controllers
         [HttpGet("{auctionId:int}")]
         public async Task<IActionResult> GetAuctionById([FromRoute] int auctionId)
         {
-            var (isAuctionFound, isProductFound, auction) = await _auctionService.GetAuctionById(auctionId);
+            var (isAuctionFound, isProductFound, isCategoryFound, auction) = await _auctionService.GetAuctionById(auctionId);
 
             if (isAuctionFound == false)
             {
@@ -98,11 +123,16 @@ namespace AuctionManagementSystem.Controllers
                 return NotFound("Product Not Found");
             }
 
+            if (isCategoryFound == false)
+            {
+                return NotFound("Category Not Found");
+            }
+
             return Ok(auction);
         }
 
-        // POST: api/Auction/DispatchProduct/1
-        [HttpPost("DispatchProduct/{auctionId:int}")]
+        // GET: api/Auction/DispatchProduct/1
+        [HttpGet("DispatchProduct/{auctionId:int}")]
         public async Task<IActionResult> DispatchProduct([FromRoute] int auctionId)
         {
             var (isAuctionFound, isProductFound, isProductDispatched) = await _auctionService.DispatchProduct(auctionId);
