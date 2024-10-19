@@ -17,7 +17,7 @@ const Signup = () => {
 
         <div className="signup-form">
           <img src={logo} alt="logo" className="logo1" />
-          <h1>SIGNUP</h1>
+          <h2>SIGNUP</h2>
           <form>
            
             <div className="form-group">
