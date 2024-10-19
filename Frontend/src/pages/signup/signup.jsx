@@ -1,3 +1,4 @@
+
 import React from 'react';
 import './signup.css';
 import googleIcon from '../../assets/google-icon.png';
@@ -18,25 +19,19 @@ const Signup = () => {
           <img src={logo} alt="logo" className="logo1" />
           <h1>SIGNUP</h1>
           <form>
-            <div className="form-group">
-              <i className="fa fa-user"></i>
-              <input type="text" placeholder="Enter your Name" />
-            </div>
+           
             <div className="form-group">
               <i className="fa fa-envelope"></i>
               <input type="email" placeholder="Enter your Email" />
             </div>
+           
             <div className="form-group">
-              <i className="fa fa-user-tag"></i>
-              <input type="text" placeholder="Enter your Role" />
-            </div>
-            <div className="form-group">
-              <i className="fa fa-phone"></i>
-              <input type="text" placeholder="Enter your Phone" />
+              <i className="fa fa-lock"></i>
+              <input type="text" placeholder="Create Password" />
             </div>
             <div className="form-group">
               <i className="fa fa-lock"></i>
-              <input type="password" placeholder="Create Password" />
+              <input type="password" placeholder="Retype Password" />
             </div>
             <button type="submit" className="signup-btn">Sign up</button>
           </form>

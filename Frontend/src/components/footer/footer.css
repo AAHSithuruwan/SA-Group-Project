@@ -29,7 +29,7 @@
   display: flex;
   text-align: left;
   padding-left: 0px;
-  margin-left: 20px;
+ 
 }
 
 .footer-column ul {
@@ -40,15 +40,14 @@
 }
 
 .footer-column ul li {
-  margin-bottom: 5px;
+  margin-bottom: 15px; 
   text-align: left;
   align-items: start;
   flex-direction: row;
   display: flex;
-  text-align:center;
+  text-align: center;
   padding-top: 0px;
   padding-left: 0px;
-
 }
 
 .footer-column ul li a {
