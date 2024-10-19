@@ -13,6 +13,16 @@ namespace AuctionManagementSystem
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            // Add CORS services
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.WithOrigins("http://localhost:5173") // Allow the frontend's origin
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader());
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
@@ -48,6 +58,9 @@ namespace AuctionManagementSystem
             }
 
             //app.UseHttpsRedirection();
+
+            // Use CORS middleware
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseAuthorization();
 
