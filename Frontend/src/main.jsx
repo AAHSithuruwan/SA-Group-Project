@@ -8,6 +8,8 @@ import Categories from './pages/categories/categories.jsx';
 import Hero from './components/Hero/Hero.jsx'; 
 import CategoryItems from './pages/categoryItems/categoryItems.jsx';
 import ItemDetails from './pages/itemDetails/itemDetails.jsx'; 
+import Dashboard from './pages/dashboard/dashboard.jsx'
+import SellerRegistration from './pages/SellerRegistrationForm/SellerRegistrationform.jsx';
 
 
 const router = createBrowserRouter([
@@ -21,9 +23,16 @@ const router = createBrowserRouter([
         element: <Hero />, 
       },
       {
-        path: "/signup",
-        element: <Signup />, 
+        path: "/dashboard",
+        element: < Dashboard/>, 
       },
+
+      {
+        path: "/SellerRegistrationform",
+        element:<SellerRegistration/>,
+        
+      },
+
       {
         path: "/signin",
         element: <SignIn />, 
