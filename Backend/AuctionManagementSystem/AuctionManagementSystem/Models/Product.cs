@@ -11,6 +11,8 @@ namespace AuctionManagementSystem.Models
 
         [Required][MaxLength(500)] public required string Description { get; set; }
 
+        public int IsDispatched { get; set; } = 0;
+
         //Foreign key to the Auction
         [ForeignKey("Auction")] public int AuctionId { get; set; }
 

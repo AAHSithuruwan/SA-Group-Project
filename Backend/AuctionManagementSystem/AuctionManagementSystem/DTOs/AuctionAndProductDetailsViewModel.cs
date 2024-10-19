@@ -10,7 +10,11 @@
 
         public required string ProductDescription { get; set; }
 
+        public required int IsDispatched { get; set; }
+
         public required int CategoryId { get; set; }
+
+        public required string CategoryName { get; set; }
 
         public required float StartingPrice { get; set; }
 

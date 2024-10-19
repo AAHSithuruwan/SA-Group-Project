@@ -18,7 +18,7 @@ namespace AuctionManagementSystem.Models
 
         [MaxLength(12)] public string? PhoneNumber { get; set; }
 
-        public int Admin {  get; set; } = 0;
+        public int IsAdmin {  get; set; } = 0;
 
         // Navigation property for optional seller
         public virtual Seller? Seller { get; set; }
