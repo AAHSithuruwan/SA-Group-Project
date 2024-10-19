@@ -119,6 +119,7 @@ namespace AuctionManagementSystem.Services
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
                         ProductName = product.Name,
+                        IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
                         ProductDescription = product.Description,
                         StartingPrice = auction.StartingPrice,
@@ -181,6 +182,7 @@ namespace AuctionManagementSystem.Services
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
                         ProductName = product.Name,
+                        IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
                         ProductDescription = product.Description,
                         StartingPrice = auction.StartingPrice,
@@ -242,6 +244,7 @@ namespace AuctionManagementSystem.Services
                 ProductId = auction.Product.ProductId,
                 AuctionId = auction.AuctionId,
                 ProductName = auction.Product.Name,
+                IsDispatched = auction.Product.IsDispatched,
                 CategoryId = auction.Product.CategoryId,
                 ProductDescription = auction.Product.Description,
                 StartingPrice = auction.StartingPrice,
@@ -258,7 +261,34 @@ namespace AuctionManagementSystem.Services
             return (true, true, auctionAndProductDetailsViewModel);
         }
 
-        public async Task<(bool, bool)> UpdateAuction(AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
+        public async Task<(bool, bool, bool)> DispatchProduct(int auctionId)
+        {
+            Auction? auction = await _dbContext.Auctions
+                .Include(a => a.Product)
+                .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
+
+            if (auction == null)
+            {
+                return (false, false, false);
+            }
+
+            if (auction.Product == null)
+            {
+                return (true, false, false);
+            }
+
+            if (auction.EndDate > DateTime.Now)
+            {
+                return (true, true, false);
+            }
+
+            auction.Product.IsDispatched = 1;
+            await _dbContext.SaveChangesAsync();
+
+            return (true, true, true);
+        }
+
+        public async Task<(bool, bool, bool)> UpdateAuction(AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
         {
             Auction? auction = await _dbContext.Auctions
                 .Include(a => a.Product)
@@ -266,12 +296,17 @@ namespace AuctionManagementSystem.Services
 
             if (auction == null)
             {
-                return (false, false);
+                return (false, false,false);
             }
 
             if (auction.Product == null)
             {
-                return (true, false);
+                return (true, false, false);
+            }
+
+            if(auction.Product.IsDispatched == 1)
+            {
+                return (true, true, false);
             }
 
             auction.StartingPrice = auctionAndProductDetailsUpdateModel.StartingPrice;
@@ -299,7 +334,7 @@ namespace AuctionManagementSystem.Services
                 }
             }
 
-            return (true, true);
+            return (true, true, true);
         }
 
         public async Task<(bool, bool, bool)> DeleteAuction(int auctionId)

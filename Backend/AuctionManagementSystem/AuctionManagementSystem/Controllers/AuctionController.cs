@@ -101,6 +101,30 @@ namespace AuctionManagementSystem.Controllers
             return Ok(auction);
         }
 
+        // POST: api/Auction/DispatchProduct/1
+        [HttpPost("DispatchProduct/{auctionId:int}")]
+        public async Task<IActionResult> DispatchProduct([FromRoute] int auctionId)
+        {
+            var (isAuctionFound, isProductFound, isProductDispatched) = await _auctionService.DispatchProduct(auctionId);
+
+            if (isAuctionFound == false)
+            {
+                return NotFound("Auction Not Found");
+            }
+
+            if (isProductFound == false)
+            {
+                return NotFound("Product Not Found");
+            }
+
+            if (isProductDispatched == false)
+            {
+                return BadRequest("Cannot Dispatch the Product, The Auction is not yet Closed");
+            }
+
+            return Ok("Product Dispatched Successfully");
+        }
+
         // PUT: api/Auction
         [HttpPut]
         public async Task<IActionResult> UpdateAuction([FromForm] AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
@@ -110,7 +134,7 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            var (isAuctionFound, isProductFound) = await _auctionService.UpdateAuction(auctionAndProductDetailsUpdateModel);
+            var (isAuctionFound, isProductFound, isAuctionUpdated) = await _auctionService.UpdateAuction(auctionAndProductDetailsUpdateModel);
 
             if (isAuctionFound == false)
             {
@@ -120,6 +144,11 @@ namespace AuctionManagementSystem.Controllers
             if(isProductFound == false)
             {
                 return NotFound("Product Not Found");
+            }
+
+            if(isAuctionUpdated == false)
+            {
+                return BadRequest("Cannot Update The Auction, Product is already Dispatched");
             }
 
             return Ok("Auction Updated Successfully");
