@@ -6,22 +6,11 @@ import React from 'react';
 const SellerRegistrationform = () => {
   return (
     <div className='registrationform-container'>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      <h1>SellerRegistrationform </h1>
-      
+      <h1>Seller Registration Form</h1>
+     <div className='registrationform'>
+      <p>hello</p>
+
+     </div>
       
     </div>
   )
