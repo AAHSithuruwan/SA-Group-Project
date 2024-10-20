@@ -7,6 +7,8 @@ import googleIcon from '../../assets/google-icon.png';
 import facebookIcon from '../../assets/facebook-icon.png';
 import logo from '../../assets/logo.png';
 import signupimg from '../../assets/signupimg.png';
+import ErrorDialogBox from '../../components/DialogBoxes/ErrorDialogBox';
+import SuccessDialogBox from '../../components/DialogBoxes/SuccessDialogBox';
 
 const Signup = () => {
 
@@ -15,12 +17,37 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const navigateToSignIn = () => {
+    navigate('/signin');
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(!(emailRegex.test(email))){
+      ErrorDialogBox({
+        title: 'Sign Up Failed!',
+        text: 'Please enter a valid email address'
+      });
+      return;
+    }
+
+    if(password.length < 8){
+      ErrorDialogBox({
+        title: 'Sign Up Failed!',
+        text: 'The password must have at least 8 characters'
+      });
+      return;
+    }
+
     //check if the passwords match
     if(password != confirmPassword){
-      alert("The Passwords does not match");
+      ErrorDialogBox({
+        title: 'Sign Up Failed!',
+        text: 'The Provided Passwords does not match'
+      });
       return;
     }
 
@@ -31,16 +58,26 @@ const Signup = () => {
       });
 
       if(response.status === 200){
-        alert("Signed Up Successfully");
-        navigate('/signin');
+        SuccessDialogBox({
+          title: 'Sign Up Successfull',
+          text: 'Please Log In',
+          onConfirm: navigateToSignIn,
+        })
+        
       }
     }
     catch (error) {
       if(error.response && error.response.status == 400){
-        alert(error.response.data);
+        ErrorDialogBox({
+          title: 'Sign Up Failed!',
+          text: error.response.data,
+        });
       }
       else{
-        alert("Sign Up Failed, Please try again");
+        ErrorDialogBox({
+          title: 'Sign Up Failed!',
+          text: 'Please Try Again',
+        })
       }
       console.error(error);
     }};
@@ -58,7 +95,7 @@ const Signup = () => {
            
             <div className="form-group">
               <i className="fa fa-envelope"></i>
-              <input type="email" placeholder="Enter your Email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+              <input type="text" placeholder="Enter your Email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
             </div>
            
             <div className="form-group">
