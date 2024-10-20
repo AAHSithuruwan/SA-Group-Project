@@ -1,6 +1,7 @@
 using AuctionManagementSystem.Data;
 using AuctionManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 namespace AuctionManagementSystem
 {
@@ -49,6 +50,21 @@ namespace AuctionManagementSystem
             });
 
             var app = builder.Build();
+
+            // Serve static files from the specified directory
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", "CategoryImages")),
+                RequestPath = "/Images/CategoryImages"
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", "ProductImages")),
+                RequestPath = "/Images/ProductImages"
+            });
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

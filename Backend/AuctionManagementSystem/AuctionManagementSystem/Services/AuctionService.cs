@@ -140,7 +140,7 @@ namespace AuctionManagementSystem.Services
                 } 
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<List<AuctionAndProductDetailsViewModel>> GetAuctionsByUser(int userId)
@@ -221,7 +221,7 @@ namespace AuctionManagementSystem.Services
 
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<List<AuctionAndProductDetailsViewModel>> GetAuctionsByCategory(int categoryId)
@@ -286,8 +286,8 @@ namespace AuctionManagementSystem.Services
                     auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
                 }
             }
-
-            return auctionAndProductDetailsViewModels;
+            
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<List<AuctionAndProductDetailsViewModel>> GetAllAuctions()
@@ -353,7 +353,7 @@ namespace AuctionManagementSystem.Services
                 }
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<(bool, bool, bool, AuctionAndProductDetailsViewModel?)> GetAuctionById(int auctionId)
@@ -529,6 +529,46 @@ namespace AuctionManagementSystem.Services
             System.IO.File.Delete(filePath);
 
             return (true, true, true);
+        }
+
+        public List<AuctionAndProductDetailsViewModel> SortAuctions(List<AuctionAndProductDetailsViewModel> auctions)
+        {
+            var currentTime = DateTime.UtcNow;
+
+            var statusOrder = new Dictionary<string, int>
+            {
+                { "Ongoing", 1 },
+                { "Not Started", 2 },
+                { "Ended", 3 }
+            };
+
+            var sortedAuctions = auctions.Select(auction => new
+            {
+                Auction = auction,
+                Status = GetAuctionStatus(auction, currentTime)
+            })
+            .OrderBy(a => statusOrder[a.Status]) // Sort by custom status order
+            .ThenBy(a => a.Auction.StartingDate) // Optionally sort by starting date within the same status
+            .Select(a => a.Auction) // Select back the auction details
+            .ToList();
+
+            return sortedAuctions;
+        }
+
+        private string GetAuctionStatus(AuctionAndProductDetailsViewModel auction, DateTime currentTime)
+        {
+            if (currentTime < auction.StartingDate)
+            {
+                return "Not Started";
+            }
+            else if (currentTime > auction.EndDate)
+            {
+                return "Ended";
+            }
+            else
+            {
+                return "Ongoing";
+            }
         }
     }
 }
