@@ -5,7 +5,7 @@ import { FaFacebook, FaInstagram, FaWhatsapp, FaGoogle } from 'react-icons/fa';
 import './signin.css';
 import ErrorDialogBox from '../../components/DialogBoxes/ErrorDialogBox';
 import SuccessDialogBox from '../../components/DialogBoxes/SuccessDialogBox'; 
-
+import { storeJwtToken } from '../../components/JwtAuthentication/JwtTokenHandler';
 import logo from '../../assets/logo.png'; 
 import necklace from '../../assets/necklace.png'; 
 
@@ -39,12 +39,20 @@ const SignIn = () => {
       });
 
       if(response.status === 200){
-        SuccessDialogBox({
-          title: 'Sign In Successfull',
-          text: 'Welcome To BidWave',
-          onConfirm: navigateToHomePage,
-        })
-        
+        if(response.data && response.data.token){
+          await storeJwtToken(response.data.token);
+          SuccessDialogBox({
+            title: 'Sign In Successfull',
+            text: 'Welcome To BidWave',
+            onConfirm: navigateToHomePage,
+          });
+        }
+        else{
+          ErrorDialogBox({
+            title: 'Sign In Failed!',
+            text: 'Please Try Again',
+          });
+        }
       }
     }
     catch (error) {

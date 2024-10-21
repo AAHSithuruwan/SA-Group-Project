@@ -2,6 +2,9 @@
 using AuctionManagementSystem.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using AuctionManagementSystem.Services;
+using AuctionManagementSystem.JwtAuthentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -10,9 +13,12 @@ namespace AuctionManagementSystem.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
-        public UserController(UserService userService)
+        private readonly JwtAuthenticationService _jwtAuthenticationService;
+
+        public UserController(UserService userService, JwtAuthenticationService jwtAuthenticationService)
         {
             _userService = userService;
+            _jwtAuthenticationService = jwtAuthenticationService;
         }
 
         // POST: api/User/SignUp
@@ -49,44 +55,32 @@ namespace AuctionManagementSystem.Controllers
                 return Unauthorized("Invalid Email or Passowrd");
             }
 
-            //Create session
-            HttpContext.Session.SetInt32("UserId", user.UserId);
+            var jwtToken = _jwtAuthenticationService.GenerateToken(user.UserId);
 
-            return Ok(user);    
+            return Ok(new { Token = jwtToken });
         }
 
         // GET: api/User/LogOut
+        [Authorize]
         [HttpGet("LogOut")]
         public IActionResult LogOut()
         {
-            //Clear the session
-            HttpContext.Session.Clear();
-
-            //Clear the session cookie
-            var cookieOptions = new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddDays(-1), // Expire the cookie immediately
-                HttpOnly = true, // Prevent JavaScript access to the cookie
-                Secure = true // Set to true if using HTTPS
-            };
-
-            Response.Cookies.Append(".AspNetCore.Session", "", cookieOptions);
-
             return Ok("Sign Out Successfull");
         }
 
         // GET: api/User
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetUser()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if(userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var user = await  _userService.GetUser((int)userId);
+            var user = await  _userService.GetUser(int.Parse(userId));
 
             if (user == null)
             {
@@ -97,17 +91,18 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // PUT: api/User/UpdatePersonalDetails
+        [Authorize]
         [HttpPut("UpdatePersonalDetails")]
         public async Task<IActionResult> UpdateUserPersonalDetails([FromForm] UserPersonalDetailsUpdateModel userPersonalDetailsUpdateModel)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var user = await _userService.UpdateUserPersonalDetails(userPersonalDetailsUpdateModel, (int)userId);
+            var user = await _userService.UpdateUserPersonalDetails(userPersonalDetailsUpdateModel, int.Parse(userId));
 
             if (user == null)
             {
@@ -117,6 +112,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // PUT: api/User/UpdateEmail
+        [Authorize]
         [HttpPut("UpdateEmail")]
         public async Task<IActionResult> UpdateUserEmail([FromBody] User userDetails)
         {
@@ -125,14 +121,14 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var (user, isSuccess, errorMessage) = await _userService.UpdateUserEmail(userDetails, (int)userId);
+            var (user, isSuccess, errorMessage) = await _userService.UpdateUserEmail(userDetails, int.Parse(userId));
 
             if(user == null)
             {
@@ -153,6 +149,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // PUT: api/User/UpdatePassword
+        [Authorize]
         [HttpPut("UpdatePassword")]
         public async Task<IActionResult> UpdateUserPassword([FromBody] UserPasswordUpdateModel userPasswordUpdateModel)
         {
@@ -161,14 +158,14 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var (user, isSuccess) = await _userService.UpdateUserPassword(userPasswordUpdateModel, (int)userId);
+            var (user, isSuccess) = await _userService.UpdateUserPassword(userPasswordUpdateModel, int.Parse(userId));
 
             if(user == null)
             {
@@ -184,17 +181,18 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // Delete: api/User
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> DeleteUser()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var (isUserFound, isUserDeleted) = await _userService.DeleteUser((int)userId);
+            var (isUserFound, isUserDeleted) = await _userService.DeleteUser(int.Parse(userId));
 
             if(isUserFound == false)
             {
@@ -205,19 +203,6 @@ namespace AuctionManagementSystem.Controllers
             {
                 return BadRequest("User cannot be deleted. Because there are auctions associated with this seller account");
             }
-
-            //Clear the session
-            HttpContext.Session.Clear();
-
-            //Clear the session cookie
-            var cookieOptions = new CookieOptions
-            {
-                Expires = DateTimeOffset.UtcNow.AddDays(-1), // Expire the cookie immediately
-                HttpOnly = true, // Prevent JavaScript access to the cookie
-                Secure = true // Set to true if using HTTPS
-            };
-
-            Response.Cookies.Append(".AspNetCore.Session", "", cookieOptions);
 
             return Ok("User successfully deleted");
         }

@@ -1,6 +1,8 @@
 ﻿using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -17,6 +19,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // POST: api/Auction
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAuction([FromForm] AuctionAndProductDetailsCreateModel auctionAndProductDetailsCreateModel)
         {
@@ -25,14 +28,14 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var (isSellerFound, isCategoryFound, isAuctionCreated) = await _auctionService.CreateAuction(auctionAndProductDetailsCreateModel, (int)userId);
+            var (isSellerFound, isCategoryFound, isAuctionCreated) = await _auctionService.CreateAuction(auctionAndProductDetailsCreateModel, int.Parse(userId));
 
             if (isSellerFound == false)
             {
@@ -53,17 +56,18 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // GET: api/Auction/Seller
+        [Authorize]
         [HttpGet("Seller")]
         public async Task<IActionResult> GetAuctionsBySeller()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var sellerAuctions = await _auctionService.GetAuctionsBySeller((int)userId);
+            var sellerAuctions = await _auctionService.GetAuctionsBySeller(int.Parse(userId));
 
             if(sellerAuctions == null)
             {
@@ -74,17 +78,18 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // GET: api/Auction/User
+        [Authorize]
         [HttpGet("User")]
         public async Task<IActionResult> GetAuctionsByUser()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var userAuctions = await _auctionService.GetAuctionsByUser((int)userId);
+            var userAuctions = await _auctionService.GetAuctionsByUser(int.Parse(userId));
 
             return Ok(userAuctions);
         }
@@ -132,6 +137,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // GET: api/Auction/DispatchProduct/1
+        [Authorize]
         [HttpGet("DispatchProduct/{auctionId:int}")]
         public async Task<IActionResult> DispatchProduct([FromRoute] int auctionId)
         {
@@ -156,6 +162,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // PUT: api/Auction
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateAuction([FromForm] AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
         {
@@ -185,6 +192,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // DELETE: api/Auction/1
+        [Authorize]
         [HttpDelete("{auctionId:int}")]
         public async Task<IActionResult> DeleteAuction([FromRoute] int auctionId)
         {
