@@ -8,14 +8,20 @@ import Categories from './pages/categories/categories.jsx';
 import Hero from './components/Hero/Hero.jsx'; 
 import CategoryItems from './pages/categoryItems/categoryItems.jsx';
 import ItemDetails from './pages/itemDetails/itemDetails.jsx'; 
-import Dashboard from './pages/dashboard/dashboard.jsx';
+
 
 import SellerLayout from './components/sellerlayout.jsx';
-import SellerRegistration from './pages/SellerRegistrationForm/SellerRegistrationform.jsx';
+import Dashboard from './pages/dashboard/dashboard.jsx';
 import SellerDetails from './pages/sellerdetails/sellerdetails.jsx';
-import AddProduct from './pages/addproduct/addproduct.jsx';
+import AddProduct from './pages/addproduct/addproduct.jsx';             //create aution page
 import AuctionDetails from './pages/auctiondetails/auctiondetails.jsx';
 import Notifications from './pages/notifications/notifications.jsx';
+
+import AdminLayout from './components/adminlayout.jsx';
+import AdminDashboard from './pages/admindashboard/admindashboard.jsx';
+import AdminAuctionDetails from './pages/adminauctiondetails/adminauctiondetails.jsx';
+import CategoryDetails from './pages/categorydetails/categorydetails.jsx';
+
 
 const router = createBrowserRouter([
   {
@@ -42,12 +48,12 @@ const router = createBrowserRouter([
         path: "/item-details",
         element: <ItemDetails />, 
       },
-      {
-        path: "/SellerRegistrationform",
-        element: <SellerRegistration />,
-      },
+    
     ],
   },
+
+
+
   {
     path: "/", 
     element: <SellerLayout />, 
@@ -64,7 +70,7 @@ const router = createBrowserRouter([
       
       {
         path: "addproduct",
-        element: <AddProduct/>, 
+        element: <AddProduct/>,       //create aution page
       },
       {
         path: "auctiondetails",
@@ -76,6 +82,32 @@ const router = createBrowserRouter([
         element: <Notifications/>, 
       },
       
+      
+    ],
+  },
+
+
+  {
+    path: "/", 
+    element: <AdminLayout />, 
+
+    children: [
+      {
+        path: "admindashboard",
+        element: <AdminDashboard />, 
+      },
+
+      {
+        path: "adminauctiondetails",
+        element: <AdminAuctionDetails/>, 
+      },
+
+      {
+        path: "categorydetails",
+        element: <CategoryDetails />, 
+      },
+
+     
       
     ],
   },

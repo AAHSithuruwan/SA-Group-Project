@@ -27,7 +27,7 @@ const Navbar = () => {
       {/* Right-side Buttons */}
       <div className="navbar-right">
         <ul>
-          <li><Link to="/SellerRegistrationform">Admin</Link></li>
+          <li><Link to="/admindashboard">Admin</Link></li>
           <li><Link to="/dashboard">Seller</Link></li>
           <li><button><Link to="/signin">Sign in</Link></button></li>
         </ul>
