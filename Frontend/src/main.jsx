@@ -15,12 +15,20 @@ import Dashboard from './pages/dashboard/dashboard.jsx';
 import SellerDetails from './pages/sellerdetails/sellerdetails.jsx';
 import AddProduct from './pages/addproduct/addproduct.jsx';             //create aution page
 import AuctionDetails from './pages/auctiondetails/auctiondetails.jsx';
+import SellerAuctionitemdetails from './pages/sellerauctionitemdetails/sellerauctonitemdetails.jsx';
 import Notifications from './pages/notifications/notifications.jsx';
 
 import AdminLayout from './components/adminlayout.jsx';
 import AdminDashboard from './pages/admindashboard/admindashboard.jsx';
 import AdminAuctionDetails from './pages/adminauctiondetails/adminauctiondetails.jsx';
 import CategoryDetails from './pages/categorydetails/categorydetails.jsx';
+
+
+// Import new components for the Account, Register, and Payment pages
+import MyAccount from './pages/myaccount/myaccount.jsx';
+import SellerRegistration from './pages/SellerRegistrationForm/Sellerregistrationform.jsx';
+import Payment from './pages/payment/payment.jsx';
+
 
 
 const router = createBrowserRouter([
@@ -47,6 +55,21 @@ const router = createBrowserRouter([
       {
         path: "/item-details",
         element: <ItemDetails />, 
+      },
+
+
+      // Add new routes here for MyAccount, SellerRegistration, and Payment
+      {
+        path: "/myaccount",
+        element: <MyAccount />, 
+      },
+      {
+        path: "/sellerregistration",
+        element: <SellerRegistration />, 
+      },
+      {
+        path: "/payment",
+        element: <Payment />, 
       },
     
     ],
@@ -75,6 +98,14 @@ const router = createBrowserRouter([
       {
         path: "auctiondetails",
         element: <AuctionDetails/>, 
+      },
+
+
+    
+
+      {
+        path: "sellerauctionitemdetails/:id",  // Add this new route
+        element: <SellerAuctionitemdetails />,
       },
       
       {

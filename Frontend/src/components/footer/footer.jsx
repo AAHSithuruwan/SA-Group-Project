@@ -1,8 +1,11 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import './footer.css';
 
 const Footer = () => {
+  const navigate = useNavigate(); // Initialize the navigate hook
+
   return (
     <footer className="footer-container">
       <div className="footer-columns">
@@ -10,8 +13,7 @@ const Footer = () => {
         {/* Contact Section */}
         <div className="footer-column">
           <h3>Contact</h3>
-          <p>BidWave, NSBM,Pitipana,Homagama</p>
-         
+          <p>BidWave, NSBM, Pitipana, Homagama</p>
           <p>hi@bidwave.com</p>
           <div className="social-icons">
             <FaFacebook className="icon" />
@@ -52,6 +54,13 @@ const Footer = () => {
           <div className="newsletter-form">
             <input type="email" placeholder="Your email address" className="email-input" />
             <button className="send-button">Send</button>
+          </div>
+
+          {/* Buttons below email input */}
+          <div className="footer-buttons">
+            <button className="footer-btn" onClick={() => navigate('/myaccount')}>Account</button>
+            <button className="footer-btn" onClick={() => navigate('/sellerregistration')}>Register</button>
+            <button className="footer-btn" onClick={() => navigate('/payment')}>Payment</button>
           </div>
         </div>
 

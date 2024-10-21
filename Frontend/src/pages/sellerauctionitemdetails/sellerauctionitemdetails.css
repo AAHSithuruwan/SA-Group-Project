@@ -1,0 +1,28 @@
+.item-details-container {
+    padding: 20px;
+  }
+  
+  .item-details {
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  .item-details img {
+    width: 150px;
+    height: auto;
+  }
+  
+  .item-details h3 {
+    color: #e47d1f;
+  }
+  
+  .item-details p {
+    margin: 10px 0;
+  }
+  
+  h4 {
+    margin-top: 20px;
+    color: #333;
+  }
+  

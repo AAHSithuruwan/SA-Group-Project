@@ -9,7 +9,7 @@ const Sidebar = () => {
   const sidebarOptions = [
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Seller Details', path: '/sellerdetails' },
-    { name: 'Add Product', path: '/addproduct' },
+    { name: 'Create Auction', path: '/addproduct' },
     { name: 'Auction Details', path: '/auctiondetails' },
     { name: 'Notifications', path: '/notifications' },
   ];

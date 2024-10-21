@@ -19,10 +19,10 @@ const AdminLayout = () => {
           style={{
             flex: 1,
             padding: '20px',
-            paddingTop: '80px', 
+            paddingTop: '100px', 
             background: '#e9e0e0',
             overflowY: 'auto', 
-            height: 'calc(100vh - 140px)', 
+            height: 'calc(120vh - 140px)', 
           }}
         >
           <Outlet /> {/* Render child routes - Admindashboard, CategoryDetails... */}

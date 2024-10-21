@@ -8,34 +8,34 @@ const SellerDetails = () => {
       <div className="details-form">
         <div className="input-row">
           <label>Full Name:</label>
-          <input type="text" value="Mr. Jude Doe" readOnly />
+          <input type="text" placeholder="Mr. Jude Doe"  />
           
         </div>
         <div className="input-row">
           <label>Username:</label>
-          <input type="text" value="Jdoe123" readOnly />
+          <input type="text" placeholder="Jdoe123" />
           
         </div>
         <div className="input-row">
           <label>Email:</label>
-          <input type="email" value="judedoe@email.com" readOnly />
+          <input type="email" placeholder="judedoe@email.com" />
           
         </div>
         <div className="input-row">
           <label>Contact Number:</label>
-          <input type="tel" value="+94 123456789" readOnly />
+          <input type="tel" placeholder="+94 123456789" />
           
         </div>
         <div className="input-row">
           <label>Whatsapp Number (Optional):</label>
-          <input type="tel" value="+94 123456789" readOnly />
+          <input type="tel" placeholder="+94 123456789" />
           
         </div>
         <div className="input-row">
           <label>Address:</label>
-          <input type="text" value="12/A" readOnly />
-          <input type="text" value="ABC Street" readOnly />
-          <input type="text" value="Colombo" readOnly /> 
+          <input type="text" placeholder="12/A" />
+          <input type="text" placeholder="ABC Street"  />
+          <input type="text" placeholder="Colombo" /> 
         </div>
         <div className="input-row">
           <label>Add image:</label>
