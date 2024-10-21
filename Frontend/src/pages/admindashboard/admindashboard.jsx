@@ -4,36 +4,8 @@ const AdminDashboard = () => {
   return (
     <div>
     
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
-      <h1>Dashboard content</h1>
+      <h1>Admin Dashboard content</h1>
+     
 
 
     
