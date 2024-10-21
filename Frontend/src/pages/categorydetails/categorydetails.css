@@ -1,0 +1,80 @@
+/* Container Layout */
+.category-container {
+    display: flex;
+  }
+  
+  /* Sidebar Styling */
+  
+  
+  /* Main Content */
+  .category-details {
+    width: 100%;
+    padding-left: 100px;
+  }
+  
+  .category-details h2 {
+    color: #e47d1f;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  /* Button for adding category */
+  .add-category-button {
+    background-color: #e47d1f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .add-category-button:hover {
+    background-color: #b0651b;
+  }
+  
+  /* Category Table */
+  .category-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .category-table th,
+  .category-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .category-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .category-image {
+    width: 150px;
+    height: auto;
+    margin-right: 10px;
+  }
+  
+  /* Edit and Remove Buttons */
+  .edit-button,
+  .remove-button {
+    background-color: #e47d1f;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  .edit-button:hover,
+  .remove-button:hover {
+    background-color: #b0651b;
+  }
+  
+  .remove-button {
+    background-color: #e47d1f;
+  }
+  
+  .remove-button:hover {
+    background-color: #b0651b;
+  }
