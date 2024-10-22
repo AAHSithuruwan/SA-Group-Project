@@ -1,10 +1,10 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom'; 
 import './footer.css';
 
 const Footer = () => {
-  const navigate = useNavigate(); // Initialize the navigate hook
+  const navigate = useNavigate(); 
 
   return (
     <footer className="footer-container">
@@ -56,12 +56,24 @@ const Footer = () => {
             <button className="send-button">Send</button>
           </div>
 
+
+
+
+
+
           {/* Buttons below email input */}
           <div className="footer-buttons">
             <button className="footer-btn" onClick={() => navigate('/myaccount')}>Account</button>
             <button className="footer-btn" onClick={() => navigate('/sellerregistration')}>Register</button>
             <button className="footer-btn" onClick={() => navigate('/payment')}>Payment</button>
           </div>
+
+
+
+
+
+
+
         </div>
 
       </div>

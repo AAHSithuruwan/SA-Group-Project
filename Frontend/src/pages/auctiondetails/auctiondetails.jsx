@@ -51,7 +51,7 @@ const auctionItems = [
 
   {
     id: 3,
-    image: bag2,
+    image: bag3,
     productName: 'Céline - Classic - Shoulder bag',
     category: 'Fashion',
     startingBidPrice: 'RS:200,000.00',
@@ -70,7 +70,7 @@ const auctionItems = [
       Material: Leather
     `,
   },
-  // Add more items as needed
+ 
 ];
 
 const AuctionDetails = () => {

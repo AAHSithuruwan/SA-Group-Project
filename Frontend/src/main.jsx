@@ -15,17 +15,26 @@ import Dashboard from './pages/dashboard/dashboard.jsx';
 import SellerDetails from './pages/sellerdetails/sellerdetails.jsx';
 import AddProduct from './pages/addproduct/addproduct.jsx';             //create aution page
 import AuctionDetails from './pages/auctiondetails/auctiondetails.jsx';
-import SellerAuctionitemdetails from './pages/sellerauctionitemdetails/sellerauctonitemdetails.jsx';
+import SellerAuctionitemdetails from './pages/sellerauctionitemdetails/sellerauctionitemdetails.jsx';
 import Notifications from './pages/notifications/notifications.jsx';
 
 import AdminLayout from './components/adminlayout.jsx';
 import AdminDashboard from './pages/admindashboard/admindashboard.jsx';
 import AdminAuctionDetails from './pages/adminauctiondetails/adminauctiondetails.jsx';
+import AdminAuctionItemDetails from './pages/adminauctionitemdetails/adminauctionitemdetails.jsx';
 import CategoryDetails from './pages/categorydetails/categorydetails.jsx';
+import AddNewCategory from './pages/addnewcategory/addnewcategory.jsx';
 
 
 // Import new components for the Account, Register, and Payment pages
+import MyAccountLayout from './components/myaccountlayout.jsx';
 import MyAccount from './pages/myaccount/myaccount.jsx';
+import BidHistory from './pages/bidhistory/bidhistory.jsx';
+import ChangeEmail from './pages/changeemail/changeemail.jsx';
+import ChangePassword from './pages/changepassword/changepassword.jsx';
+
+
+
 import SellerRegistration from './pages/SellerRegistrationForm/Sellerregistrationform.jsx';
 import Payment from './pages/payment/payment.jsx';
 
@@ -58,11 +67,8 @@ const router = createBrowserRouter([
       },
 
 
-      // Add new routes here for MyAccount, SellerRegistration, and Payment
-      {
-        path: "/myaccount",
-        element: <MyAccount />, 
-      },
+      // Add new routes here for  SellerRegistration, and Payment
+     
       {
         path: "/sellerregistration",
         element: <SellerRegistration />, 
@@ -100,11 +106,8 @@ const router = createBrowserRouter([
         element: <AuctionDetails/>, 
       },
 
-
-    
-
       {
-        path: "sellerauctionitemdetails/:id",  // Add this new route
+        path: "sellerauctionitemdetails/:id",  
         element: <SellerAuctionitemdetails />,
       },
       
@@ -134,14 +137,60 @@ const router = createBrowserRouter([
       },
 
       {
+        path: "adminauctionitemdetails/:id",  
+        element: <AdminAuctionItemDetails />,
+      },
+
+      {
         path: "categorydetails",
         element: <CategoryDetails />, 
       },
+
+      {
+        path: "addnewcategory",
+        element: <AddNewCategory />, 
+      },
+
 
      
       
     ],
   },
+
+  {
+    path: "/", 
+    element: <MyAccountLayout/>, 
+
+    children: [
+      {
+        path: "myaccount",
+        element: <MyAccount/>, 
+      },
+
+
+      {
+        path: "bidhistory",
+        element: <BidHistory/>, 
+      },
+      
+      {
+        path: "changeemail",
+        element: <ChangeEmail/>, 
+      },
+      
+      {
+        path: "changepassword",
+        element: <ChangePassword/>, 
+      },
+
+    
+     
+      
+    ],
+  },
+
+
+
 ]);
 
 createRoot(document.getElementById('root')).render(

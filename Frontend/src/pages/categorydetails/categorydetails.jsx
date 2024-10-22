@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './categorydetails.css';
 import pic1 from '../../assets/electronics.png';
 import pic2 from '../../assets/fashion.png';
 import pic3 from '../../assets/sports.png';
-
 
 const categories = [
   {
@@ -24,13 +24,17 @@ const categories = [
 ];
 
 const CategoryDetails = () => {
+  const navigate = useNavigate();
+
+  const handleAddCategory = () => {
+    navigate('/addnewcategory');
+  };
+
   return (
     <div className="category-container">
-      
-
       <div className="category-details">
-       <center> <h2>Categories Details</h2></center>
-        <button className="add-category-button">Add new category</button>
+        <center><h2>Categories Details</h2></center>
+        <button className="add-category-button" onClick={handleAddCategory}>Add new category</button>
 
         <table className="category-table">
           <thead>
@@ -65,9 +69,5 @@ const CategoryDetails = () => {
     </div>
   );
 };
-
-
-
-
 
 export default CategoryDetails;
