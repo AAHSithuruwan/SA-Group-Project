@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate for naviga
 import './footer.css';
 
 const Footer = () => {
-  const navigate = useNavigate(); // Initialize the navigate hook
+  const navigate = useNavigate(); 
 
   return (
     <footer className="footer-container">

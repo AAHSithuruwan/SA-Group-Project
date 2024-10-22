@@ -1,0 +1,84 @@
+.add-category-page {
+    padding: 20px;
+    width: 60%;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    height: 80vh;
+}
+
+.add-category-page__title {
+    text-align: center;
+    color: #ff6417;
+    font-size: 24px;
+}
+
+.add-category-page__input-row {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.add-category-page__input-row input{
+    height: 30px;
+    border-radius: 5px;
+}
+
+.add-category-page__file-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-category-page__file-label {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.add-category-page__image-preview {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 150px;
+    height: 150px;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.add-category-page__selected-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.add-category-page__textarea {
+    width: 100%; /* or a fixed width like 400px */
+    height: 300px; /* Set a fixed height */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    resize: none; /* Prevent resizing by the user */
+}
+
+.add-category-page__submit-button {
+    background-color: #ff8417;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 20px auto 0;
+}
+
+.add-category-page__submit-button:hover {
+    background-color: #ff6400;
+}
