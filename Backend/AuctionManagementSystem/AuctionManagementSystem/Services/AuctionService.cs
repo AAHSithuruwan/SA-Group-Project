@@ -120,6 +120,12 @@ namespace AuctionManagementSystem.Services
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = seller.SellerId,
+                        SellerFirstName = seller.FirstName,
+                        SellerLastName = seller.LastName,
+                        SellerAddress = seller.Address,
+                        SellerEmail = seller.Email,
+                        SellerPhoneNumber = seller.PhoneNumber,
                         ProductName = product.Name,
                         IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
@@ -147,6 +153,7 @@ namespace AuctionManagementSystem.Services
         {
             List<Auction> auctions = await _dbContext.Auctions
                 .Include(a => a.Bids)
+                .Include(a => a.Seller)
                 .ToListAsync();
 
             List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
@@ -195,6 +202,12 @@ namespace AuctionManagementSystem.Services
                                 {
                                     ProductId = product.ProductId,
                                     AuctionId = auction.AuctionId,
+                                    SellerId = auction.Seller.SellerId,
+                                    SellerFirstName = auction.Seller.FirstName,
+                                    SellerLastName = auction.Seller.LastName,
+                                    SellerAddress = auction.Seller.Address,
+                                    SellerEmail = auction.Seller.Email,
+                                    SellerPhoneNumber = auction.Seller.PhoneNumber,
                                     ProductName = product.Name,
                                     IsDispatched = product.IsDispatched,
                                     CategoryId = product.CategoryId,
@@ -226,7 +239,9 @@ namespace AuctionManagementSystem.Services
 
         public async Task<List<AuctionAndProductDetailsViewModel>> GetAuctionsByCategory(int categoryId)
         {
-            List<Auction> auctions = await _dbContext.Auctions.ToListAsync();
+            List<Auction> auctions = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .ToListAsync();
 
             List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
 
@@ -267,6 +282,12 @@ namespace AuctionManagementSystem.Services
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = auction.Seller.SellerId,
+                        SellerFirstName = auction.Seller.FirstName,
+                        SellerLastName = auction.Seller.LastName,
+                        SellerAddress = auction.Seller.Address,
+                        SellerEmail = auction.Seller.Email,
+                        SellerPhoneNumber = auction.Seller.PhoneNumber,
                         ProductName = product.Name,
                         IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
@@ -294,7 +315,9 @@ namespace AuctionManagementSystem.Services
         {
             List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
 
-            List<Auction> auctions = await _dbContext.Auctions.ToListAsync();
+            List<Auction> auctions = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .ToListAsync();
 
             if (auctions == null || auctions.Count == 0)
             {
@@ -333,6 +356,12 @@ namespace AuctionManagementSystem.Services
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = auction.Seller.SellerId,
+                        SellerFirstName = auction.Seller.FirstName,
+                        SellerLastName = auction.Seller.LastName,
+                        SellerAddress = auction.Seller.Address,
+                        SellerEmail = auction.Seller.Email,
+                        SellerPhoneNumber = auction.Seller.PhoneNumber,
                         ProductName = product.Name,
                         IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
@@ -358,7 +387,9 @@ namespace AuctionManagementSystem.Services
 
         public async Task<(bool, bool, bool, AuctionAndProductDetailsViewModel?)> GetAuctionById(int auctionId)
         {
-            Auction? auction = await _dbContext.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
+            Auction? auction = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
 
             if (auction == null)
             {
@@ -403,6 +434,12 @@ namespace AuctionManagementSystem.Services
             {
                 ProductId = product.ProductId,
                 AuctionId = auction.AuctionId,
+                SellerId = auction.Seller.SellerId,
+                SellerFirstName = auction.Seller.FirstName,
+                SellerLastName = auction.Seller.LastName,
+                SellerAddress = auction.Seller.Address,
+                SellerEmail = auction.Seller.Email,
+                SellerPhoneNumber = auction.Seller.PhoneNumber,
                 ProductName = product.Name,
                 IsDispatched = product.IsDispatched,
                 CategoryId = product.CategoryId,

@@ -4,7 +4,19 @@
     {
         public required int AuctionId { get; set; }
 
-        public int ProductId { get; set; }
+        public required int ProductId { get; set; }
+
+        public required int SellerId { get; set; }
+
+        public required string SellerFirstName { get; set; }
+
+        public required string SellerLastName { get; set; }
+
+        public required string SellerAddress { get; set; }
+
+        public required string SellerPhoneNumber { get; set; }
+
+        public required string SellerEmail { get; set; }
 
         public required string ProductName { get; set; }
 
