@@ -1,4 +1,4 @@
-/* Container for the page layout */
+
 .create-auction-container {
     display: flex;
     font-family: Arial, sans-serif;
@@ -8,7 +8,7 @@
   
   
   
-  /* Form Styles */
+ 
   .auction-form {
     width: 80%;
     padding-left: 50px;

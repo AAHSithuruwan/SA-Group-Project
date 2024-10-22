@@ -70,7 +70,7 @@ const auctionItems = [
       Material: Leather
     `,
   },
-  // Add more items as needed
+  
 ];
 
 const AdminAuctionDetails = () => {

@@ -8,9 +8,9 @@ const AdminAuctionItemDetails = () => {
 
   return (
     <div className="item-details-container">
-      <h2 className="details-heading">Details</h2> {/* Centered heading at the top */}
+      <h2 className="details-heading">Details</h2> 
       <div className="item-details">
-      <center> <h3>{item.productName}</h3></center> {/* Item name above the image */}
+      <center> <h3>{item.productName}</h3></center> 
         <img src={item.image} alt={item.productName} />
    
 
@@ -18,7 +18,7 @@ const AdminAuctionItemDetails = () => {
 
         <div className="item-seller-info">
           <p>Sold by: {item.sellerName}</p>
-          <p>{item.sellerLocation}, {item.sellerCountry}</p> {/* Seller location */}
+          <p>{item.sellerLocation}, {item.sellerCountry}</p> 
         </div>
 
         <div className="item-right">

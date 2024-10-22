@@ -33,6 +33,8 @@ import BidHistory from './pages/bidhistory/bidhistory.jsx';
 import ChangeEmail from './pages/changeemail/changeemail.jsx';
 import ChangePassword from './pages/changepassword/changepassword.jsx';
 
+
+
 import SellerRegistration from './pages/SellerRegistrationForm/Sellerregistrationform.jsx';
 import Payment from './pages/payment/payment.jsx';
 
@@ -65,7 +67,7 @@ const router = createBrowserRouter([
       },
 
 
-      // Add new routes here for MyAccount, SellerRegistration, and Payment
+      // Add new routes here for  SellerRegistration, and Payment
      
       {
         path: "/sellerregistration",
@@ -105,7 +107,7 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "sellerauctionitemdetails/:id",  // Add this new route
+        path: "sellerauctionitemdetails/:id",  
         element: <SellerAuctionitemdetails />,
       },
       

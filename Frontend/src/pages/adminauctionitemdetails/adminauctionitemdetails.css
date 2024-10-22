@@ -1,14 +1,14 @@
 .item-details-container {
-  padding: 0 20px;  /* Reset top padding to ensure the heading is at the top */
+  padding: 0 20px;  
 }
   
 .details-heading {
-  text-align: center;   /* Center the heading */
-  margin-bottom: 20px;  /* Space below the heading */
+  text-align: center;   
+  margin-bottom: 20px;  
   font-size: 30px;
   color: #ff6600;
-  margin-top: 0;        /* Ensure no extra space at the top */
-  padding-top: 0;       /* Reset padding to prevent space at the top */
+  margin-top: 0;        
+  padding-top: 0;      
 }
   
   .item-details {
@@ -32,7 +32,7 @@
     margin-bottom: 10px;
   }
   
-  /* Fashion category in a black box */
+  
   .fashion-box {
     background-color: black;
     color: white;
@@ -43,7 +43,7 @@
   }
   
   .item-seller-info {
-    text-align: right; /* Align seller info to the right */
+    text-align: right; 
     margin-bottom: 20px;
   }
   
@@ -58,7 +58,7 @@
   }
   
   .item-right p {
-    margin: 10px 0; /* Add space between details */
+    margin: 10px 0; 
   }
   
   h4 {
@@ -84,6 +84,6 @@
   
   .item-description-box ul li {
     margin-bottom: 10px;
-    font-weight: normal; /* Description points filled */
+    font-weight: normal; 
   }
   

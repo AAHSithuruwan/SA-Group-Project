@@ -14,7 +14,7 @@ const AddNewCategory = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic to submit form data goes here
+   
     console.log('Form Submitted');
   };
 

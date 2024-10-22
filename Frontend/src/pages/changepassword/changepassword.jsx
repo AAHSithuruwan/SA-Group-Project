@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './changepassword.css'; // Import your CSS file
+import './changepassword.css'; 
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -14,11 +14,11 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="change-password-page"> {/* Updated class name */}
+    <div className="change-password-page"> 
       <h2>Change Password</h2>
       <form onSubmit={handleSubmit}>
-        <div className="change-password-input-row"> {/* Updated class name */}
-          <div className="change-password-label-container"> {/* Updated class name */}
+        <div className="change-password-input-row"> 
+          <div className="change-password-label-container"> 
             <label htmlFor="currentPassword">Current Password:</label>
             <input
               type="password"
@@ -59,7 +59,7 @@ const ChangePassword = () => {
           </div>
         </div>
 
-        <button type="submit" className="change-password-submit-button">Submit</button> {/* Updated class name */}
+        <button type="submit" className="change-password-submit-button">Submit</button> 
       </form>
     </div>
   );
