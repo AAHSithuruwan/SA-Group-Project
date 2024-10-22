@@ -6,33 +6,39 @@ import Sidebar from './Sidebar/Sidebar';
 
 const SellerLayout = () => {
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-     
+    <div style={{ height: '100vh', display: 'flex', background: '#e6f5ea' }}>
+      {/* Navbar */}
       <Navbar />
 
-      <div style={{ display: 'flex', flex: 1 }}>
-        
+      {/* Main Layout */}
+      <div style={{ display: 'flex',flex: 1 }}>
+        {/* Sidebar */}
         <Sidebar />
 
         {/* Scrollable Main Content */}
         <main
           style={{
             flex: 1,
-            padding: '20px',
-            paddingTop: '80px', 
-            background: '#e9e0e0',
-            overflowY: 'auto', 
-            height: 'calc(100vh - 140px)', 
+            paddingTop: '80px',
+            paddingLeft: '30px',
+            paddingRight: '30px',
+            backgroundColor: '#f0f9f3', 
+            overflowY: 'auto',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
+            borderRadius: '10px',
+            marginLeft: '10px',
+            marginRight: '10px', 
+            minHeight: 'calc(100vh)', 
           }}
         >
-          <Outlet /> {/* Render child routes - Dashboard, SellerDetails... */}
+          {/* Render child routes - Dashboard, SellerDetails, etc */}
+          <Outlet />
         </main>
       </div>
 
-      
-      <Footer />
     </div>
   );
 };
 
 export default SellerLayout;
+

@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom'; 
 import profilepic from '../../assets/profilepic.png'; 
 import './sidebar.css'; 
 
 const Sidebar = () => {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const location = useLocation(); // Get the current location
+  const [hoveredIndex, setHoveredIndex] = useState(null); // Start with no hovered index
 
   const sidebarOptions = [
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Seller Details', path: '/sellerdetails' },
-    { name: 'Add Product', path: '/addproduct' },
+    { name: 'Create Auction', path: '/addproduct' },
     { name: 'Auction Details', path: '/auctiondetails' },
     { name: 'Notifications', path: '/notifications' },
   ];
+
+  // Effect to set the hovered index based on the current path
+  useEffect(() => {
+    const currentIndex = sidebarOptions.findIndex(option => option.path === location.pathname);
+    setHoveredIndex(currentIndex !== -1 ? currentIndex : 0); // Set to current page index
+  }, [location.pathname]);
 
   return (
     <div className="sidebar">
@@ -23,11 +30,9 @@ const Sidebar = () => {
         {sidebarOptions.map((item, index) => (
           <li
             key={index}
-            className={`sidebar-menu-item ${hoveredIndex === index ? 'hovered' : ''}`}
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            className={`sidebar-menu-item ${hoveredIndex === index ? 'hovered' : ''}`} // Keep the current tab hovered
           >
-            <Link to={item.path} className="sidebar-link">
+            <Link to={item.path} className={`sidebar-link ${hoveredIndex === index ? 'hovered' : ''}`}>
               {item.name}
             </Link>
           </li>
@@ -38,3 +43,6 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
+

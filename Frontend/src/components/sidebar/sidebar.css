@@ -52,8 +52,8 @@
     width: 100%;
   }
   
-  .sidebar-link:hover {
-    text-decoration: none; 
+  .sidebar-link.hovered {
+    text-decoration: none;
     color: #fff; 
   }
   
