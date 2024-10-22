@@ -1,117 +1,100 @@
 // src/pages/categoryItems/categoryItems.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './categoryItems.css';
-import bag from '../../assets/electronics1.png'; 
-
-const itemsData = {
-  Electronics: [
-    { name: 'Smartphone', price: '$700', image: 'path-to-smartphone-image' },
-    { name: 'Laptop', price: '$1,200', image: 'path-to-laptop-image' },
-    { name: 'Headphones', price: '$150', image: 'path-to-headphones-image' },
-    { name: 'Smartwatch', price: '$250', image: 'path-to-smartwatch-image' },
-    { name: 'Camera', price: '$500', image: 'path-to-camera-image' },
-    { name: 'Tablet', price: '$300', image: 'path-to-tablet-image' },
-  ],
-  Fashion: [
-    { name: 'T-Shirt', price: '$25', image: 'path-to-tshirt-image' },
-    { name: 'Jeans', price: '$40', image: 'path-to-jeans-image' },
-    { name: 'Jacket', price: '$100', image: 'path-to-jacket-image' },
-    { name: 'Dress', price: '$80', image: 'path-to-dress-image' },
-    { name: 'Shoes', price: '$60', image: 'path-to-shoes-image' },
-    { name: 'Hat', price: '$20', image: 'path-to-hat-image' },
-  ],
-  'Home & Garden': [
-    { name: 'Sofa', price: '$500', image: 'path-to-sofa-image' },
-    { name: 'Dining Table', price: '$300', image: 'path-to-dining-table-image' },
-    { name: 'Bed', price: '$400', image: 'path-to-bed-image' },
-    { name: 'Garden Chair', price: '$80', image: 'path-to-garden-chair-image' },
-    { name: 'Lamp', price: '$40', image: 'path-to-lamp-image' },
-    { name: 'Rug', price: '$150', image: 'path-to-rug-image' },
-  ],
-  Sports: [
-    { name: 'Basketball', price: '$25', image: 'path-to-basketball-image' },
-    { name: 'Tennis Racket', price: '$60', image: 'path-to-tennis-racket-image' },
-    { name: 'Soccer Ball', price: '$30', image: 'path-to-soccer-ball-image' },
-    { name: 'Yoga Mat', price: '$20', image: 'path-to-yoga-mat-image' },
-    { name: 'Dumbbells', price: '$50', image: 'path-to-dumbbells-image' },
-    { name: 'Bicycle', price: '$300', image: 'path-to-bicycle-image' },
-  ],
-  Vehicles: [
-    { name: 'Car', price: '$20,000', image: 'path-to-car-image' },
-    { name: 'Motorbike', price: '$10,000', image: 'path-to-motorbike-image' },
-    { name: 'Bicycle', price: '$500', image: 'path-to-bicycle-image' },
-    { name: 'Truck', price: '$30,000', image: 'path-to-truck-image' },
-    { name: 'Van', price: '$25,000', image: 'path-to-van-image' },
-    { name: 'Scooter', price: '$3,000', image: 'path-to-scooter-image' },
-  ],
-  Jewelleries: [
-    { name: 'Necklace', price: '$150', image: 'path-to-necklace-image' },
-    { name: 'Ring', price: '$100', image: 'path-to-ring-image' },
-    { name: 'Earrings', price: '$75', image: 'path-to-earrings-image' },
-    { name: 'Bracelet', price: '$50', image: 'path-to-bracelet-image' },
-    { name: 'Watch', price: '$200', image: 'path-to-watch-image' },
-    { name: 'Brooch', price: '$80', image: 'path-to-brooch-image' },
-  ],
-  Antiques: [
-    { name: 'Antique Vase', price: '$500', image: 'path-to-antique-vase-image' },
-    { name: 'Old Clock', price: '$300', image: 'path-to-old-clock-image' },
-    { name: 'Classic Painting', price: '$1,000', image: 'path-to-classic-painting-image' },
-    { name: 'Old Book', price: '$50', image: 'path-to-old-book-image' },
-    { name: 'Vintage Table', price: '$600', image: 'path-to-vintage-table-image' },
-    { name: 'Antique Chair', price: '$400', image: 'path-to-antique-chair-image' },
-  ],
-  Arts: [
-    { name: 'Painting', price: '$200', image: 'path-to-painting-image' },
-    { name: 'Sculpture', price: '$300', image: 'path-to-sculpture-image' },
-    { name: 'Drawing', price: '$100', image: 'path-to-drawing-image' },
-    { name: 'Photography', price: '$150', image: 'path-to-photography-image' },
-    { name: 'Craft', price: '$50', image: 'path-to-craft-image' },
-    { name: 'Pottery', price: '$80', image: 'path-to-pottery-image' },
-  ],
-  Books: [
-    { name: 'Fiction Book', price: '$15', image: 'path-to-fiction-book-image' },
-    { name: 'Non-Fiction Book', price: '$20', image: 'path-to-non-fiction-book-image' },
-    { name: 'Children\'s Book', price: '$10', image: 'path-to-childrens-book-image' },
-    { name: 'Textbook', price: '$50', image: 'path-to-textbook-image' },
-    { name: 'Cookbook', price: '$30', image: 'path-to-cookbook-image' },
-    { name: 'Biography', price: '$25', image: 'path-to-biography-image' },
-  ],
-};
-
-
-itemsData.Electronics[0].image = bag; 
-itemsData.Fashion[0].image = bag; 
-itemsData['Home & Garden'][0].image = bag; 
-itemsData.Sports[0].image = bag; 
-itemsData.Vehicles[0].image = bag; 
-itemsData.Jewelleries[0].image = bag; 
-itemsData. Antiques[0].image = bag; 
-itemsData.Arts[0].image = bag; 
-itemsData.Books[0].image = bag; 
+import { ThreeDots } from 'react-loader-spinner';
 
 const CategoryItems = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const categoryName = location.state.category;
-  const items = itemsData[categoryName] || [];
+  const { categoryId, categoryName } = location.state;
+  const [categoryAuctions, setCategoryAuctions] = useState([]);
+  const [timer, setTimer] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleItemClick = (item) => {
-    // Navigate to the item details page and pass the item data
-    navigate('/item-details', { state: { item } });
+  const handleAuctionClick = (auction) => {
+    navigate('/item-details', { state: { auctionId: auction.auctionId } });
+  };
+
+  useEffect(() => {
+    const fetchCategoryAuctions = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5101/api/Auction/Category/${categoryId}`);
+        setCategoryAuctions(response.data);
+        initializeTimer(response.data);
+      } catch (error) {
+        console.error('There was an error fetching the category auctions!', error);
+      }
+    };
+
+    fetchCategoryAuctions();
+  }, [categoryId]);
+
+  const initializeTimer = (categoryAuctions) => {
+    const interval = setInterval(() => {
+      const updatedTimer = categoryAuctions.map(auction => {
+        const currentTime = new Date();
+        const startingTime = new Date(auction.startingDate);
+        const endTime = new Date(auction.endDate);
+
+        if (currentTime < startingTime) {
+          return { status: 'Not Started', remainingTime: startingTime - currentTime };
+        } else if (currentTime > endTime) {
+          return { status: 'Ended', remainingTime: 0 };
+        } else {
+          return { status: 'Ongoing', remainingTime: endTime - currentTime };
+        }
+      });
+      setTimer(updatedTimer);
+      setLoading(false);
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  };
+
+  const formatRemainingTime = (milliseconds) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const days = Math.floor(totalSeconds / 86400); // 86400 seconds in a day
+    const hours = Math.floor((totalSeconds % 86400) / 3600); // 3600 seconds in an hour
+    const minutes = Math.floor((totalSeconds % 3600) / 60); // 60 seconds in a minute
+    return `${days}d ${hours}h ${minutes}m`;
   };
 
   return (
     <section className="category-items-section">
-      <h2>{categoryName} Items</h2>
+      <h2>{categoryName}</h2>
       <div className="items-grid">
-        {items.map((item, index) => (
-          <div key={index} className="item-card" onClick={() => handleItemClick(item)}>
-            <img src={item.image} alt={item.name} />
-            <h3>{item.name}</h3>
-            <p>{item.price}</p>
-          </div>
-        ))}
+        {categoryAuctions.map((auction, index) => {
+          const { status, remainingTime } = timer[index] || {};
+          const displayTime = status === 'Ongoing' ? formatRemainingTime(remainingTime) : '';
+
+          return (
+            <div key={index} className="item-card" onClick={() => handleAuctionClick(auction)}>
+              <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} />
+              <h3>{auction.productName}</h3>
+              <h3>Rs. {auction.nextBidPrice}</h3>
+              {loading && <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                              <ThreeDots
+                                visible={true}
+                                height="40"
+                                width="50"
+                                color="#4fa94d"
+                                radius="9"
+                                ariaLabel="three-dots-loading"
+                              />
+                          </div>                
+              }
+              {!loading && (
+                  <>
+                    {status === 'Ongoing' && <h4 style={{ color: 'blue' }}>Time Left: {displayTime}</h4>}
+                    {status === 'Not Started' && <h4 style={{ color: 'brown' }}>Starts At: {new Date(auction.startingDate).toLocaleString()}</h4>}
+                    {status === 'Ended' && <h4 style={{ color: 'red' }}>Ended</h4>}
+                  </>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

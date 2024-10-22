@@ -120,6 +120,12 @@ namespace AuctionManagementSystem.Services
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = seller.SellerId,
+                        SellerFirstName = seller.FirstName,
+                        SellerLastName = seller.LastName,
+                        SellerAddress = seller.Address,
+                        SellerEmail = seller.Email,
+                        SellerPhoneNumber = seller.PhoneNumber,
                         ProductName = product.Name,
                         IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
@@ -140,13 +146,14 @@ namespace AuctionManagementSystem.Services
                 } 
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<List<AuctionAndProductDetailsViewModel>> GetAuctionsByUser(int userId)
         {
             List<Auction> auctions = await _dbContext.Auctions
                 .Include(a => a.Bids)
+                .Include(a => a.Seller)
                 .ToListAsync();
 
             List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
@@ -195,6 +202,12 @@ namespace AuctionManagementSystem.Services
                                 {
                                     ProductId = product.ProductId,
                                     AuctionId = auction.AuctionId,
+                                    SellerId = auction.Seller.SellerId,
+                                    SellerFirstName = auction.Seller.FirstName,
+                                    SellerLastName = auction.Seller.LastName,
+                                    SellerAddress = auction.Seller.Address,
+                                    SellerEmail = auction.Seller.Email,
+                                    SellerPhoneNumber = auction.Seller.PhoneNumber,
                                     ProductName = product.Name,
                                     IsDispatched = product.IsDispatched,
                                     CategoryId = product.CategoryId,
@@ -221,12 +234,14 @@ namespace AuctionManagementSystem.Services
 
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<List<AuctionAndProductDetailsViewModel>> GetAuctionsByCategory(int categoryId)
         {
-            List<Auction> auctions = await _dbContext.Auctions.ToListAsync();
+            List<Auction> auctions = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .ToListAsync();
 
             List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
 
@@ -267,6 +282,12 @@ namespace AuctionManagementSystem.Services
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = auction.Seller.SellerId,
+                        SellerFirstName = auction.Seller.FirstName,
+                        SellerLastName = auction.Seller.LastName,
+                        SellerAddress = auction.Seller.Address,
+                        SellerEmail = auction.Seller.Email,
+                        SellerPhoneNumber = auction.Seller.PhoneNumber,
                         ProductName = product.Name,
                         IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
@@ -286,15 +307,17 @@ namespace AuctionManagementSystem.Services
                     auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
                 }
             }
-
-            return auctionAndProductDetailsViewModels;
+            
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<List<AuctionAndProductDetailsViewModel>> GetAllAuctions()
         {
             List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
 
-            List<Auction> auctions = await _dbContext.Auctions.ToListAsync();
+            List<Auction> auctions = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .ToListAsync();
 
             if (auctions == null || auctions.Count == 0)
             {
@@ -333,6 +356,12 @@ namespace AuctionManagementSystem.Services
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = auction.Seller.SellerId,
+                        SellerFirstName = auction.Seller.FirstName,
+                        SellerLastName = auction.Seller.LastName,
+                        SellerAddress = auction.Seller.Address,
+                        SellerEmail = auction.Seller.Email,
+                        SellerPhoneNumber = auction.Seller.PhoneNumber,
                         ProductName = product.Name,
                         IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
@@ -353,12 +382,14 @@ namespace AuctionManagementSystem.Services
                 }
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
         public async Task<(bool, bool, bool, AuctionAndProductDetailsViewModel?)> GetAuctionById(int auctionId)
         {
-            Auction? auction = await _dbContext.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
+            Auction? auction = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
 
             if (auction == null)
             {
@@ -403,6 +434,12 @@ namespace AuctionManagementSystem.Services
             {
                 ProductId = product.ProductId,
                 AuctionId = auction.AuctionId,
+                SellerId = auction.Seller.SellerId,
+                SellerFirstName = auction.Seller.FirstName,
+                SellerLastName = auction.Seller.LastName,
+                SellerAddress = auction.Seller.Address,
+                SellerEmail = auction.Seller.Email,
+                SellerPhoneNumber = auction.Seller.PhoneNumber,
                 ProductName = product.Name,
                 IsDispatched = product.IsDispatched,
                 CategoryId = product.CategoryId,
@@ -529,6 +566,46 @@ namespace AuctionManagementSystem.Services
             System.IO.File.Delete(filePath);
 
             return (true, true, true);
+        }
+
+        public List<AuctionAndProductDetailsViewModel> SortAuctions(List<AuctionAndProductDetailsViewModel> auctions)
+        {
+            var currentTime = DateTime.UtcNow;
+
+            var statusOrder = new Dictionary<string, int>
+            {
+                { "Ongoing", 1 },
+                { "Not Started", 2 },
+                { "Ended", 3 }
+            };
+
+            var sortedAuctions = auctions.Select(auction => new
+            {
+                Auction = auction,
+                Status = GetAuctionStatus(auction, currentTime)
+            })
+            .OrderBy(a => statusOrder[a.Status]) // Sort by custom status order
+            .ThenBy(a => a.Auction.StartingDate) // Optionally sort by starting date within the same status
+            .Select(a => a.Auction) // Select back the auction details
+            .ToList();
+
+            return sortedAuctions;
+        }
+
+        private string GetAuctionStatus(AuctionAndProductDetailsViewModel auction, DateTime currentTime)
+        {
+            if (currentTime < auction.StartingDate)
+            {
+                return "Not Started";
+            }
+            else if (currentTime > auction.EndDate)
+            {
+                return "Ended";
+            }
+            else
+            {
+                return "Ongoing";
+            }
         }
     }
 }

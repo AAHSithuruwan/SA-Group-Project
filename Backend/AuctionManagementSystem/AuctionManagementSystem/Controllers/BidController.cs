@@ -1,10 +1,8 @@
-﻿using AuctionManagementSystem.Data;
-using AuctionManagementSystem.DTOs;
-using AuctionManagementSystem.Models;
+﻿using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Services;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -19,17 +17,18 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // POST: api/Bid
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateBid([FromBody] BidDetailsCreateModel bidDetailsCreateModel)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var (isUserFound, isAuctionFound, auctionClosedMessage, invalidBidPriceMessage) = await _bidService.CreateBid(bidDetailsCreateModel, (int)userId);
+            var (isUserFound, isAuctionFound, auctionClosedMessage, invalidBidPriceMessage) = await _bidService.CreateBid(bidDetailsCreateModel, int.Parse(userId));
 
             if (isUserFound == false)
             {
@@ -55,6 +54,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // GET: api/Bid/All/1
+        [Authorize]
         [HttpGet("All/{auctionId:int}")]
         public async Task<IActionResult> GetAllBids([FromRoute] int auctionId)
         {
@@ -69,17 +69,18 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // GET: api/Bid/User/1
+        [Authorize]
         [HttpGet("User/{auctionId:int}")]
         public async Task<IActionResult> GetUserBids([FromRoute] int auctionId)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var userBids = await _bidService.GetUserBids(auctionId, (int)userId);
+            var userBids = await _bidService.GetUserBids(auctionId, int.Parse(userId));
 
             if (userBids == null)
             {
@@ -90,6 +91,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // GET: api/Bid/1
+        [Authorize]
         [HttpGet("{bidId:int}")]
         public async Task<IActionResult> GetBidById([FromRoute] int bidId)
         {
