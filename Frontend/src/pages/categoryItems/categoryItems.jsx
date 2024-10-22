@@ -87,9 +87,9 @@ const CategoryItems = () => {
               }
               {!loading && (
                   <>
-                    {status === 'Ongoing' && <h3 style={{ color: 'blue' }}>Time Left: {displayTime}</h3>}
-                    {status === 'Not Started' && <h3 style={{ color: 'brown' }}>Starts At: {new Date(auction.startingDate).toLocaleString()}</h3>}
-                    {status === 'Ended' && <h3 style={{ color: 'red' }}>Ended</h3>}
+                    {status === 'Ongoing' && <h4 style={{ color: 'blue' }}>Time Left: {displayTime}</h4>}
+                    {status === 'Not Started' && <h4 style={{ color: 'brown' }}>Starts At: {new Date(auction.startingDate).toLocaleString()}</h4>}
+                    {status === 'Ended' && <h4 style={{ color: 'red' }}>Ended</h4>}
                   </>
               )}
             </div>
