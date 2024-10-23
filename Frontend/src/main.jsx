@@ -2,19 +2,19 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import RootLayout from './components/RootLayout'; 
-import Signup from './pages/signup/signup.jsx';
+import SignUp from './pages/signup/signup.jsx';
 import SignIn from './pages/signin/signin.jsx';
 import Categories from './pages/categories/categories.jsx';
 import Hero from './components/Hero/Hero.jsx'; 
 import CategoryItems from './pages/categoryItems/categoryItems.jsx';
 import ItemDetails from './pages/itemDetails/itemDetails.jsx'; 
-import Dashboard from './pages/dashboard/dashboard.jsx';
+import SellerDashboard from './pages/sellerDashboard/sellerDashboard.jsx';
 
 import SellerLayout from './components/sellerlayout.jsx';
 import SellerRegistration from './pages/SellerRegistrationForm/SellerRegistrationform.jsx';
 import SellerDetails from './pages/sellerdetails/sellerdetails.jsx';
-import AddProduct from './pages/addproduct/addproduct.jsx';
-import AuctionDetails from './pages/auctiondetails/auctiondetails.jsx';
+import CreateAuction from './pages/createAuction/createAuction.jsx';
+import SellerAuctionList from './pages/sellerAuctionList/sellerAuctionList.jsx';
 import Notifications from './pages/notifications/notifications.jsx';
 
 const router = createBrowserRouter([
@@ -29,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/signin",
         element: <SignIn />, 
+      },
+      {
+        path: "/signup",
+        element: <SignUp />, 
       },
       {
         path: "/categories",
@@ -53,8 +57,8 @@ const router = createBrowserRouter([
     element: <SellerLayout />, 
     children: [
       {
-        path: "dashboard",
-        element: <Dashboard />, 
+        path: "sellerdashboard",
+        element: <SellerDashboard />, 
       },
 
       {
@@ -63,12 +67,12 @@ const router = createBrowserRouter([
       },
       
       {
-        path: "addproduct",
-        element: <AddProduct/>, 
+        path: "createauction",
+        element: <CreateAuction/>, 
       },
       {
-        path: "auctiondetails",
-        element: <AuctionDetails/>, 
+        path: "sellerauctionlist",
+        element: <SellerAuctionList/>, 
       },
       
       {

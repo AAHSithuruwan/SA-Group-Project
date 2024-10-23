@@ -1,8 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar/Navbar';
-import Footer from './footer/footer';
-import Sidebar from './Sidebar/Sidebar';
+import SellerSidebar from './sellerSideBar/sellerSideBar';
 
 const SellerLayout = () => {
   return (
@@ -13,7 +12,7 @@ const SellerLayout = () => {
       {/* Main Layout */}
       <div style={{ display: 'flex',flex: 1 }}>
         {/* Sidebar */}
-        <Sidebar />
+        <SellerSidebar />
 
         {/* Scrollable Main Content */}
         <main

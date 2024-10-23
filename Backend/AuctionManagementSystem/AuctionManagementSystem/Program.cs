@@ -98,6 +98,13 @@ namespace AuctionManagementSystem
                 RequestPath = "/Images/ProductImages"
             });
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", "SellerImages")),
+                RequestPath = "/Images/SellerImages"
+            });
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

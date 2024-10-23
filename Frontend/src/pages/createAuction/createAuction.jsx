@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './addproduct.css';
+import './createAuction.css';
 import ErrorDialogBox from '../../components/DialogBoxes/ErrorDialogBox';
 import SuccessDialogBox from '../../components/DialogBoxes/SuccessDialogBox';
 import { getJwtToken } from '../../components/JwtAuthentication/JwtTokenHandler';
 
-const AddProduct = () => {
+const CreateAuction = () => {
 
   const navigate = useNavigate();
   const [productName, setProductName] = useState([]);
@@ -152,5 +152,5 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default CreateAuction;
 
