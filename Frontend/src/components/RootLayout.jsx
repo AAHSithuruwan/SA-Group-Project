@@ -7,7 +7,15 @@ const RootLayout = () => {
   return (
     <div>
       <Navbar />
-      <main style={{ paddingTop: '25px' }}>
+      <main
+          style={{
+            flex: 1,
+           
+           paddingTop: '25px',
+            backgroundColor: '#e9e0e0',  
+         
+          }}
+        >
         <Outlet /> 
       </main>
       <Footer />
