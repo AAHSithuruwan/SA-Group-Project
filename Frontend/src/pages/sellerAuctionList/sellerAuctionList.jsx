@@ -91,7 +91,9 @@ const SellerAuctionList = () => {
                     {checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched)}
                   </td>
                   <td>
-                    <button className="details-button">Details</button>
+                    
+                      <button className="details-button" onClick={() => handleDetailsClick(auction)} >Details</button>  
+                  
                   </td>
                 </tr>
               ))

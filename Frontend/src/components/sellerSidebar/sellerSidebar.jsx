@@ -20,7 +20,7 @@ const SellerSidebar = () => {
   ];
 
   useEffect(() => {
-    const currentIndex = sidebarOptions.findIndex(option => option.path === location.pathname);
+    const currentIndex = sidebarOptions.findIndex(option => {return location.pathname.startsWith(option.path);});
 
     const fetchSellerDetails = async () => {
       const jwtToken = await getJwtToken();

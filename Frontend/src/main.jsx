@@ -15,7 +15,9 @@ import SellerRegistration from './pages/SellerRegistrationForm/SellerRegistratio
 import SellerDetails from './pages/sellerdetails/sellerdetails.jsx';
 import CreateAuction from './pages/createAuction/createAuction.jsx';
 import SellerAuctionList from './pages/sellerAuctionList/sellerAuctionList.jsx';
+import SellerAuctionDetails from './pages/sellerAuctionDetails/sellerAuctionDetails.jsx';
 import Notifications from './pages/notifications/notifications.jsx';
+import UpdateAuction from './pages/updateAuction/updateAuction.jsx';
 
 const router = createBrowserRouter([
   {
@@ -73,6 +75,16 @@ const router = createBrowserRouter([
       {
         path: "sellerauctionlist",
         element: <SellerAuctionList/>, 
+      },
+
+      {
+        path: "sellerauctionlist/sellerauctiondetails",
+        element: <SellerAuctionDetails/>
+      },
+
+      {
+        path: "sellerauctionlist/sellerauctiondetails/updateauction",
+        element: <UpdateAuction/>
       },
       
       {
