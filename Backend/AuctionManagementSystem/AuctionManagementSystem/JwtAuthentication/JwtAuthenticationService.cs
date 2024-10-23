@@ -30,6 +30,13 @@ namespace AuctionManagementSystem.JwtAuthentication
                 throw new Exception("JWT Issuer is null");
             }
 
+            var jwtAudience = _configuration["Jwt:Audience"];
+
+            if (jwtAudience == null)
+            {
+                throw new Exception("JWT Audience is null");
+            }
+
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey));
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -37,7 +44,8 @@ namespace AuctionManagementSystem.JwtAuthentication
             var claims = new[]
             {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Aud, jwtAudience)
             };
 
             var token = new JwtSecurityToken(

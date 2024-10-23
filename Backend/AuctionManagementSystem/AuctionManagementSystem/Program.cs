@@ -47,11 +47,17 @@ namespace AuctionManagementSystem
 
             //Jwt configuration starts here
             var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
+            var jwtAudience = builder.Configuration.GetSection("Jwt:Audience").Get<string>();
             var jwtSecretKey = builder.Configuration.GetSection("Jwt:SecretKey").Get<string>();
 
             if(jwtIssuer == null)
             {
                 throw new Exception("JWT Issuer is null");
+            }
+
+            if (jwtAudience == null)
+            {
+                throw new Exception("JWT Audience is null");
             }
 
             if (jwtSecretKey == null)
@@ -69,7 +75,7 @@ namespace AuctionManagementSystem
                      ValidateLifetime = true,
                      ValidateIssuerSigningKey = true,
                      ValidIssuer = jwtIssuer,
-                     ValidAudience = jwtIssuer,
+                     ValidAudience = jwtAudience,
                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
                  };
              });
@@ -90,6 +96,13 @@ namespace AuctionManagementSystem
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", "ProductImages")),
                 RequestPath = "/Images/ProductImages"
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", "SellerImages")),
+                RequestPath = "/Images/SellerImages"
             });
 
             // Configure the HTTP request pipeline.

@@ -6,7 +6,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.details-container {
+.create-auction-container {
   display: flex;
   justify-content: center;
   padding: 20px;
@@ -15,7 +15,7 @@ body {
   align-items: center;
 }
 
-.details-form {
+.auction-form {
   background-color: #ffffff;
   padding: 30px;
   border-radius: 12px;
@@ -44,7 +44,9 @@ body {
   color: #444;
 }
 
-.input-row input {
+.input-row input,
+.input-row select,
+.input-row textarea {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -74,7 +76,7 @@ body {
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .details-form {
+  .auction-form {
     padding: 20px;
   }
 
@@ -88,11 +90,13 @@ body {
 }
 
 @media (max-width: 480px) {
-  .details-form {
+  .auction-form {
     padding: 15px;
   }
 
-  .input-row input {
+  .input-row input,
+  .input-row select,
+  .input-row textarea {
     padding: 8px;
   }
 
@@ -100,3 +104,5 @@ body {
     padding: 10px 20px;
   }
 }
+
+  
