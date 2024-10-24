@@ -12,11 +12,9 @@ const SellerSidebar = () => {
   const navigate = useNavigate();
 
   const sidebarOptions = [
-    { name: 'Dashboard', path: '/sellerdashboard' },
-    { name: 'Seller Details', path: '/sellerdetails' },
-    { name: 'Create Auction', path: '/createauction' },
     { name: 'Auction Details', path: '/sellerauctionlist' },
-    { name: 'Notifications', path: '/notifications' },
+    { name: 'Create Auction', path: '/createauction' },
+    { name: 'Seller Details', path: '/sellerdetails' },
   ];
 
   useEffect(() => {

@@ -1,116 +1,123 @@
+/* myaccount.css */
+
 * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-  }
-  
-  h2.account-header {
-    text-align: center;
- 
-    padding: 15px;
-    color: #ff6a00;
-    margin: 0;
-  }
-  
-  .details-container {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background-color: #f4f4f4;
-  }
-  
-  .details-form {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-  }
-  
-  .form-left, .form-right {
-    width: 45%;
-  }
-  
-  .input-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .input-row label {
-    width: 150px;
-    font-weight: bold;
-  }
-  
-  .input-row input {
-    flex-grow: 1;
-    padding: 8px;
-    margin-left: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  .edit-icon {
-    margin-left: 10px;
-    cursor: pointer;
-    color: #6b9f3f;
-  }
-  
-  .email-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    padding: 10px;
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-  }
-  
-  .email-text {
-    font-weight: bold;
-    margin-left: 10px;
-  
-  }
-  
-  .email-actions {
-    display: flex;
-  }
-  
-  .email-btn, .password-btn {
-    background-color: #6b9f3f;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
-  .email-btn:hover, .password-btn:hover {
-    background-color: #5a8833;
-  }
-  
-  .submit-row {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .submit-row button {
-    background-color: #6b9f3f;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .submit-row button:hover {
-    background-color: #5a8833;
-  }
-  
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.myaccount-header {
+  text-align: center;
+  padding: 15px;
+  color: #6b9f3f;
+  margin: 0;
+}
+
+.myaccount-details-container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.myaccount-details-form {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.myaccount-form-left,
+.myaccount-form-right {
+  width: 45%;
+}
+
+.myaccount-input-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.myaccount-input-row label {
+  width: 150px;
+  font-weight: bold;
+}
+
+.myaccount-input-row input {
+  flex-grow: 1;
+  padding: 8px;
+  margin-left: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.myaccount-edit-icon {
+  margin-left: 10px;
+  cursor: pointer;
+  color: #6b9f3f;
+}
+
+.myaccount-email-section {
+  display: flex;
+  justify-content: space-between; /* Aligns content to the right */
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 50px;
+  margin-right: 550px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.myaccount-email-text {
+  font-weight: bold;
+  margin-right: 20px; /* Adds space between email text and buttons */
+}
+
+.myaccount-email-actions {
+  display: flex;
+  gap: 10px; /* Space between the buttons */
+}
+
+.myaccount-email-btn,
+.myaccount-password-btn {
+  background-color: #6b9f3f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.myaccount-email-btn:hover,
+.myaccount-password-btn:hover {
+  background-color: #5a8833;
+}
+
+.myaccount-submit-row {
+  display: flex;
+  justify-content: flex-end; /* Aligns submit button to the right */
+  margin-top: 20px;
+  margin-right: 50px;
+}
+
+.myaccount-submit-row button {
+  background-color: #6b9f3f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+}
+
+.myaccount-submit-row button:hover {
+  background-color: #5a8833;
+}
+
+
+

@@ -13,6 +13,37 @@ const SellerAuctionDetails = () => {
   const [auction, setAuction] = useState([]);
   const navigate = useNavigate();
 
+  const checkAuctionStatus = (startingDate, endDate, isDispatched) => {
+    const currentDate = new Date();
+    const start = new Date(startingDate);
+    const end = new Date(endDate);
+
+    if (isDispatched == 1) {
+      return 'Dispatched';
+    } else if (currentDate < start) {
+      return 'Not Started';
+    } else if (currentDate >= start && currentDate <= end) {
+      return 'Ongoing';
+    } else if (currentDate > end) {
+      return 'Ended';
+    }
+  };
+
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'Dispatched':
+        return 'status-dispatched';
+      case 'Ended':
+        return 'status-ended';
+      case 'Not Started':
+        return 'status-not-started';
+      case 'Ongoing':
+        return 'status-ongoing';
+      default:
+        return '';
+    }
+  };
+
   const navigateTo = () => {
     navigate('/sellerauctionlist'); 
   };
@@ -34,6 +65,10 @@ const SellerAuctionDetails = () => {
   // Function to handle update button click
   const handleUpdate = () => {
     navigate('/sellerauctionlist/sellerauctiondetails/updateauction', { state: { auctionId: auction.auctionId } });
+  };
+
+  const handleViewBids = () => {
+    navigate('/sellerauctionlist/sellerauctiondetails/sellerauctionallbids', { state: { auctionId: auction.auctionId } });
   };
 
   const deleteAuctionDialog = () => {
@@ -98,13 +133,17 @@ const SellerAuctionDetails = () => {
           <p><strong>Highest Bid Price:</strong> <span style={{ marginLeft: '10px' }}>
                                                     {auction.highestBidPrice ? `Rs. ${auction.highestBidPrice}` : "None"}
                                                   </span></p>
+          <p><strong>Auction Status:</strong> <span style={{ marginLeft: '10px' }}  className={getStatusClass(checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched))}>{checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched)}</span></p>
           {/* Update and Remove buttons */}
           <div className="auction-buttons">
+            <button className='bids-button' onClick={handleViewBids}>
+              View All Bids
+            </button>
             <button className="update-button" onClick={handleUpdate}>
-              Update
+              Update Auction
             </button>
             <button className="remove-button" onClick={deleteAuctionDialog}>
-              Remove
+              Remove Auction
             </button>
           </div>
         </div>
@@ -114,17 +153,22 @@ const SellerAuctionDetails = () => {
         <h3>Highest Bidder Details</h3>
         <p>
           <strong>Highest Bidder:</strong>
-          <span style={{ marginLeft: '15px' }}>{auction.highestBidder || "None"}</span>
+          <span style={{ marginLeft: '15px' }}>{auction.highestBidderEmail || "None"}</span>
+        </p>
+
+        <p>
+          <strong>Shipping Name:</strong>
+          <span style={{ marginLeft: '15px' }}>{auction.highestBidShippingName || "None"}</span>
         </p>
         
         <p>
           <strong>Contact Number:</strong>
-          <span style={{ marginLeft: '15px' }}>{auction.highestBidderContact || "None"}</span>
+          <span style={{ marginLeft: '15px' }}>{auction.highestBidShippingPhoneNumber || "None"}</span>
         </p>
         
         <p>
           <strong>Shipping Address:</strong>
-          <span style={{ marginLeft: '15px' }}>{auction.highestBidderAddress || "None"}</span>
+          <span style={{ marginLeft: '15px' }}>{auction.highestBidShippingAddress || "None"}</span>
         </p>
       </div>
 

@@ -12,7 +12,6 @@ const AdminSidebar = () => {
   const navigate = useNavigate();
 
   const sidebarOptions = [
-    { name: 'Dashboard', path: '/admindashboard' },
     { name: 'Auction Details', path: '/adminauctionlist' },
     { name: 'Category Details', path: '/admincategorylist'}
   ];

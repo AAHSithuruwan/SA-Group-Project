@@ -1,0 +1,65 @@
+.bids-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .bids-details {
+    width: 100%;
+    max-width: 1000px; /* Increased max-width */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Enable horizontal scroll if content overflows */
+  }
+  
+  .bids-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: auto; /* Allow cells to adjust width */
+  }
+  
+  .bids-table th,
+  .bids-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    word-wrap: break-word; /* Break long words */
+    word-break: break-word; /* Break text if it's too long */
+  }
+  
+  .bids-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .no-bids-message {
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+    padding: 20px;
+  }
+  
+  /* Styling for the highest bid */
+  .highest-bid td {
+    color: blue;
+    font-weight: bold;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .bids-container {
+      padding: 10px;
+    }
+  
+    .bids-details {
+      padding: 10px;
+    }
+  
+    .bids-table th,
+    .bids-table td {
+      padding: 8px;
+    }
+  }
+  

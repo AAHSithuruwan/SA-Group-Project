@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './adminAuctionAllBids.css';
+import './sellerAuctionAllBids.css';
 import { getJwtToken } from '../../components/JwtAuthentication/JwtTokenHandler';
 
-const adminAuctionAllBids = () => {
+const sellerAuctionAllBids = () => {
   const location = useLocation();
   const [auctionBids, setAuctionBids] = useState([]);
   const navigate = useNavigate();
@@ -65,4 +65,4 @@ const adminAuctionAllBids = () => {
   );
 };
 
-export default adminAuctionAllBids;
+export default sellerAuctionAllBids;

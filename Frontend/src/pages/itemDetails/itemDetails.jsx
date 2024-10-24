@@ -1,23 +1,29 @@
 // src/pages/itemDetails/ItemDetails.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './itemDetails.css';
 import { ThreeDots } from 'react-loader-spinner';
+import ErrorDialogBox from '../../components/DialogBoxes/ErrorDialogBox';
+import { getJwtToken } from '../../components/JwtAuthentication/JwtTokenHandler';
 
 const ItemDetails = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const auctionId = location.state.auctionId; 
+  const { auctionId } = location.state; 
   const [auction, setAuction] = useState([]);
   const [timer, setTimer] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [bidAmount, setBidAmount] = useState('');
 
   useEffect(() => {
+    console.log(auctionId);
     const fetchAuction = async () => {
       try {
         const response = await axios.get(`http://localhost:5101/api/Auction/${auctionId}`);
         setAuction(response.data);
         initializeTimer(response.data);
+        window.scrollTo(0, 0);
       } catch (error) {
         console.error('There was an error fetching the auction', error);
       }
@@ -57,60 +63,95 @@ const ItemDetails = () => {
     return `${days}d ${hours}h ${minutes}m`;
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const jwtToken = await getJwtToken();
+
+    if(jwtToken == null){
+      navigate('/signin');
+      return;
+    }
+
+    if(bidAmount < auction.nextBidPrice){
+      ErrorDialogBox({
+        title: 'Invalid Bid Amount',
+        text: `Bid amount must be greater than or equal Rs. ${auction.nextBidPrice}.`, // Correctly formatted
+      });
+      return;
+    }
+    navigate('/item-details/payment', { state: { auctionId: auction.auctionId, bidAmount: bidAmount } });
+  };
+
   return (
     <section className="item-details-section">
       <div className="item-details-container">
-        <div className="image-and-info">
+        <div className="item-info">
+          <h2>{auction.productName}</h2>
           <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} className="item-image" />
-          <div className="item-info">
-            <h2>{auction.productName}</h2>
-            <div className="current-bid-container">
-            <p className="current-bid">Rs. {auction.highestBidPrice ? auction.highestBidPrice : '-'}</p>
-              <p className="item-price">Rs. {auction.nextBidPrice}</p>
-            </div>
-      
-          </div>
         </div>
-
+  
         <div className="auction-details">
           <div className='timer'>
-          {loading && (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',}}>
-              <ThreeDots
-                visible={true}
-                height="22"
-                width="50"
-                color="#4fa94d"
-                radius="9"
-                ariaLabel="three-dots-loading"
-              />
-            </div>
-          )}
-          {!loading && (
-            <>
-              {timer.status === 'Ongoing' && <h4 style={{ color: 'blue' }}>Time Left: {formatRemainingTime(timer.remainingTime)}</h4>}
-              {timer.status === 'Not Started' && <h4 style={{ color: 'brown' }}>Starts At: {new Date(auction.startingDate).toLocaleString()}</h4>}
-              {timer.status === 'Ended' && <h4 style={{ color: 'red' }}>Ended</h4>}
-            </>
-          )}
+            {loading && (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <ThreeDots
+                  visible={true}
+                  height="22"
+                  width="50"
+                  color="#4fa94d"
+                  radius="9"
+                  ariaLabel="three-dots-loading"
+                />
+              </div>
+            )}
+            {!loading && (
+              <>
+                {timer.status === 'Ongoing' && <h4 style={{ color: 'blue' }}>Time Left: {formatRemainingTime(timer.remainingTime)}</h4>}
+                {timer.status === 'Not Started' && <h4 style={{ color: 'brown' }}>Starts At: {new Date(auction.startingDate).toLocaleString()}</h4>}
+                {timer.status === 'Ended' && <h4 style={{ color: 'red' }}>Ended</h4>}
+              </>
+            )}
           </div>
-
+  
           <div className="seller-details">
             <h4>Sold By: <span className="seller-name">{auction.sellerFirstName} {auction.sellerLastName}</span></h4>
-            <p className="seller-location">{auction.sellerAddress}</p>
-
+            <h4>
+              {auction.highestBidPrice ? (
+                <>
+                  Highest Bid: <span className="seller-name">Rs. {auction.highestBidPrice}</span>
+                </>
+              ) : (
+                <>
+                  Starting Bid: <span className="seller-name">Rs. {auction.startingPrice}</span>
+                </>
+              )}
+            </h4>
             <h4>Description:</h4>
             <p className="item-description">{auction.productDescription}</p>
-
           </div>
-
-          <div className="place-bid-container">
-            <button className="place-bid-button">Place Bid</button>
-          </div>
+          
+          {/* Conditionally render the bid form if auction is ongoing */}
+          {timer.status === 'Ongoing' && (
+            <form onSubmit={handleSubmit}>
+              <div className="place-bid-container">
+                <input 
+                  type="number" 
+                  placeholder="Enter your bid amount" 
+                  className="bid-input" 
+                  value={bidAmount} 
+                  onChange={(e) => setBidAmount(e.target.value)} 
+                  required
+                />
+                <button className="place-bid-button">Place Bid</button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </section>
-  );
+  );  
 };
 
 export default ItemDetails;
+

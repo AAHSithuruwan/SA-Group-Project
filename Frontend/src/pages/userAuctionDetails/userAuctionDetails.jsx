@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './adminAuctionDetails.css'; 
+import './userAuctionDetails.css'; 
 import ErrorDialogBox from '../../components/DialogBoxes/ErrorDialogBox';
 import SuccessDialogBox from '../../components/DialogBoxes/SuccessDialogBox';
 import { getJwtToken } from '../../components/JwtAuthentication/JwtTokenHandler';
 import ConfirmDialogBox from '../../components/DialogBoxes/ConfirmDialogBox';
 
-const AdminAuctionDetails = () => {
+const UserAuctionDetails = () => {
   const location = useLocation();
   const { auctionId } = location.state;
   const [auction, setAuction] = useState([]);
   const navigate = useNavigate();
-
-  const handleBid = () => {
-    navigate('/adminauctionlist/adminauctiondetails/adminauctionallbids', { state: { auctionId: auction.auctionId } });
-  };
 
   const checkAuctionStatus = (startingDate, endDate, isDispatched) => {
     const currentDate = new Date();
@@ -46,7 +42,7 @@ const AdminAuctionDetails = () => {
       default:
         return '';
     }
-  };
+  };  
 
   useEffect(() => {
     console.log(auctionId);
@@ -61,6 +57,14 @@ const AdminAuctionDetails = () => {
 
     fetchAuction();
   }, [auctionId]);
+
+  const handleViewUserBids = () => {
+    navigate('/userauctionlist/userauctiondetails/userauctionuserbids', { state: { auctionId: auction.auctionId } });
+  };
+
+  const handleViewAllBids = () => {
+    navigate('/userauctionlist/userauctiondetails/userauctionallbids', { state: { auctionId: auction.auctionId } });
+  };
 
   return (
     <div className="auction-details-container">
@@ -83,9 +87,13 @@ const AdminAuctionDetails = () => {
                                                     {auction.highestBidPrice ? `Rs. ${auction.highestBidPrice}` : "None"}
                                                   </span></p>
           <p><strong>Auction Status:</strong> <span style={{ marginLeft: '10px' }}  className={getStatusClass(checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched))}>{checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched)}</span></p>
+                                                  
           
           <div className="auction-buttons">
-            <button className="bid-button" onClick={handleBid}>
+            <button className='bids-button' onClick={handleViewUserBids}>
+              View Your Bids
+            </button>
+            <button className="bids-button" onClick={handleViewAllBids}>
               View All Bids
             </button>
           </div>
@@ -98,21 +106,6 @@ const AdminAuctionDetails = () => {
           <strong>Highest Bidder:</strong>
           <span style={{ marginLeft: '15px' }}>{auction.highestBidderEmail || "None"}</span>
         </p>
-
-        <p>
-          <strong>Shipping Name:</strong>
-          <span style={{ marginLeft: '15px' }}>{auction.highestBidShippingName || "None"}</span>
-        </p>
-        
-        <p>
-          <strong>Contact Number:</strong>
-          <span style={{ marginLeft: '15px' }}>{auction.highestBidShippingPhoneNumber || "None"}</span>
-        </p>
-        
-        <p>
-          <strong>Shipping Address:</strong>
-          <span style={{ marginLeft: '15px' }}>{auction.highestBidShippingAddress || "None"}</span>
-        </p>
       </div>
 
       <div className="product-description">
@@ -123,4 +116,4 @@ const AdminAuctionDetails = () => {
   );
 };
 
-export default AdminAuctionDetails;
+export default UserAuctionDetails;

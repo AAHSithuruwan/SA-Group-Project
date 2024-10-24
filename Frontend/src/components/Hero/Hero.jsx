@@ -1,118 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios'; // Make sure to import axios
 import './Hero.css'; 
 import image from '../../assets/backimage.png'; 
-import electronics1 from '../../assets/electronics1.png'
-import fashion1 from '../../assets/fashion1.png'
-import homegarden1 from '../../assets/home-garden1.png'
-import sports1 from '../../assets/sports1.png'
-import vehicle1 from '../../assets/vehicle1.png'
-import jewellery1 from '../../assets/jewellery1.png'
-import antiques1 from '../../assets/antiques1.png'
-import arts1 from '../../assets/arts1.png'
-import books1 from '../../assets/books1.png'
+import electronics1 from '../../assets/electronics1.png';
+import fashion1 from '../../assets/fashion1.png';
+import homegarden1 from '../../assets/home-garden1.png';
+import sports1 from '../../assets/sports1.png';
+import vehicle1 from '../../assets/vehicle1.png';
+import jewellery1 from '../../assets/jewellery1.png';
+import antiques1 from '../../assets/antiques1.png';
+import arts1 from '../../assets/arts1.png';
+import books1 from '../../assets/books1.png';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Hero = () => {
-  const popularItems = [
-    {
-      id: 1,
-      title: 'Gold Jewellery A 22KT',
-      price: 'LKR 75000.00',
-      imageUrl: image,
-      rating: 4,
-      timeRemaining: '8d:4h:25m'
-    },
-    {
-      id: 2,
-      title: 'Gold Jewellery B 22KT',
-      price: 'LKR 80000.00',
-      imageUrl: image,
-      rating: 5,
-      timeRemaining: '7d:6h:40m'
-    },
-    {
-      id: 3,
-      title: 'Gold Jewellery C 22KT',
-      price: 'LKR 85000.00',
-      imageUrl: image,
-      rating: 3,
-      timeRemaining: '6d:8h:15m'
-    },
-    {
-      id: 4,
-      title: 'Gold Jewellery D 22KT',
-      price: 'LKR 70000.00',
-      imageUrl: image,
-      rating: 4,
-      timeRemaining: '5d:12h:45m'
-    },
-    {
-      id: 5,
-      title: 'Gold Jewellery E 22KT',
-      price: 'LKR 90000.00',
-      imageUrl: image,
-      rating: 5,
-      timeRemaining: '4d:2h:35m'
-    },
-    {
-      id: 6,
-      title: 'Gold Jewellery F 22KT',
-      price: 'LKR 95000.00',
-      imageUrl: image,
-      rating: 4,
-      timeRemaining: '3d:10h:20m'
-    }
-  ];
-
-  const featuredItems = [
-    {
-      id: 1,
-      title: 'Laptop HP Pavilion',
-      price: 'LKR 150000.00',
-      imageUrl: electronics1,
-      rating: 4,
-      timeRemaining: '10d:8h:15m'
-    },
-    {
-      id: 2,
-      title: 'Samsung Galaxy S21',
-      price: 'LKR 125000.00',
-      imageUrl: electronics1,
-      rating: 5,
-      timeRemaining: '5d:11h:35m'
-    },
-    {
-      id: 3,
-      title: 'Nike Air Max Shoes',
-      price: 'LKR 35000.00',
-      imageUrl: electronics1,
-      rating: 4,
-      timeRemaining: '3d:6h:20m'
-    },
-    {
-      id: 4,
-      title: 'Garden Tools Set',
-      price: 'LKR 2500.00',
-      imageUrl: electronics1,
-      rating: 3,
-      timeRemaining: '7d:14h:40m'
-    },
-    {
-      id: 5,
-      title: 'Sports Bicycle',
-      price: 'LKR 45000.00',
-      imageUrl: electronics1,
-      rating: 4,
-      timeRemaining: '6d:12h:50m'
-    },
-    {
-      id: 6,
-      title: 'Toyota Corolla',
-      price: 'LKR 3000000.00',
-      imageUrl: electronics1,
-      rating: 5,
-      timeRemaining: '2d:9h:55m'
-    }
-  ];
+  const [auctions, setAuctions] = useState([]);
+  const [displayOngoing, setDisplayOngoing] = useState([]);
+  const [displayNotStarted, setDisplayNotStarted] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
 
   const carouselItems = [
     { id: 1, title: 'Electronics', imageUrl: electronics1},
@@ -126,14 +32,81 @@ const Hero = () => {
     { id: 9, title: 'Books', imageUrl: books1 }
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const handleAuctionClick = (auction) => {
+    navigate('/item-details', { state: { auctionId: auction.auctionId } });
+  };
 
   useEffect(() => {
+    const fetchAllAuctions = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5101/api/Auction/All`);
+        const auctions = response.data;
+
+        const currentTime = new Date();
+
+        // Classify auctions
+        const ongoing = auctions.filter(auction => 
+          new Date(auction.startingDate) <= currentTime && new Date(auction.endDate) > currentTime
+        );
+
+        const notStarted = auctions.filter(auction => 
+          new Date(auction.startingDate) > currentTime
+        );
+
+        const ended = auctions.filter(auction => 
+          new Date(auction.endDate) < currentTime
+        );
+
+        setAuctions(auctions);
+        setDisplayAuctions(ongoing, notStarted, ended);
+        window.scrollTo(0, 0);
+      } catch (error) {
+        console.error('There was an error fetching the auctions!', error);
+      }
+    };
+
+    const setDisplayAuctions = (ongoing, notStarted, ended) => {
+      // Fill ongoing auctions
+      let ongoingToDisplay = ongoing.slice(0, 6);
+      if (ongoingToDisplay.length < 6) {
+        const needed = 6 - ongoingToDisplay.length;
+        ongoingToDisplay = ongoingToDisplay.concat(notStarted.slice(0, needed));
+      }
+      if (ongoingToDisplay.length < 6) {
+        const needed = 6 - ongoingToDisplay.length;
+        ongoingToDisplay = ongoingToDisplay.concat(ended.slice(0, needed));
+      }
+      setDisplayOngoing(ongoingToDisplay);
+
+      // Fill not started auctions
+      let notStartedToDisplay = notStarted.slice(0, 6);
+      if (notStartedToDisplay.length < 6) {
+        const needed = 6 - notStartedToDisplay.length;
+        notStartedToDisplay = notStartedToDisplay.concat(ongoing.slice(0, needed));
+      }
+      if (notStartedToDisplay.length < 6) {
+        const needed = 6 - notStartedToDisplay.length;
+        notStartedToDisplay = notStartedToDisplay.concat(ended.slice(0, needed));
+      }
+      setDisplayNotStarted(notStartedToDisplay);
+    };
+
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
     }, 2000); // Slide every 2 seconds
+
+    fetchAllAuctions();
     return () => clearInterval(interval);
   }, [carouselItems.length]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDisplayOngoing(prev => [...prev]); // Update ongoing display to trigger re-render
+      setDisplayNotStarted(prev => [...prev]); // Update not started display to trigger re-render
+    }, 1000); // Update every second
+
+    return () => clearInterval(timer);
+  }, []);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -143,6 +116,19 @@ const Hero = () => {
       );
     }
     return stars;
+  };
+
+  const formatTimeRemaining = (endDate) => {
+    const now = new Date();
+    const timeRemaining = new Date(endDate) - now;
+
+    if (timeRemaining <= 0) return 'Ended';
+    
+    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return `${days}d ${hours}h ${minutes}m`;
   };
 
   return (
@@ -160,17 +146,16 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Popular Collections Section */}
+      {/* Popular Collections Section - Ongoing Auctions */}
       <div className="popular-collections">
-        <h2>Popular Collections</h2>
+        <h2>Ongoing Popular Auctions</h2>
         <div className="collection-grid">
-          {popularItems.map(item => (
-            <div key={item.id} className="collection-item">
-              <img src={item.imageUrl} alt={item.title} />
-              <h3>{item.title}</h3>
-              <div className="rating">{renderStars(item.rating)}</div>
-              <p>{item.price}</p>
-              <p className="time-remaining">{item.timeRemaining} <span className="more">more</span></p>
+          {displayOngoing.map(auction => (
+            <div key={auction.id} className="collection-item" onClick={() => handleAuctionClick(auction)}>
+              <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} />
+              <h3>{auction.productName}</h3><br></br>
+              <h4>{`Rs. ${auction.nextBidPrice}`}</h4><br></br>
+              <p className="time-remaining">Time Left: {formatTimeRemaining(auction.endDate)}</p>
             </div>
           ))}
         </div>
@@ -196,17 +181,15 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Featured Products Section */}
       <div className="featured-products">
-        <h2>Featured Products</h2>
+        <h2>Upcoming Popoular Auctions</h2>
         <div className="collection-grid">
-          {featuredItems.map(item => (
-            <div key={item.id} className="collection-item">
-              <img src={item.imageUrl} alt={item.title} />
-              <h3>{item.title}</h3>
-              <div className="rating">{renderStars(item.rating)}</div>
-              <p>{item.price}</p>
-              <p className="time-remaining">{item.timeRemaining} <span className="more">more</span></p>
+          {displayNotStarted.map(auction => (
+            <div key={auction.id} className="collection-item" onClick={() => handleAuctionClick(auction)}>
+              <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} />
+              <h3>{auction.productName}</h3><br></br>
+              <h4>{`Rs. ${auction.startingPrice}`}</h4><br></br>
+              <p className="time-remaining">Starts At: {new Date(auction.startingDate).toLocaleString()}</p>
             </div>
           ))}
         </div>
@@ -216,3 +199,8 @@ const Hero = () => {
 };
 
 export default Hero;
+
+
+
+
+

@@ -38,6 +38,8 @@
 
         public required DateTime EndDate { get; set; }
 
+        public string? HighestBidderEmail { get; set; }
+
         public float? HighestBidPrice { get; set; }
 
         public string? HighestBidShippingName { get; set; }

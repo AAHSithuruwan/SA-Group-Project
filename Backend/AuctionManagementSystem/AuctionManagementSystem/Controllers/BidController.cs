@@ -84,7 +84,7 @@ namespace AuctionManagementSystem.Controllers
 
             if (userBids == null)
             {
-                return NotFound("Auction Not Found");
+                return NotFound("Auction or User Not Found");
             }
 
             return Ok(userBids);

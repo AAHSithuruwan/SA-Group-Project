@@ -143,3 +143,23 @@
 .remove-button:hover {
   background-color: #d32f2f; /* Darker shade for hover effect */
 }
+
+.status-dispatched {
+  color: purple;
+  font-weight: bold;
+}
+
+.status-ended {
+  color: red;
+  font-weight: bold;
+}
+
+.status-not-started {
+  color: brown;
+  font-weight: bold;
+}
+
+.status-ongoing {
+  color: blue;
+  font-weight: bold;
+}

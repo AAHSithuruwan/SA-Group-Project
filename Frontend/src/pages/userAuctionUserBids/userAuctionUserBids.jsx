@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './adminAuctionAllBids.css';
+import './userAuctionUserBids.css';
 import { getJwtToken } from '../../components/JwtAuthentication/JwtTokenHandler';
 
-const adminAuctionAllBids = () => {
+const userAuctionUserBids = () => {
   const location = useLocation();
   const [auctionBids, setAuctionBids] = useState([]);
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const adminAuctionAllBids = () => {
       const jwtToken = await getJwtToken();
 
       try {
-        const response = await axios.get(`http://localhost:5101/api/Bid/All/${auctionId}`, {
+        const response = await axios.get(`http://localhost:5101/api/Bid/User/${auctionId}`, {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
@@ -35,22 +35,26 @@ const adminAuctionAllBids = () => {
   return (
     <div className="bids-container">
       <div className="bids-details">
-        <h2>AUCTION BIDS</h2>
+        <h2>YOUR BIDS</h2>
         <table className="bids-table">
           <thead>
             <tr>
-              <th>Bidder</th>
               <th>Bidded Date</th>
               <th>Bidded Price</th>
+              <th>Shipping Name</th>
+              <th>Contact No.</th>
+              <th>Shipping Address</th>
             </tr>
           </thead>
           <tbody>
             {auctionBids.length > 0 ? (
               auctionBids.map((bid, index) => (
-                <tr key={bid.bidId} className={index === 0 ? 'highest-bid' : ''}>
-                  <td>{bid.userEmail}</td>
+                <tr key={bid.bidId}>
                   <td>{new Date(bid.bidDate).toLocaleString()}</td>
                   <td>Rs. {bid.price}</td>
+                  <td>{bid.shippingName}</td>
+                  <td>{bid.shippingPhoneNumber}</td>
+                  <td>{bid.shippingAddress}</td>
                 </tr>
               ))
             ) : (
@@ -65,4 +69,4 @@ const adminAuctionAllBids = () => {
   );
 };
 
-export default adminAuctionAllBids;
+export default userAuctionUserBids;
