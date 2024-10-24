@@ -12,15 +12,13 @@ const SellerSidebar = () => {
   const navigate = useNavigate();
 
   const sidebarOptions = [
-    { name: 'Dashboard', path: '/sellerdashboard' },
-    { name: 'Seller Details', path: '/sellerdetails' },
-    { name: 'Create Auction', path: '/createauction' },
     { name: 'Auction Details', path: '/sellerauctionlist' },
-    { name: 'Notifications', path: '/notifications' },
+    { name: 'Create Auction', path: '/createauction' },
+    { name: 'Seller Details', path: '/sellerdetails' },
   ];
 
   useEffect(() => {
-    const currentIndex = sidebarOptions.findIndex(option => option.path === location.pathname);
+    const currentIndex = sidebarOptions.findIndex(option => {return location.pathname.startsWith(option.path);});
 
     const fetchSellerDetails = async () => {
       const jwtToken = await getJwtToken();

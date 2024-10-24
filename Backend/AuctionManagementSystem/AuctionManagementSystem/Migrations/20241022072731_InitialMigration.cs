@@ -140,113 +140,113 @@ namespace AuctionManagementSystem.Migrations
                 {
                     // Electronics
                     // Not Started
-                    { 70000f, 5000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(9), 1 }, 
-                    { 89900f, 5000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(8), 2 },
+                    { 70000f, 5000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(9).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 89900f, 5000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(8).ToString("yyyy-MM-dd HH:mm"), 2 },
                     // Ongoing
-                    { 250000f, 15000f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(6), 1 }, 
-                    { 120000f, 10000f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(2), 2 }, 
+                    { 250000f, 15000f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(6).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 120000f, 10000f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 49900f, 2500f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-1), 1 }, 
-                    { 29900f, 2000f, DateTime.Now.AddDays(-7), DateTime.Now.AddDays(-2), 2 }, 
+                    { 49900f, 2500f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 29900f, 2000f, DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Fashion
                     // Not Started
-                    { 120000f, 10000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(9), 1 }, 
-                    { 80000f, 5000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(10), 2 }, 
+                    { 120000f, 10000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(9).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 80000f, 5000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(10).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 15000f, 1500f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(5), 1 }, 
-                    { 1000000f, 50000f, DateTime.Now.AddDays(-4), DateTime.Now.AddDays(3), 2 },
+                    { 15000f, 1500f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 1000000f, 50000f, DateTime.Now.AddDays(-4).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm"), 2 },
                     // Ended
-                    { 35000f, 2500f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-1), 1 },
-                    { 90000f, 5000f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(-2), 2 }, 
+                    { 35000f, 2500f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 90000f, 5000f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Home & Garden
                     // Not Started
-                    { 45000f, 3000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(6), 1 }, 
-                    { 65000f, 4000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(9), 2 }, 
+                    { 45000f, 3000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(6).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 65000f, 4000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(9).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 70000f, 4500f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(5), 1 }, 
-                    { 30000f, 2000f, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(4), 2 }, 
+                    { 70000f, 4500f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 30000f, 2000f, DateTime.Now.AddDays(-3).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(4).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 85000f, 5000f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(-1), 1 }, 
-                    { 130000f, 7000f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-2), 2 }, 
+                    { 85000f, 5000f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 130000f, 7000f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Art & Collectibles
                     // Not Started
-                    { 500000f, 20000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(14), 1 }, 
-                    { 150000f, 10000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(10), 2 }, 
+                    { 500000f, 20000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(14).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 150000f, 10000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(10).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 250000f, 15000f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(5), 1 }, 
-                    { 350000f, 20000f, DateTime.Now.AddDays(-4), DateTime.Now.AddDays(3), 2 }, 
+                    { 250000f, 15000f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 350000f, 20000f, DateTime.Now.AddDays(-4).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 100000f, 7500f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-2), 1 }, 
-                    { 5000000f, 250000f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(-1), 2 }, 
+                    { 100000f, 7500f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 5000000f, 250000f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Vehicles
                     // Not Started
-                    { 7000000f, 500000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(20), 1 }, 
-                    { 5500000f, 400000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(18), 2 }, 
+                    { 7000000f, 500000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(20).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 5500000f, 400000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(18).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 3500000f, 250000f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(15), 1 }, 
-                    { 4500000f, 350000f, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(19), 2 }, 
+                    { 3500000f, 250000f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(15).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 4500000f, 350000f, DateTime.Now.AddDays(-3).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(19).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 8000000f, 600000f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-2), 1 }, 
-                    { 3000000f, 200000f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(14), 2 }, 
+                    { 8000000f, 600000f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 3000000f, 200000f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(14).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Sports Equipment
                     // Not Started
-                    { 15000f, 1000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(5), 1 }, 
-                    { 25000f, 2000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(7), 2 }, 
+                    { 15000f, 1000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 25000f, 2000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(7).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 220000f, 15000f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(12), 1 }, 
-                    { 120000f, 7500f, DateTime.Now.AddDays(-4), DateTime.Now.AddDays(9), 2 }, 
+                    { 220000f, 15000f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(12).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 120000f, 7500f, DateTime.Now.AddDays(-4).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(9).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 18000f, 1500f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(-1), 1 }, 
-                    { 30000f, 2500f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-2), 2 }, 
+                    { 18000f, 1500f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 30000f, 2500f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Jewelry
                     // Not Started
-                    { 50000f, 5000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(7), 1 }, 
-                    { 30000f, 2000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(8), 2 }, 
+                    { 50000f, 5000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(7).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 30000f, 2000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(8).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 20000f, 1500f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(6), 1 }, 
-                    { 45000f, 3000f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(10), 2 }, 
+                    { 20000f, 1500f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 70000f, 3000f, DateTime.Now.AddDays(-4).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(10).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 15000f, 1000f, DateTime.Now.AddDays(-4), DateTime.Now.AddDays(-1), 1 }, 
-                    { 70000f, 7000f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-2), 2 }, 
+                    { 90000f, 6000f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 40000f, 3500f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Toys & Games
                     // Not Started
-                    { 5000f, 500f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(4), 1 }, 
-                    { 3000f, 300f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(5), 2 }, 
+                    { 25000f, 2000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(6).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 15000f, 1000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 10000f, 1000f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(6), 1 }, 
-                    { 8000f, 800f, DateTime.Now.AddDays(-4), DateTime.Now.AddDays(3), 2 }, 
+                    { 30000f, 2000f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 20000f, 1500f, DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 2500f, 200f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(-1), 1 }, 
-                    { 20000f, 1500f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-2), 2 }, 
+                    { 18000f, 1500f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 15000f, 1000f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Books
                     // Not Started
-                    { 2000f, 200f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(4), 1 }, 
-                    { 1500f, 150f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(3), 2 }, 
+                    { 8000f, 500f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(6).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 12000f, 1000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(5).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 3000f, 300f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(5), 1 }, 
-                    { 10000f, 500f, DateTime.Now.AddDays(-3), DateTime.Now.AddDays(4), 2 }, 
+                    { 5000f, 300f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(4).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 9000f, 700f, DateTime.Now.AddDays(-3).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 2500f, 250f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(-1), 1 }, 
-                    { 3500f, 350f, DateTime.Now.AddDays(-4), DateTime.Now.AddDays(-2), 2 },
+                    { 6000f, 400f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 3000f, 200f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }, 
 
                     // Antiques
                     // Not Started
-                    { 500000f, 25000f, DateTime.Now.AddDays(2), DateTime.Now.AddDays(10), 1 }, 
-                    { 75000f, 5000f, DateTime.Now.AddDays(1), DateTime.Now.AddDays(8), 2 }, 
+                    { 150000f, 5000f, DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(10).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 250000f, 10000f, DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(9).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ongoing
-                    { 300000f, 15000f, DateTime.Now.AddDays(-1), DateTime.Now.AddDays(5), 1 }, 
-                    { 200000f, 10000f, DateTime.Now.AddDays(-4), DateTime.Now.AddDays(7), 2 }, 
+                    { 50000f, 3000f, DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(6).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 70000f, 5000f, DateTime.Now.AddDays(-3).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(4).ToString("yyyy-MM-dd HH:mm"), 2 }, 
                     // Ended
-                    { 150000f, 7000f, DateTime.Now.AddDays(-6), DateTime.Now.AddDays(-2), 1 }, 
-                    { 90000f, 4000f, DateTime.Now.AddDays(-5), DateTime.Now.AddDays(-3), 2 },
+                    { 100000f, 5000f, DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm"), 1 },
+                    { 200000f, 10000f, DateTime.Now.AddDays(-5).ToString("yyyy-MM-dd HH:mm"), DateTime.Now.AddDays(-2).ToString("yyyy-MM-dd HH:mm"), 2 }
                 });
 
             migrationBuilder.CreateTable(

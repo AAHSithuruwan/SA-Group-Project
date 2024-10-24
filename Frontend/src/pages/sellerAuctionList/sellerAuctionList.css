@@ -4,6 +4,13 @@
   padding: 20px; /* Add some padding */
 }
 
+.auction-image {
+  width: 120px; /* Set fixed width */
+  height: 120px; /* Set fixed height */
+  object-fit: contain; 
+  border-radius: 5px; /* Optional: add some rounded corners */
+}
+
 .status-column {
   width: 150px; /* Adjust this value as needed */
 }
@@ -48,13 +55,6 @@
 
 .auction-table th {
   background-color: #f4f4f4;
-}
-
-.auction-image {
-  width: 120px; /* Set fixed width */
-  height: 120px; /* Set fixed height */
-  object-fit: contain; 
-  border-radius: 5px; /* Optional: add some rounded corners */
 }
 
 .details-button {

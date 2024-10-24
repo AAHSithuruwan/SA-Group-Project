@@ -4,6 +4,10 @@
     {
         public required int AuctionId { get; set; }
 
+        public required int UserId { get; set; }
+
+        public required string UserEmail { get; set; }
+
         public required int BidId { get; set; }
 
         public required DateTime BidDate { get; set; }

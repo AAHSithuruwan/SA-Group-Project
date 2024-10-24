@@ -8,7 +8,8 @@ const SellerRegistrationform = () => {
     <div className='registrationform-container'>
       <h1>Seller Registration Form</h1>
      <div className='registrationform'>
-      <p>hello</p>
+      <label htmlFor = "rapid">Name</label>
+      <input type='text' id='rapid' name='rapid' />
 
      </div>
       
