@@ -19,6 +19,15 @@ import SellerAuctionDetails from './pages/sellerAuctionDetails/sellerAuctionDeta
 import Notifications from './pages/notifications/notifications.jsx';
 import UpdateAuction from './pages/updateAuction/updateAuction.jsx';
 
+import AdminLayout from './components/adminlayout.jsx';
+import AdminDashboard from './pages/admindashboard/admindashboard.jsx';
+import AdminAuctionList from './pages/adminAuctionList/adminAuctionList.jsx';
+import AdminAuctionDetails from './pages/adminauctiondetails/adminauctiondetails.jsx';
+import AdminAuctionAllBids from './pages/adminAuctionAllBids/adminAuctionAllBids.jsx';
+import AdminCategoryList from './pages/adminCategoryList/adminCategoryList.jsx';
+import AddCategory from './pages/addCategory/addCategory.jsx';
+import UpdateCategory from './pages/updateCategory/updateCategory.jsx';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -93,6 +102,47 @@ const router = createBrowserRouter([
       },
       
       
+    ],
+  },
+
+  {
+    path: "/", 
+    element: <AdminLayout />, 
+    children: [
+      {
+        path: "admindashboard",
+        element: <AdminDashboard />, 
+      },
+
+      {
+        path: "adminauctionlist",
+        element: <AdminAuctionList />, 
+      },
+      
+      {
+        path: "adminauctionlist/adminauctiondetails",
+        element: <AdminAuctionDetails />
+      },
+
+      {
+        path: "adminauctionlist/adminauctiondetails/adminauctionallbids",
+        element: <AdminAuctionAllBids />
+      },
+
+      {
+        path: "admincategorylist",
+        element: <AdminCategoryList />
+      },
+
+      {
+        path: "admincategorylist/addcategory",
+        element: <AddCategory />
+      },
+
+      {
+        path: "admincategorylist/updatecategory",
+        element: <UpdateCategory />
+      }
     ],
   },
 ]);

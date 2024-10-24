@@ -1,52 +1,145 @@
-.auction-container {
+.auction-details-container {
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.auction-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auction-header h2 {
+  font-size: 2rem;
+  color: #6b9f3f; /* Header color */
+}
+
+.auction-header p {
+  font-size: 1rem;
+  color: #7f8c8d;
+}
+
+.auction-body {
   display: flex;
+  margin: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  margin-top: 30px;
 }
 
-
-
-.auction-details {
-  width: 80%;
-  padding-left: 100px;
+.auction-img {
+  max-width: 300px;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.auction-details h2 {
-  color: #e47d1f;
+.auction-img img {
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
 }
 
-.auction-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.auction-table th,
-.auction-table td {
-  border: 1px solid #ddd;
-  padding: 12px;
+.auction-info {
+  flex: 1;
+  margin-left: 50px;
   text-align: left;
 }
 
-.auction-table th {
-  background-color: #f4f4f4;
+.auction-info p {
+  font-size: 1.1rem;
+  margin: 10px 0;
+  color: #34495e;
 }
 
-.auction-image {
-  width: 80px;
-  height: auto;
-  margin-right: 10px;
+.highest-bidder-details {
+  background-color: #e8f5e9; /* Light green background */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  margin: 20px;
 }
 
-.details-button {
-  background-color: #e47d1f;
-  color: white;
+.highest-bidder-details h3 {
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  margin-left: 10px;
+  color: #388e3c; /* Darker green color for header */
+}
+
+.highest-bidder-details p {
+  font-size: 1.1rem;
+  margin: 5px 0;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-bottom: 20px;
+  color: #34495e;
+  word-wrap: break-word; /* Allow words to break to a new line */
+  overflow-wrap: break-word; /* Break long words */
+  max-width: 100%; /* Ensure it doesn't exceed its container */
+}
+
+.product-description {
+  background-color: #e8f5e9; /* Same light green background */
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px;
+  margin-bottom: 20px;
+}
+
+.product-description h3 {
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  margin-left: 10px;
+  color: #388e3c; /* Darker green color for header */
+}
+
+.product-description p {
+  font-size: 1.1rem; /* Dark green color for text */
+  margin: 5px 0;
+  color: #34495e;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.auction-buttons {
+  display: flex;
+  margin-top: 30px; 
+  margin-left: 50px;
+}
+
+.bid-button {
+  padding: 8px 12px;
+  background-color: #6b9f3f; /* Header color */
+  color: #ffffff; /* Text color */
   border: none;
-  padding: 10px 15px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 10px; /* Space between buttons */
 }
 
-.details-button:hover {
-  background-color: #b0651b;
+.bid-button:hover {
+  background-color: #5a8f34; /* Darker shade for hover effect */
 }
 
+.remove-button {
+  padding: 8px 12px;
+  background-color: #e74c3c; /* Remove button color */
+  color: #ffffff; /* Text color */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-
+.remove-button:hover {
+  background-color: #d32f2f; /* Darker shade for hover effect */
+}

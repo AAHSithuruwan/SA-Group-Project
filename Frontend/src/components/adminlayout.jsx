@@ -1,36 +1,40 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar/Navbar';
-import Footer from './footer/footer';
-import Adminsidebar from './adminsidebar/adminsidebar';
+import AdminSidebar from './adminsidebar/adminsidebar';
 
 const AdminLayout = () => {
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-     
+    <div style={{ height: '100vh', display: 'flex', background: '#e6f5ea' }}>
+      {/* Navbar */}
       <Navbar />
 
-      <div style={{ display: 'flex', flex: 1 }}>
-        
-        <Adminsidebar />
+      {/* Main Layout */}
+      <div style={{ display: 'flex',flex: 1 }}>
+        {/* Sidebar */}
+        <AdminSidebar />
 
         {/* Scrollable Main Content */}
         <main
           style={{
             flex: 1,
-            padding: '20px',
-            paddingTop: '100px', 
-            background: '#e9e0e0',
-            overflowY: 'auto', 
-            height: 'calc(120vh - 140px)', 
+            paddingTop: '80px',
+            paddingLeft: '30px',
+            paddingRight: '30px',
+            backgroundColor: '#f0f9f3', 
+            overflowY: 'auto',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
+            borderRadius: '10px',
+            marginLeft: '10px',
+            marginRight: '10px', 
+            minHeight: 'calc(100vh)', 
           }}
         >
-          <Outlet /> {/* Render child routes - Admindashboard, CategoryDetails... */}
+          {/* Render child routes - Dashboard, etc */}
+          <Outlet />
         </main>
       </div>
 
-      
-      <Footer />
     </div>
   );
 };

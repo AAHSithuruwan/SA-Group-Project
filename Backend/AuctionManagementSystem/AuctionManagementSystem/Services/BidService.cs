@@ -94,7 +94,7 @@ namespace AuctionManagementSystem.Services
                 return bidDetailsViewModels;
             }
 
-            foreach (var bid in auction.Bids)
+            foreach (var bid in auction.Bids.OrderByDescending(b => b.BidId))
             {
                 BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
                 {
