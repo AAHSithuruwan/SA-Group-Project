@@ -18,7 +18,7 @@ const SellerAuctionDetails = () => {
     const start = new Date(startingDate);
     const end = new Date(endDate);
 
-    if (isDispatched == 1) {
+    if (isDispatched === 1) {
       return 'Dispatched';
     } else if (currentDate < start) {
       return 'Not Started';
@@ -49,7 +49,6 @@ const SellerAuctionDetails = () => {
   };
 
   useEffect(() => {
-    console.log(auctionId);
     const fetchAuction = async () => {
       try {
         const response = await axios.get(`http://localhost:5101/api/Auction/${auctionId}`);
@@ -62,7 +61,6 @@ const SellerAuctionDetails = () => {
     fetchAuction();
   }, [auctionId]);
 
-  // Function to handle update button click
   const handleUpdate = () => {
     navigate('/sellerauctionlist/sellerauctiondetails/updateauction', { state: { auctionId: auction.auctionId } });
   };
@@ -79,8 +77,48 @@ const SellerAuctionDetails = () => {
     })
   };
 
-  const deleteAuction = async () => {
+  const dispatchProductDialog = () => {
+    ConfirmDialogBox({
+      title: 'Are You Sure?',
+      text: 'This action cannot be reverted!',
+      onConfirm: dispatchProduct,
+    })
+  }
 
+  const dispatchProduct = async () => {
+    const jwtToken = await getJwtToken();
+
+    try{
+      const response = await axios.get(`http://localhost:5101/api/Auction/DispatchProduct/${auctionId}`, 
+        {
+          headers: {
+              Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      if(response.status === 200){
+        SuccessDialogBox({
+          title: 'Product Has Been Dispatched',
+          text: 'The auction status is changed to dispatched',
+          onConfirm: navigateTo,
+        })
+      }
+    }
+    catch (error) {
+      if(error.response && error.response.status === 401){
+        navigate('/signin');
+      }
+      else{
+        ErrorDialogBox({
+          title: 'Product Dispatch Failed',
+          text: error.response.data
+        })
+      }
+      console.error(error);
+    }};
+
+  const deleteAuction = async () => {
     const jwtToken = await getJwtToken();
 
     try{
@@ -90,7 +128,7 @@ const SellerAuctionDetails = () => {
               Authorization: `Bearer ${jwtToken}`,
           },
         }
-    );
+      );
 
       if(response.status === 200){
         SuccessDialogBox({
@@ -113,6 +151,8 @@ const SellerAuctionDetails = () => {
       console.error(error);
     }};
 
+  const auctionStatus = checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched);
+
   return (
     <div className="auction-details-container">
       <div className="auction-header">
@@ -128,23 +168,34 @@ const SellerAuctionDetails = () => {
         <div className="auction-info">
           <p><strong>Starting Bid Price:</strong> <span style={{ marginLeft: '10px' }}>Rs. {auction.startingPrice}</span></p>
           <p><strong>Bid Increment:</strong> <span style={{ marginLeft: '10px' }}>Rs. {auction.bidIncrement}</span></p>
-          <p><strong>Starting Date:</strong> <span style={{ marginLeft: '10px' }}>{auction.startingDate}</span></p>
-          <p><strong>Ending Date:</strong> <span style={{ marginLeft: '10px' }}>{auction.endDate}</span></p>
+          <p><strong>Starting Date:</strong> <span style={{ marginLeft: '10px' }}>{new Date(auction.startingDate).toLocaleString()}</span></p>
+          <p><strong>Ending Date:</strong> <span style={{ marginLeft: '10px' }}>{new Date(auction.endDate).toLocaleString()}</span></p>
           <p><strong>Highest Bid Price:</strong> <span style={{ marginLeft: '10px' }}>
                                                     {auction.highestBidPrice ? `Rs. ${auction.highestBidPrice}` : "None"}
                                                   </span></p>
-          <p><strong>Auction Status:</strong> <span style={{ marginLeft: '10px' }}  className={getStatusClass(checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched))}>{checkAuctionStatus(auction.startingDate, auction.endDate, auction.isDispatched)}</span></p>
-          {/* Update and Remove buttons */}
+          <p><strong>Auction Status:</strong> <span style={{ marginLeft: '10px' }}  className={getStatusClass(auctionStatus)}>{auctionStatus}</span></p>
+          
           <div className="auction-buttons">
             <button className='bids-button' onClick={handleViewBids}>
               View All Bids
             </button>
-            <button className="update-button" onClick={handleUpdate}>
-              Update Auction
-            </button>
-            <button className="remove-button" onClick={deleteAuctionDialog}>
-              Remove Auction
-            </button>
+            {auction.isDispatched === 1 ? (
+              <button className="dispatched-button" style={{ backgroundColor: 'purple', color: 'white' }} disabled>Dispatched</button>
+            ) : (
+              <>
+                <button className="update-button" onClick={handleUpdate}>
+                  Update
+                </button>
+                <button className="remove-button" onClick={deleteAuctionDialog}>
+                  Remove
+                </button>
+                {auctionStatus === 'Ended' && auction.highestBidderEmail && (
+                  <button className="dispatch-button" onClick={dispatchProductDialog}>
+                    Dispatch
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -181,5 +232,6 @@ const SellerAuctionDetails = () => {
 };
 
 export default SellerAuctionDetails;
+
 
 

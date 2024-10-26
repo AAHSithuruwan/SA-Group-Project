@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Make sure to import axios
-import './Hero.css'; 
-import image from '../../assets/backimage.png'; 
+import axios from 'axios';
+import './Hero.css';
+import image from '../../assets/backimage.png';
 import electronics1 from '../../assets/electronics1.png';
 import fashion1 from '../../assets/fashion1.png';
 import homegarden1 from '../../assets/home-garden1.png';
@@ -11,7 +11,7 @@ import jewellery1 from '../../assets/jewellery1.png';
 import antiques1 from '../../assets/antiques1.png';
 import arts1 from '../../assets/arts1.png';
 import books1 from '../../assets/books1.png';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const [auctions, setAuctions] = useState([]);
@@ -21,7 +21,7 @@ const Hero = () => {
   const navigate = useNavigate();
 
   const carouselItems = [
-    { id: 1, title: 'Electronics', imageUrl: electronics1},
+    { id: 1, title: 'Electronics', imageUrl: electronics1 },
     { id: 2, title: 'Fashion', imageUrl: fashion1 },
     { id: 3, title: 'Home & Garden', imageUrl: homegarden1 },
     { id: 4, title: 'Sports', imageUrl: sports1 },
@@ -53,70 +53,26 @@ const Hero = () => {
           new Date(auction.startingDate) > currentTime
         );
 
-        const ended = auctions.filter(auction => 
-          new Date(auction.endDate) < currentTime
-        );
-
         setAuctions(auctions);
-        setDisplayAuctions(ongoing, notStarted, ended);
+        setDisplayAuctions(ongoing, notStarted);
         window.scrollTo(0, 0);
       } catch (error) {
         console.error('There was an error fetching the auctions!', error);
       }
     };
 
-    const setDisplayAuctions = (ongoing, notStarted, ended) => {
-      // Fill ongoing auctions
-      let ongoingToDisplay = ongoing.slice(0, 6);
-      if (ongoingToDisplay.length < 6) {
-        const needed = 6 - ongoingToDisplay.length;
-        ongoingToDisplay = ongoingToDisplay.concat(notStarted.slice(0, needed));
-      }
-      if (ongoingToDisplay.length < 6) {
-        const needed = 6 - ongoingToDisplay.length;
-        ongoingToDisplay = ongoingToDisplay.concat(ended.slice(0, needed));
-      }
-      setDisplayOngoing(ongoingToDisplay);
-
-      // Fill not started auctions
-      let notStartedToDisplay = notStarted.slice(0, 6);
-      if (notStartedToDisplay.length < 6) {
-        const needed = 6 - notStartedToDisplay.length;
-        notStartedToDisplay = notStartedToDisplay.concat(ongoing.slice(0, needed));
-      }
-      if (notStartedToDisplay.length < 6) {
-        const needed = 6 - notStartedToDisplay.length;
-        notStartedToDisplay = notStartedToDisplay.concat(ended.slice(0, needed));
-      }
-      setDisplayNotStarted(notStartedToDisplay);
+    const setDisplayAuctions = (ongoing, notStarted) => {
+      setDisplayOngoing(ongoing.length > 0 ? ongoing.slice(0, 6) : []);
+      setDisplayNotStarted(notStarted.length > 0 ? notStarted.slice(0, 6) : []);
     };
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
-    }, 2000); // Slide every 2 seconds
+    }, 2000);
 
     fetchAllAuctions();
     return () => clearInterval(interval);
   }, [carouselItems.length]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDisplayOngoing(prev => [...prev]); // Update ongoing display to trigger re-render
-      setDisplayNotStarted(prev => [...prev]); // Update not started display to trigger re-render
-    }, 1000); // Update every second
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 0; i < 5; i++) {
-      stars.push(
-        <span key={i} className={`star ${i < rating ? 'filled' : ''}`}>&#9733;</span>
-      );
-    }
-    return stars;
-  };
 
   const formatTimeRemaining = (endDate) => {
     const now = new Date();
@@ -146,19 +102,23 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Popular Collections Section - Ongoing Auctions */}
+      {/* Ongoing Popular Auctions Section */}
       <div className="popular-collections">
-        <h2>Ongoing Popular Auctions</h2>
-        <div className="collection-grid">
-          {displayOngoing.map(auction => (
-            <div key={auction.id} className="collection-item" onClick={() => handleAuctionClick(auction)}>
-              <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} />
-              <h3>{auction.productName}</h3><br></br>
-              <h4>{`Rs. ${auction.nextBidPrice}`}</h4><br></br>
-              <p className="time-remaining">Time Left: {formatTimeRemaining(auction.endDate)}</p>
-            </div>
-          ))}
-        </div>
+        <h2>Popular Ongoing Auctions</h2>
+        {displayOngoing.length > 0 ? (
+          <div className="collection-grid">
+            {displayOngoing.map(auction => (
+              <div key={auction.id} className="collection-item" onClick={() => handleAuctionClick(auction)}>
+                <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} />
+                <h3>{auction.productName}</h3><br />
+                <h4>{`Rs. ${auction.nextBidPrice}`}</h4><br />
+                <p className="time-remaining">Time Left: {formatTimeRemaining(auction.endDate)}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="no-auctions-message">No ongoing auctions available.</p>
+        )}
       </div>
 
       {/* Carousel Section */}
@@ -181,24 +141,32 @@ const Hero = () => {
         </div>
       </div>
 
+      {/* Upcoming Popular Auctions Section */}
       <div className="featured-products">
-        <h2>Upcoming Popoular Auctions</h2>
-        <div className="collection-grid">
-          {displayNotStarted.map(auction => (
-            <div key={auction.id} className="collection-item" onClick={() => handleAuctionClick(auction)}>
-              <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} />
-              <h3>{auction.productName}</h3><br></br>
-              <h4>{`Rs. ${auction.startingPrice}`}</h4><br></br>
-              <p className="time-remaining">Starts At: {new Date(auction.startingDate).toLocaleString()}</p>
-            </div>
-          ))}
-        </div>
+        <h2>Popular Upcoming Auctions</h2>
+        {displayNotStarted.length > 0 ? (
+          <div className="collection-grid">
+            {displayNotStarted.map(auction => (
+              <div key={auction.id} className="collection-item" onClick={() => handleAuctionClick(auction)}>
+                <img src={`http://localhost:5101/Images/ProductImages/${auction.productId}.png`} alt={auction.productName} />
+                <h3>{auction.productName}</h3><br />
+                <h4>{`Rs. ${auction.startingPrice}`}</h4><br />
+                <p className="time-remaining">Starts At: {new Date(auction.startingDate).toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="no-auctions-message">No upcoming auctions available.</p>
+        )}
       </div>
     </div>
   );
 };
 
 export default Hero;
+
+
+
 
 
 

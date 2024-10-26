@@ -68,11 +68,11 @@ namespace AuctionManagementSystem.Migrations
                 columns: ["Email", "Password", "FirstName", "LastName", "Address", "PhoneNumber", "IsAdmin"],
                 values: new object[,]
                 {
-                    { "user1@gmail.com", "AQAAAAIAAYagAAAAEPAeZvu/MqbtODRykJHbZuS6VCNvR1jiDe9pPvhp02pI5ksmmqX1lh8LZyZX/Gv9Ow==", "Nimal", "Wickramasingha", "Colombo 13", "1234567890", 0 }, // Password : user12345
-                    { "user2@gmail.com", "AQAAAAIAAYagAAAAEJ6Tg7pKFvi/KZnZpER61L3gPnBzqJybpB70qYQfwGXMaXVhxbpA8oKScOFl9oR1tg==", "Bloyd", "Dias", "Colombo 10", "1234560890", 0 }, // Password : user12345
-                    { "seller1@gmail.com", "AQAAAAIAAYagAAAAED5wIjq65wERi7rfnvuX769MJnR9mgHq4gVOI+ts7pLizKwsCzkqHDYi4Cno30CwxQ==", "Ruwanthi", "Gamage", "Colombo 15", "0987654321", 0 }, // Password : seller12345
-                    { "seller2@gmail.com", "AQAAAAIAAYagAAAAEJ20ugcky3vVnCTUoytmgOv7I9gwK2AJnLhqXBmfNAUAoZ91fK8GoBcoG08of8OfkA==", "Peter", "Patrik", "Colombo 9", "0987654331", 0 }, // Password : seller12345
-                    { "admin@gmail.com", "AQAAAAIAAYagAAAAEHSH96NfuScv3n8cuNSg6s6imFw9Gt+YzzW8AY146RwnyhKV6/6CxY5DxiZButJogw==", "Tharushi", "Raigama", "Colombo 12", "1122334455", 1 } // Password : admin12345
+                    { "user1@gmail.com", "AQAAAAIAAYagAAAAENGknHUqg1JPZtn39hao5ySCiL0WJKvqQ4CVAxSbI2S7AqqrXGM3OSUkkf9mx0lksw==", "Nimal", "Wickramasingha", "Colombo 13", "1234567890", 0 }, // Password : userAuction
+                    { "user2@gmail.com", "AQAAAAIAAYagAAAAENGknHUqg1JPZtn39hao5ySCiL0WJKvqQ4CVAxSbI2S7AqqrXGM3OSUkkf9mx0lksw==", "Bloyd", "Dias", "Colombo 10", "1234560890", 0 }, // Password : userAuction
+                    { "seller1@gmail.com", "AQAAAAIAAYagAAAAEM583hLR3wwWFRqinZf4lBu2QSHvZ/VsOtTMWE8YJ2bW1VLEGRnVdo14qEnH0XSpfA==", "Ruwanthi", "Gamage", "Colombo 15", "0987654321", 0 }, // Password : sellerAuction
+                    { "seller2@gmail.com", "AQAAAAIAAYagAAAAEM583hLR3wwWFRqinZf4lBu2QSHvZ/VsOtTMWE8YJ2bW1VLEGRnVdo14qEnH0XSpfA==", "Peter", "Patrik", "Colombo 9", "0987654331", 0 }, // Password : sellerAuction
+                    { "admin@gmail.com", "AQAAAAIAAYagAAAAELUBeFJGr9JYONSmfsF9R+LcizKTn2c1Ihh5vywmxEoppHZB9n8vVeNDiGbdEEHCQQ==", "Tharushi", "Raigama", "Colombo 12", "1122334455", 1 } // Password : adminAuction
                 });
 
             migrationBuilder.CreateTable(
@@ -280,6 +280,17 @@ namespace AuctionManagementSystem.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            // Insert data into bid table
+            migrationBuilder.InsertData(
+                table: "Bids",
+                columns: ["Price", "BidDate", "ShippingName", "ShippingPhoneNumber", "ShippingAddress", "UserId", "AuctionId"],
+                values: new object[,]
+                {
+                    {49900f, DateTime.Now.AddDays(-2), "Bloyd Dias", "071567890", "15/K, Narahenpita, Colombo 10", 2, 5 },
+                    {53000f, DateTime.Now.AddDays(-1), "Nimal Wicramasingha", "071567990", "11/D, Pitipana, Homagama", 1, 5 },
+                    {29900f, DateTime.Now.AddDays(-1), "Bloyd Dias", "071567890", "15/K, Narahenpita, Colombo 10", 2, 6 },
+                });
+
             migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
@@ -321,7 +332,7 @@ namespace AuctionManagementSystem.Migrations
                     { "MacBook Pro", "Apple's MacBook Pro 16-inch with the M1 chip is a powerhouse for professionals and creatives alike. It combines stunning visuals with robust performance, making it ideal for video editing, graphic design, and programming. The long battery life ensures users can work all day without needing to recharge, enhancing productivity significantly.", 0, 3, 1 },
                     { "Sony 4K TV", "The 65-inch Sony Bravia 4K Ultra HD Smart TV provides an immersive viewing experience with breathtaking picture quality. With HDR support, colors appear more vibrant and lifelike, perfect for movie nights and gaming sessions. Integrated smart features allow users to access popular streaming services and apps with ease, making entertainment more convenient.", 0, 4, 1 },
                     { "PlayStation 5", "Experience gaming like never before with the Sony PlayStation 5, featuring lightning-fast load times and stunning graphics. The console includes innovative features such as haptic feedback and adaptive triggers, enhancing the immersive experience of gameplay. With a vast library of exclusive titles, gamers can enjoy hours of entertainment across various genres.", 0, 5, 1 },
-                    { "Bose Noise Cancelling Headphones", "Bose QuietComfort 45 headphones are designed for audiophiles who crave the best sound experience. Equipped with advanced noise-canceling technology, they effectively block out distractions, allowing users to immerse themselves in their music or podcasts. The comfortable design ensures long listening sessions are enjoyable, making them perfect for travel or work.", 0, 6, 1 },
+                    { "Bose Noise Cancelling Headphones", "Bose QuietComfort 45 headphones are designed for audiophiles who crave the best sound experience. Equipped with advanced noise-canceling technology, they effectively block out distractions, allowing users to immerse themselves in their music or podcasts. The comfortable design ensures long listening sessions are enjoyable, making them perfect for travel or work.", 1, 6, 1 },
 
                     // Fashion
                     { "Gucci Leather Jacket", "This luxury Gucci leather jacket combines style and sophistication, perfect for those who want to make a statement. Crafted from premium leather, it features a classic design with modern touches, ensuring it remains timeless. Whether paired with jeans or dress pants, this jacket elevates any outfit, making it ideal for various occasions.", 0, 7, 2 },

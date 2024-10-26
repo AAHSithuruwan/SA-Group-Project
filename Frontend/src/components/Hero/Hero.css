@@ -9,6 +9,14 @@
   padding-top: 120px;
 }
 
+.no-auctions-message {
+  text-align: center;
+  font-size: 1.2em;
+  color: #777;
+  margin-top: 20px;
+}
+
+
 .hero-left {
   flex: 1;
   padding: 4rem;

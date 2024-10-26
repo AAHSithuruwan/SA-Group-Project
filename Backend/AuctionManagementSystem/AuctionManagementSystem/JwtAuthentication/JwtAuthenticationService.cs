@@ -51,7 +51,7 @@ namespace AuctionManagementSystem.JwtAuthentication
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddDays(30),
                 signingCredentials: credentials
             );
 
