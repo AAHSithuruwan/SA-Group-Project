@@ -10,7 +10,7 @@ import CategoryItems from './pages/categoryItems/categoryItems.jsx';
 import ItemDetails from './pages/itemDetails/itemDetails.jsx'; 
 
 import SellerLayout from './components/sellerlayout.jsx';
-import SellerRegistration from './pages/SellerRegistrationForm/SellerRegistrationform.jsx';
+import SellerRegistration from './pages/SellerRegistration/SellerRegistration.jsx';
 import SellerDetails from './pages/sellerdetails/sellerdetails.jsx';
 import CreateAuction from './pages/createAuction/createAuction.jsx';
 import SellerAuctionList from './pages/sellerAuctionList/sellerAuctionList.jsx';
@@ -72,7 +72,7 @@ const router = createBrowserRouter([
         element: <Payment />
       }, 
       {
-        path: "/SellerRegistrationform",
+        path: "/SellerRegistration",
         element: <SellerRegistration />,
       },
     ],

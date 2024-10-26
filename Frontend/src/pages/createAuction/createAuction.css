@@ -51,6 +51,7 @@ body {
   border-radius: 5px;
   border: 1px solid #ccc;
   width: 100%;
+  margin-bottom: 5px;
 }
 
 .submit-row {
@@ -98,6 +99,7 @@ body {
   .input-row select,
   .input-row textarea {
     padding: 8px;
+    margin-bottom: 5px;
   }
 
   .submit-row button {

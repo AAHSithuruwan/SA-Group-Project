@@ -178,3 +178,17 @@
   color: blue;
   font-weight: bold;
 }
+
+.dispatched-button, .dispatch-button {
+  padding: 8px 12px;
+  background-color: purple;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dispatched-button:hover, .dispatch-button:hover {
+  background-color: #6a0dad; /* Darker purple for hover effect */
+}

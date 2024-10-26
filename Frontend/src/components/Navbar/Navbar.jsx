@@ -53,13 +53,16 @@ const Navbar = () => {
 
     fetchUserDetails();
     fetchSellerDetails();
+    window.scrollTo(0, 0);
   }, [location]);
 
-  const handleSellerLink = () => {
+  const handleSellerLink = (e) => {
+    e.preventDefault();
+
     if (isSeller === 1) {
       navigate('/sellerauctionlist');
     } else {
-      navigate('/SellerRegistrationform');
+      navigate('/SellerRegistration');
     }
   };
 
@@ -93,7 +96,7 @@ const Navbar = () => {
           {/* Conditionally show Seller and Profile/Signed-in options */}
           {isUser === 1 ? (
             <>
-              <li><Link onClick={handleSellerLink}>Seller</Link></li>
+              <li><a href="/" onClick={handleSellerLink}>Seller</a></li>
               <li>
                 <Link to="/myaccount">
                   <img src={`http://localhost:5101/Images/UserImages/${userId}.png`} alt="Profile" className="profile-img" />

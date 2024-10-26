@@ -596,7 +596,8 @@ namespace AuctionManagementSystem.Services
             {
                 { "Ongoing", 1 },
                 { "Not Started", 2 },
-                { "Ended", 3 }
+                { "Ended", 3 },
+                { "Dispatched", 4 }
             };
 
             var sortedAuctions = auctions.Select(auction => new
@@ -614,7 +615,11 @@ namespace AuctionManagementSystem.Services
 
         private string GetAuctionStatus(AuctionAndProductDetailsViewModel auction, DateTime currentTime)
         {
-            if (currentTime < auction.StartingDate)
+            if (auction.IsDispatched == 1) // Check if the auction is dispatched
+            {
+                return "Dispatched"; // Return dispatched status
+            }
+            else if (currentTime < auction.StartingDate)
             {
                 return "Not Started";
             }
@@ -627,5 +632,6 @@ namespace AuctionManagementSystem.Services
                 return "Ongoing";
             }
         }
+
     }
 }
