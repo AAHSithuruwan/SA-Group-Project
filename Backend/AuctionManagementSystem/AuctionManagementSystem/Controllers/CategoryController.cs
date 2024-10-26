@@ -1,10 +1,7 @@
-﻿using AuctionManagementSystem.Data;
-using AuctionManagementSystem.DTOs;
-using AuctionManagementSystem.Models;
+﻿using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Services;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -19,6 +16,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // POST: api/Category
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromForm] CategoryDetailsCreateModel categoryDetailsCreateModel)
         {
@@ -61,6 +59,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // PUT: api/Category
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateCategory([FromForm] CategoryDetailsUpdateModel categoryDetailsUpdateModel)
         {
@@ -80,6 +79,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // DELETE: api/Category/1
+        [Authorize]
         [HttpDelete("{categoryId:int}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] int categoryId)
         {

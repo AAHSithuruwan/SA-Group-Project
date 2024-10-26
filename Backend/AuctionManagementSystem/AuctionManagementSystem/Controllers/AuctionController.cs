@@ -1,6 +1,8 @@
 ﻿using AuctionManagementSystem.DTOs;
 using AuctionManagementSystem.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AuctionManagementSystem.Controllers
 {
@@ -17,6 +19,7 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // POST: api/Auction
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAuction([FromForm] AuctionAndProductDetailsCreateModel auctionAndProductDetailsCreateModel)
         {
@@ -25,14 +28,14 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var (isSellerFound, isCategoryFound, isAuctionCreated) = await _auctionService.CreateAuction(auctionAndProductDetailsCreateModel, (int)userId);
+            var (isSellerFound, isCategoryFound, isAuctionCreated) = await _auctionService.CreateAuction(auctionAndProductDetailsCreateModel, int.Parse(userId));
 
             if (isSellerFound == false)
             {
@@ -53,17 +56,18 @@ namespace AuctionManagementSystem.Controllers
         }
 
         // GET: api/Auction/Seller
+        [Authorize]
         [HttpGet("Seller")]
-        public async Task<IActionResult> GetSellerAuctions()
+        public async Task<IActionResult> GetAuctionsBySeller()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
-                return BadRequest("User is not signed in");
+                return Unauthorized("User is not signed in");
             }
 
-            var sellerAuctions = await _auctionService.GetSellerAuctions((int)userId);
+            var sellerAuctions = await _auctionService.GetAuctionsBySeller(int.Parse(userId));
 
             if(sellerAuctions == null)
             {
@@ -71,6 +75,32 @@ namespace AuctionManagementSystem.Controllers
             }
 
             return Ok(sellerAuctions);
+        }
+
+        // GET: api/Auction/User
+        [Authorize]
+        [HttpGet("User")]
+        public async Task<IActionResult> GetAuctionsByUser()
+        {
+            String? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized("User is not signed in");
+            }
+
+            var userAuctions = await _auctionService.GetAuctionsByUser(int.Parse(userId));
+
+            return Ok(userAuctions);
+        }
+
+        // GET: api/Auction/Category/1
+        [HttpGet("Category/{categoryId:int}")]
+        public async Task<IActionResult> GetAuctionsByCategory([FromRoute] int categoryId)
+        {
+            var categoryAuctions = await _auctionService.GetAuctionsByCategory(categoryId);
+
+            return Ok(categoryAuctions);
         }
 
         // GET: api/Auction/All
@@ -86,7 +116,7 @@ namespace AuctionManagementSystem.Controllers
         [HttpGet("{auctionId:int}")]
         public async Task<IActionResult> GetAuctionById([FromRoute] int auctionId)
         {
-            var (isAuctionFound, isProductFound, auction) = await _auctionService.GetAuctionById(auctionId);
+            var (isAuctionFound, isProductFound, isCategoryFound, auction) = await _auctionService.GetAuctionById(auctionId);
 
             if (isAuctionFound == false)
             {
@@ -98,10 +128,41 @@ namespace AuctionManagementSystem.Controllers
                 return NotFound("Product Not Found");
             }
 
+            if (isCategoryFound == false)
+            {
+                return NotFound("Category Not Found");
+            }
+
             return Ok(auction);
         }
 
+        // GET: api/Auction/DispatchProduct/1
+        [Authorize]
+        [HttpGet("DispatchProduct/{auctionId:int}")]
+        public async Task<IActionResult> DispatchProduct([FromRoute] int auctionId)
+        {
+            var (isAuctionFound, isProductFound, isProductDispatched) = await _auctionService.DispatchProduct(auctionId);
+
+            if (isAuctionFound == false)
+            {
+                return NotFound("Auction Not Found");
+            }
+
+            if (isProductFound == false)
+            {
+                return NotFound("Product Not Found");
+            }
+
+            if (isProductDispatched == false)
+            {
+                return BadRequest("Cannot Dispatch the Product, The Auction is not yet Closed");
+            }
+
+            return Ok("Product Dispatched Successfully");
+        }
+
         // PUT: api/Auction
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateAuction([FromForm] AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
         {
@@ -110,7 +171,7 @@ namespace AuctionManagementSystem.Controllers
                 return BadRequest();
             }
 
-            var (isAuctionFound, isProductFound) = await _auctionService.UpdateAuction(auctionAndProductDetailsUpdateModel);
+            var (isAuctionFound, isProductFound, isAuctionUpdated) = await _auctionService.UpdateAuction(auctionAndProductDetailsUpdateModel);
 
             if (isAuctionFound == false)
             {
@@ -122,10 +183,16 @@ namespace AuctionManagementSystem.Controllers
                 return NotFound("Product Not Found");
             }
 
+            if(isAuctionUpdated == false)
+            {
+                return BadRequest("Cannot Update The Auction, Product is already Dispatched");
+            }
+
             return Ok("Auction Updated Successfully");
         }
 
         // DELETE: api/Auction/1
+        [Authorize]
         [HttpDelete("{auctionId:int}")]
         public async Task<IActionResult> DeleteAuction([FromRoute] int auctionId)
         {

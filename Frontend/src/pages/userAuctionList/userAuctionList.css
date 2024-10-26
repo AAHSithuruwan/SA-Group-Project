@@ -1,0 +1,126 @@
+.auction-container {
+    display: flex;
+    justify-content: center; /* Center the content */
+    padding: 20px; /* Add some padding */
+  }
+  
+  .auction-image {
+    width: 120px; /* Set fixed width */
+    height: 120px; /* Set fixed height */
+    object-fit: contain; 
+    border-radius: 5px; /* Optional: add some rounded corners */
+  }
+  
+  .status-column {
+    width: 150px; /* Adjust this value as needed */
+  }
+  
+  .details-column {
+    width: 150px;
+  }
+  
+  .no-auctions-message {
+    text-align: center;
+    font-weight: bold;
+    color: #555; /* You can customize this color */
+    padding: 20px;
+  }
+  
+  .auction-details {
+    width: 100%; /* Full width for better responsiveness */
+    max-width: 800px; /* Limit the max width */
+    padding: 20px;
+    background-color: #ffffff; /* White background for contrast */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  .auction-details h2 {
+    color: #6b9f3f;
+    text-align: center; /* Center the title */
+  }
+  
+  .auction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .auction-table th,
+  .auction-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+  }
+  
+  .auction-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .details-button {
+    background-color: #6b9f3f;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px; /* Rounded corners for button */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+  .details-button:hover {
+    background-color: #5a8833; /* Darker green on hover */
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .auction-container {
+      padding: 10px; 
+    }
+  
+    .auction-details {
+      padding: 10px; 
+    }
+  
+    .auction-table th, .auction-table td {
+      padding: 8px; 
+    }
+  
+    .auction-image {
+      width: 60px; 
+    }
+  
+    .details-button {
+      padding: 8px 12px; 
+    }
+  }
+  
+  .image-text-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .product-name {
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 30px;
+  }
+  
+  .status-dispatched {
+    color: purple;
+    font-weight: bold;
+  }
+  
+  .status-ended {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .status-not-started {
+    color: brown;
+    font-weight: bold;
+  }
+  
+  .status-ongoing {
+    color: blue;
+    font-weight: bold;
+  }

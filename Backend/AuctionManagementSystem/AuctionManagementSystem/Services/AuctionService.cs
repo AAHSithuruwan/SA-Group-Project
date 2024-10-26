@@ -70,7 +70,7 @@ namespace AuctionManagementSystem.Services
             return (true, true, true);
         }
 
-        public async Task<List<AuctionAndProductDetailsViewModel>?> GetSellerAuctions(int userId)
+        public async Task<List<AuctionAndProductDetailsViewModel>?> GetAuctionsBySeller(int userId)
         {
             Seller? seller = await _dbContext.Sellers
                 .Include(s => s.Auctions)
@@ -90,11 +90,14 @@ namespace AuctionManagementSystem.Services
 
             foreach (var auction in seller.Auctions)
             {
-                Product? product = await _dbContext.Products.FirstOrDefaultAsync(p => p.AuctionId == auction.AuctionId);
+                Product? product = await _dbContext.Products
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.AuctionId == auction.AuctionId);
 
                 if (product != null)
                 {
                     Bid? lastBid = await _dbContext.Bids
+                    .Include(b => b.User)
                     .Where(b => b.AuctionId == auction.AuctionId)
                     .OrderByDescending(b => b.BidDate)
                     .FirstOrDefaultAsync();
@@ -104,6 +107,7 @@ namespace AuctionManagementSystem.Services
                     string? highestBidShippingName = null;
                     string? highestBidShippingAddress = null;
                     string? highestBidShippingPhoneNumber = null;
+                    string? highestBidderEmail = null;
 
                     if (lastBid != null)
                     {
@@ -112,14 +116,23 @@ namespace AuctionManagementSystem.Services
                         highestBidShippingName = lastBid.ShippingName;
                         highestBidShippingAddress = lastBid.ShippingAddress;
                         highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+                        highestBidderEmail = lastBid.User.Email;
                     }
 
                     AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = seller.SellerId,
+                        SellerFirstName = seller.FirstName,
+                        SellerLastName = seller.LastName,
+                        SellerAddress = seller.Address,
+                        SellerEmail = seller.Email,
+                        SellerPhoneNumber = seller.PhoneNumber,
                         ProductName = product.Name,
+                        IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name,
                         ProductDescription = product.Description,
                         StartingPrice = auction.StartingPrice,
                         NextBidPrice = nextBidPrice,
@@ -130,42 +143,141 @@ namespace AuctionManagementSystem.Services
                         HighestBidShippingName = highestBidShippingName,
                         HighestBidShippingAddress = highestBidShippingAddress,
                         HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber,
+                        HighestBidderEmail = highestBidderEmail,
                     };
 
                     auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
                 } 
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
-        public async Task<List<AuctionAndProductDetailsViewModel>> GetAllAuctions()
+        public async Task<List<AuctionAndProductDetailsViewModel>> GetAuctionsByUser(int userId)
         {
+            List<Auction> auctions = await _dbContext.Auctions
+                .Include(a => a.Bids)
+                .Include(a => a.Seller)
+                .ToListAsync();
+
             List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
 
-            List<Auction> auctions = await _dbContext.Auctions.ToListAsync();
-
-            if (auctions.Count == 0)
+            if(auctions == null || auctions.Count == 0)
             {
                 return auctionAndProductDetailsViewModels;
             }
 
-            foreach (Auction auction in auctions)
+            foreach (var auction in auctions)
             {
-                Product? product = await _dbContext.Products.FirstOrDefaultAsync(p => p.AuctionId == auction.AuctionId);
+                if (auction.Bids != null && auction.Bids.Count > 0)
+                {
+                    foreach (var bid in auction.Bids)
+                    {
+                        if (bid.UserId == userId)
+                        {
+                            Product? product = await _dbContext.Products
+                                .Include(p => p.Category)
+                                .FirstOrDefaultAsync(p => p.AuctionId == auction.AuctionId);
 
-                if (product != null)
+                            if (product != null)
+                            {
+
+                                Bid? lastBid = await _dbContext.Bids
+                                    .Include(b => b.User)
+                                    .Where(b => b.AuctionId == auction.AuctionId)
+                                    .OrderByDescending(b => b.BidDate)
+                                    .FirstOrDefaultAsync();
+
+                                float nextBidPrice = auction.StartingPrice;
+                                float? highestBidPrice = null;
+                                string? highestBidShippingName = null;
+                                string? highestBidShippingAddress = null;
+                                string? highestBidShippingPhoneNumber = null;
+                                string? highestBidderEmail = null;
+
+                                if (lastBid != null)
+                                {
+                                    nextBidPrice = lastBid.Price + auction.BidIncrement;
+                                    highestBidPrice = lastBid.Price;
+                                    highestBidShippingName = lastBid.ShippingName;
+                                    highestBidShippingAddress = lastBid.ShippingAddress;
+                                    highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+                                    highestBidderEmail = lastBid.User.Email;
+                                }
+
+                                AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
+                                {
+                                    ProductId = product.ProductId,
+                                    AuctionId = auction.AuctionId,
+                                    SellerId = auction.Seller.SellerId,
+                                    SellerFirstName = auction.Seller.FirstName,
+                                    SellerLastName = auction.Seller.LastName,
+                                    SellerAddress = auction.Seller.Address,
+                                    SellerEmail = auction.Seller.Email,
+                                    SellerPhoneNumber = auction.Seller.PhoneNumber,
+                                    ProductName = product.Name,
+                                    IsDispatched = product.IsDispatched,
+                                    CategoryId = product.CategoryId,
+                                    CategoryName = product.Category.Name,
+                                    ProductDescription = product.Description,
+                                    StartingPrice = auction.StartingPrice,
+                                    NextBidPrice = nextBidPrice,
+                                    BidIncrement = auction.BidIncrement,
+                                    StartingDate = auction.StartingDate,
+                                    EndDate = auction.EndDate,
+                                    HighestBidPrice = highestBidPrice,
+                                    HighestBidShippingName = highestBidShippingName,
+                                    HighestBidShippingAddress = highestBidShippingAddress,
+                                    HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber,
+                                    HighestBidderEmail = highestBidderEmail,
+                                };
+
+                                auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            return SortAuctions(auctionAndProductDetailsViewModels);
+        }
+
+        public async Task<List<AuctionAndProductDetailsViewModel>> GetAuctionsByCategory(int categoryId)
+        {
+            List<Auction> auctions = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .ToListAsync();
+
+            List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
+
+            if(auctions == null || auctions.Count == 0)
+            {
+                return auctionAndProductDetailsViewModels;
+            }
+            
+            foreach (var auction in auctions)
+            {
+                Product? product = await _dbContext.Products
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.AuctionId == auction.AuctionId);
+
+                if (product != null && product.CategoryId == categoryId)
                 {
                     Bid? lastBid = await _dbContext.Bids
-                    .Where(b => b.AuctionId == auction.AuctionId)
-                    .OrderByDescending(b => b.BidDate)
-                    .FirstOrDefaultAsync();
+                        .Include(b => b.User)
+                        .Where(b => b.AuctionId == auction.AuctionId)
+                        .OrderByDescending(b => b.BidDate)
+                        .FirstOrDefaultAsync();
 
                     float nextBidPrice = auction.StartingPrice;
                     float? highestBidPrice = null;
                     string? highestBidShippingName = null;
                     string? highestBidShippingAddress = null;
                     string? highestBidShippingPhoneNumber = null;
+                    string? highestBidderEmail = null;
 
                     if (lastBid != null)
                     {
@@ -174,14 +286,23 @@ namespace AuctionManagementSystem.Services
                         highestBidShippingName = lastBid.ShippingName;
                         highestBidShippingAddress = lastBid.ShippingAddress;
                         highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+                        highestBidderEmail = lastBid.User.Email;
                     }
 
                     AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
                     {
                         ProductId = product.ProductId,
                         AuctionId = auction.AuctionId,
+                        SellerId = auction.Seller.SellerId,
+                        SellerFirstName = auction.Seller.FirstName,
+                        SellerLastName = auction.Seller.LastName,
+                        SellerAddress = auction.Seller.Address,
+                        SellerEmail = auction.Seller.Email,
+                        SellerPhoneNumber = auction.Seller.PhoneNumber,
                         ProductName = product.Name,
+                        IsDispatched = product.IsDispatched,
                         CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name,
                         ProductDescription = product.Description,
                         StartingPrice = auction.StartingPrice,
                         NextBidPrice = nextBidPrice,
@@ -191,33 +312,122 @@ namespace AuctionManagementSystem.Services
                         HighestBidPrice = highestBidPrice,
                         HighestBidShippingName = highestBidShippingName,
                         HighestBidShippingAddress = highestBidShippingAddress,
-                        HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber
+                        HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber,
+                        HighestBidderEmail = highestBidderEmail,
+                    };
+
+                    auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
+                }
+            }
+            
+            return SortAuctions(auctionAndProductDetailsViewModels);
+        }
+
+        public async Task<List<AuctionAndProductDetailsViewModel>> GetAllAuctions()
+        {
+            List<AuctionAndProductDetailsViewModel> auctionAndProductDetailsViewModels = new List<AuctionAndProductDetailsViewModel>();
+
+            List<Auction> auctions = await _dbContext.Auctions
+                .Include(a => a.Seller)
+                .ToListAsync();
+
+            if (auctions == null || auctions.Count == 0)
+            {
+                return auctionAndProductDetailsViewModels;
+            }
+
+            foreach (Auction auction in auctions)
+            {
+                Product? product = await _dbContext.Products
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.AuctionId == auction.AuctionId);
+
+                if (product != null)
+                {
+                    Bid? lastBid = await _dbContext.Bids
+                        .Include(b => b.User)
+                        .Where(b => b.AuctionId == auction.AuctionId)
+                        .OrderByDescending(b => b.BidDate)
+                        .FirstOrDefaultAsync();
+
+                    float nextBidPrice = auction.StartingPrice;
+                    float? highestBidPrice = null;
+                    string? highestBidShippingName = null;
+                    string? highestBidShippingAddress = null;
+                    string? highestBidShippingPhoneNumber = null;
+                    string? highestBidderEmail = null;
+
+                    if (lastBid != null)
+                    {
+                        nextBidPrice = lastBid.Price + auction.BidIncrement;
+                        highestBidPrice = lastBid.Price;
+                        highestBidShippingName = lastBid.ShippingName;
+                        highestBidShippingAddress = lastBid.ShippingAddress;
+                        highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+                        highestBidderEmail = lastBid.User.Email;
+                    }
+
+                    AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
+                    {
+                        ProductId = product.ProductId,
+                        AuctionId = auction.AuctionId,
+                        SellerId = auction.Seller.SellerId,
+                        SellerFirstName = auction.Seller.FirstName,
+                        SellerLastName = auction.Seller.LastName,
+                        SellerAddress = auction.Seller.Address,
+                        SellerEmail = auction.Seller.Email,
+                        SellerPhoneNumber = auction.Seller.PhoneNumber,
+                        ProductName = product.Name,
+                        IsDispatched = product.IsDispatched,
+                        CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name,
+                        ProductDescription = product.Description,
+                        StartingPrice = auction.StartingPrice,
+                        NextBidPrice = nextBidPrice,
+                        BidIncrement = auction.BidIncrement,
+                        StartingDate = auction.StartingDate,
+                        EndDate = auction.EndDate,
+                        HighestBidPrice = highestBidPrice,
+                        HighestBidShippingName = highestBidShippingName,
+                        HighestBidShippingAddress = highestBidShippingAddress,
+                        HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber,
+                        HighestBidderEmail = highestBidderEmail,
                     };
 
                     auctionAndProductDetailsViewModels.Add(auctionAndProductDetailsViewModel);
                 }
             }
 
-            return auctionAndProductDetailsViewModels;
+            return SortAuctions(auctionAndProductDetailsViewModels);
         }
 
-        public async Task<(bool, bool, AuctionAndProductDetailsViewModel?)> GetAuctionById(int auctionId)
+        public async Task<(bool, bool, bool, AuctionAndProductDetailsViewModel?)> GetAuctionById(int auctionId)
         {
             Auction? auction = await _dbContext.Auctions
-                .Include(a => a.Product)
+                .Include(a => a.Seller)
                 .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
 
             if (auction == null)
             {
-                return (false, false, null);
+                return (false, false, false, null);
             }
 
-            if (auction.Product == null)
+            Product? product = await _dbContext.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.AuctionId == auctionId);
+
+            if (product == null)
             {
-                return (true, false, null);
+                return (true, false, false, null);
+            }
+
+            if (product.Category == null)
+            {
+                return (true, true, false, null);
             }
 
             Bid? lastBid = await _dbContext.Bids
+                    .Include(b => b.User)
                     .Where(b => b.AuctionId == auction.AuctionId)
                     .OrderByDescending(b => b.BidDate)
                     .FirstOrDefaultAsync();
@@ -227,6 +437,7 @@ namespace AuctionManagementSystem.Services
             string? highestBidShippingName = null;
             string? highestBidShippingAddress = null;
             string? highestBidShippingPhoneNumber = null;
+            string? highestBidderEmail = null;
 
             if (lastBid != null)
             {
@@ -235,15 +446,24 @@ namespace AuctionManagementSystem.Services
                 highestBidShippingName = lastBid.ShippingName;
                 highestBidShippingAddress = lastBid.ShippingAddress;
                 highestBidShippingPhoneNumber = lastBid.ShippingPhoneNumber;
+                highestBidderEmail = lastBid.User.Email;
             }
 
             AuctionAndProductDetailsViewModel auctionAndProductDetailsViewModel = new AuctionAndProductDetailsViewModel()
             {
-                ProductId = auction.Product.ProductId,
+                ProductId = product.ProductId,
                 AuctionId = auction.AuctionId,
-                ProductName = auction.Product.Name,
-                CategoryId = auction.Product.CategoryId,
-                ProductDescription = auction.Product.Description,
+                SellerId = auction.Seller.SellerId,
+                SellerFirstName = auction.Seller.FirstName,
+                SellerLastName = auction.Seller.LastName,
+                SellerAddress = auction.Seller.Address,
+                SellerEmail = auction.Seller.Email,
+                SellerPhoneNumber = auction.Seller.PhoneNumber,
+                ProductName = product.Name,
+                IsDispatched = product.IsDispatched,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category.Name,
+                ProductDescription = product.Description,
                 StartingPrice = auction.StartingPrice,
                 NextBidPrice = nextBidPrice,
                 BidIncrement = auction.BidIncrement,
@@ -252,13 +472,41 @@ namespace AuctionManagementSystem.Services
                 HighestBidPrice = highestBidPrice,
                 HighestBidShippingName = highestBidShippingName,
                 HighestBidShippingAddress = highestBidShippingAddress,
-                HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber
+                HighestBidShippingPhoneNumber = highestBidShippingPhoneNumber,
+                HighestBidderEmail = highestBidderEmail,
             };
 
-            return (true, true, auctionAndProductDetailsViewModel);
+            return (true, true, true, auctionAndProductDetailsViewModel);
         }
 
-        public async Task<(bool, bool)> UpdateAuction(AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
+        public async Task<(bool, bool, bool)> DispatchProduct(int auctionId)
+        {
+            Auction? auction = await _dbContext.Auctions
+                .Include(a => a.Product)
+                .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
+
+            if (auction == null)
+            {
+                return (false, false, false);
+            }
+
+            if (auction.Product == null)
+            {
+                return (true, false, false);
+            }
+
+            if (auction.EndDate > DateTime.Now)
+            {
+                return (true, true, false);
+            }
+
+            auction.Product.IsDispatched = 1;
+            await _dbContext.SaveChangesAsync();
+
+            return (true, true, true);
+        }
+
+        public async Task<(bool, bool, bool)> UpdateAuction(AuctionAndProductDetailsUpdateModel auctionAndProductDetailsUpdateModel)
         {
             Auction? auction = await _dbContext.Auctions
                 .Include(a => a.Product)
@@ -266,12 +514,17 @@ namespace AuctionManagementSystem.Services
 
             if (auction == null)
             {
-                return (false, false);
+                return (false, false,false);
             }
 
             if (auction.Product == null)
             {
-                return (true, false);
+                return (true, false, false);
+            }
+
+            if(auction.Product.IsDispatched == 1)
+            {
+                return (true, true, false);
             }
 
             auction.StartingPrice = auctionAndProductDetailsUpdateModel.StartingPrice;
@@ -299,7 +552,7 @@ namespace AuctionManagementSystem.Services
                 }
             }
 
-            return (true, true);
+            return (true, true, true);
         }
 
         public async Task<(bool, bool, bool)> DeleteAuction(int auctionId)
@@ -334,5 +587,51 @@ namespace AuctionManagementSystem.Services
 
             return (true, true, true);
         }
+
+        public List<AuctionAndProductDetailsViewModel> SortAuctions(List<AuctionAndProductDetailsViewModel> auctions)
+        {
+            var currentTime = DateTime.UtcNow;
+
+            var statusOrder = new Dictionary<string, int>
+            {
+                { "Ongoing", 1 },
+                { "Not Started", 2 },
+                { "Ended", 3 },
+                { "Dispatched", 4 }
+            };
+
+            var sortedAuctions = auctions.Select(auction => new
+            {
+                Auction = auction,
+                Status = GetAuctionStatus(auction, currentTime)
+            })
+            .OrderBy(a => statusOrder[a.Status]) // Sort by custom status order
+            .ThenBy(a => a.Auction.StartingDate) // Optionally sort by starting date within the same status
+            .Select(a => a.Auction) // Select back the auction details
+            .ToList();
+
+            return sortedAuctions;
+        }
+
+        private string GetAuctionStatus(AuctionAndProductDetailsViewModel auction, DateTime currentTime)
+        {
+            if (auction.IsDispatched == 1) // Check if the auction is dispatched
+            {
+                return "Dispatched"; // Return dispatched status
+            }
+            else if (currentTime < auction.StartingDate)
+            {
+                return "Not Started";
+            }
+            else if (currentTime > auction.EndDate)
+            {
+                return "Ended";
+            }
+            else
+            {
+                return "Ongoing";
+            }
+        }
+
     }
 }

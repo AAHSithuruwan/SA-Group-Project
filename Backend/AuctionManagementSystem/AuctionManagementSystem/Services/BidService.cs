@@ -94,20 +94,27 @@ namespace AuctionManagementSystem.Services
                 return bidDetailsViewModels;
             }
 
-            foreach (var bid in auction.Bids)
+            foreach (var bid in auction.Bids.OrderByDescending(b => b.BidId))
             {
-                BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
-                {
-                    AuctionId = auctionId,
-                    BidId = bid.BidId,
-                    BidDate = bid.BidDate,
-                    Price = bid.Price,
-                    ShippingName = bid.ShippingName,
-                    ShippingAddress = bid.ShippingAddress,
-                    ShippingPhoneNumber = bid.ShippingPhoneNumber,
-                };
+                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == bid.UserId);
 
-                bidDetailsViewModels.Add(bidDetailsViewModel);
+                if (user != null)
+                {
+                    BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
+                    {
+                        AuctionId = auctionId,
+                        UserId = bid.UserId,
+                        UserEmail = user.Email,
+                        BidId = bid.BidId,
+                        BidDate = bid.BidDate,
+                        Price = bid.Price,
+                        ShippingName = bid.ShippingName,
+                        ShippingAddress = bid.ShippingAddress,
+                        ShippingPhoneNumber = bid.ShippingPhoneNumber,
+                    };
+
+                    bidDetailsViewModels.Add(bidDetailsViewModel);
+                }
             }
 
             return bidDetailsViewModels;
@@ -117,7 +124,9 @@ namespace AuctionManagementSystem.Services
         {
             Auction? auction = await _dbContext.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
 
-            if (auction == null)
+            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (auction == null || user == null)
             {
                 return null;
             }
@@ -131,11 +140,13 @@ namespace AuctionManagementSystem.Services
                 return bidDetailsViewModels;
             }
 
-            foreach (var bid in bids)
+            foreach (var bid in bids.OrderByDescending(b => b.BidId))
             {
                 BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
                 {
                     AuctionId = auctionId,
+                    UserId = userId,
+                    UserEmail = user.Email,
                     BidId = bid.BidId,
                     BidDate = bid.BidDate,
                     Price = bid.Price,
@@ -152,7 +163,9 @@ namespace AuctionManagementSystem.Services
 
         public async Task<BidDetailsViewModel?> GetBidById(int bidId)
         {
-            Bid? bid = await _dbContext.Bids.FirstOrDefaultAsync(b => b.BidId == bidId);
+            Bid? bid = await _dbContext.Bids
+                .Include(b => b.User)
+                .FirstOrDefaultAsync(b => b.BidId == bidId);
 
             if (bid == null)
             {
@@ -162,6 +175,8 @@ namespace AuctionManagementSystem.Services
             BidDetailsViewModel bidDetailsViewModel = new BidDetailsViewModel()
             {
                 AuctionId = bid.AuctionId,
+                UserId = bid.UserId,
+                UserEmail = bid.User.Email,
                 BidId = bid.BidId,
                 BidDate = bid.BidDate,
                 Price = bid.Price,
