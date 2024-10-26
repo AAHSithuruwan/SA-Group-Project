@@ -168,8 +168,8 @@ const SellerAuctionDetails = () => {
         <div className="auction-info">
           <p><strong>Starting Bid Price:</strong> <span style={{ marginLeft: '10px' }}>Rs. {auction.startingPrice}</span></p>
           <p><strong>Bid Increment:</strong> <span style={{ marginLeft: '10px' }}>Rs. {auction.bidIncrement}</span></p>
-          <p><strong>Starting Date:</strong> <span style={{ marginLeft: '10px' }}>{auction.startingDate}</span></p>
-          <p><strong>Ending Date:</strong> <span style={{ marginLeft: '10px' }}>{auction.endDate}</span></p>
+          <p><strong>Starting Date:</strong> <span style={{ marginLeft: '10px' }}>{new Date(auction.startingDate).toLocaleString()}</span></p>
+          <p><strong>Ending Date:</strong> <span style={{ marginLeft: '10px' }}>{new Date(auction.endDate).toLocaleString()}</span></p>
           <p><strong>Highest Bid Price:</strong> <span style={{ marginLeft: '10px' }}>
                                                     {auction.highestBidPrice ? `Rs. ${auction.highestBidPrice}` : "None"}
                                                   </span></p>
