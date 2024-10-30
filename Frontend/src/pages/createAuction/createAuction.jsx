@@ -20,7 +20,7 @@ const CreateAuction = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
 
   const refresh = () => {
-    navigate('/auctiondetails');
+    navigate('/sellerauctionlist');
   }
 
   useEffect(() => {
